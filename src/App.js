@@ -47,8 +47,12 @@ class App extends Component {
     return (
       <div className = 'container'>
         {/* <Input/> */}
-        <Button onSubmit={this.onSubmit}/>
-        <DataTable headings={headings} rows={rows} />
+        <div className='button'>
+          <Button onSubmit={this.onSubmit}/>
+        </div>
+        <div>
+          <DataTable headings={headings} rows={rows} />
+        </div>
       </div>
     );
   }
