@@ -30,7 +30,7 @@ class App extends Component {
   }
 
   callAPI(){
-    fetch('http://localhost:4000/playlist1')
+    fetch('https://ancient-ceiling-278919.ue.r.appspot.com/playlist1')
       .then(res => res.json())
       .then(res => {
         this.setState({apiResponse: res});
