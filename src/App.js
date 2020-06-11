@@ -29,12 +29,20 @@ class App extends Component {
     this.forceUpdate();
   }
 
-  onClickSearch(){
-    console.log('search');
+  onClickSearch(text){
+    // fetch('https://ancient-ceiling-278919.ue.r.appspot.com/playlist1')
+    fetch(`http://localhost:8080/song/songName/${text}`)
+      .then(res => res.json())
+      .then(res => {
+        this.setState({apiResponse: res});
+      })
+      .catch(err => err);
+
   }
 
   callAPI(){
-    fetch('https://ancient-ceiling-278919.ue.r.appspot.com/playlist1')
+    // fetch('https://ancient-ceiling-278919.ue.r.appspot.com/playlist1')
+    fetch('http://localhost:8080/playlist1')
       .then(res => res.json())
       .then(res => {
         this.setState({apiResponse: res});
