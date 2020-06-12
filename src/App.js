@@ -14,13 +14,20 @@ const headings = [
 
 let rows = [];
 
+let userPlaylists = ['Search', 'Playlist-1', 'Playlist-2'];
+
 class App extends Component {
   constructor(){
     super();
-    this.state = {apiResponse: []};
+    this.state = {
+      apiResponse: [],
+      availablePlaylists: [],
+      currentPlaylist: 'Search'
+    };
     this.onSubmit = this.onSubmit.bind(this);
     this.callAPI = this.callAPI.bind(this);
     this.onClickSearch = this.onClickSearch.bind(this);
+    this.callAPIGetPlaylists = this.callAPIGetPlaylists.bind(this);
   }
 
   onSubmit() {
@@ -50,6 +57,17 @@ class App extends Component {
       .catch(err => err);
   }
 
+  callAPIGetPlaylists(playlistId){
+    console.log("getting playlist", playlistId);
+    this.setState({currentPlaylist: playlistId});
+    // fetch('http://localhost:8080//playlist/list/:userId')
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     this.setState({availablePlaylists: res});
+    //   })
+    //   .catch(err => err);
+  }
+
   render() {
     rows = [];
     this.state.apiResponse.forEach(entry => {
@@ -59,20 +77,20 @@ class App extends Component {
     return (
       <div className='master-screen'>
         <div className='navbar-container'>
-          <Navbar></Navbar>
+          <Navbar playlists={userPlaylists} getPlaylist={this.callAPIGetPlaylists}></Navbar>
         </div>
         <div className = 'song-container'>
           <Searchbar onSubmit={this.onClickSearch}/>
           {/* <Input/> */}
 
-          <div className='playlist-container'>
+          {this.state.currentPlaylist !== 'Search' && <div className='playlist-container'>
             <div className='button'>
               <Button onSubmit={this.onSubmit}/>
             </div>
             <div>
               <DataTable headings={headings} rows={rows} />
             </div>
-          </div>
+          </div>}
         </div>
       </div>    
     );
