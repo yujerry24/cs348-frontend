@@ -13,14 +13,16 @@ const headings = [
 ];
 
 let rows = [];
+let searchRows = [];
 
-let userPlaylists = ['Search', 'Playlist-1', 'Playlist-2'];
+let userPlaylists = ['Search', 'Playlist-1'];
 
 class App extends Component {
   constructor(){
     super();
     this.state = {
       apiResponse: [],
+      searchResponse: [],
       availablePlaylists: [],
       currentPlaylist: 'Search'
     };
@@ -41,7 +43,7 @@ class App extends Component {
     fetch(`http://localhost:8080/song/songName/${text}`)
       .then(res => res.json())
       .then(res => {
-        this.setState({apiResponse: res});
+        this.setState({searchResponse: res});
       })
       .catch(err => err);
 
@@ -60,6 +62,7 @@ class App extends Component {
   callAPIGetPlaylists(playlistId){
     console.log("getting playlist", playlistId);
     this.setState({currentPlaylist: playlistId});
+    this.callAPI();
     // fetch('http://localhost:8080//playlist/list/:userId')
     //   .then(res => res.json())
     //   .then(res => {
@@ -70,8 +73,14 @@ class App extends Component {
 
   render() {
     rows = [];
+    searchRows = [];
+
     this.state.apiResponse.forEach(entry => {
       rows.push([entry.artist, entry.title, entry.year]);
+    });
+    
+    this.state.searchResponse.forEach(entry => {
+      searchRows.push([entry.artist, entry.title, entry.year]);
     });
 
     return (
@@ -81,14 +90,12 @@ class App extends Component {
         </div>
         <div className = 'song-container'>
           <Searchbar onSubmit={this.onClickSearch}/>
-          {/* <Input/> */}
-
+          {this.state.currentPlaylist === 'Search' && <div className='search-results-container'>
+              <DataTable headings={headings} rows={searchRows} isSearch={true}/>
+          </div>}
           {this.state.currentPlaylist !== 'Search' && <div className='playlist-container'>
-            <div className='button'>
-              <Button onSubmit={this.onSubmit}/>
-            </div>
             <div>
-              <DataTable headings={headings} rows={rows} />
+              <DataTable headings={headings} rows={rows} isSearch={false}/>
             </div>
           </div>}
         </div>

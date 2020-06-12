@@ -9,11 +9,14 @@ export default class DataTable extends React.Component {
 
     this.renderHeadingRow = this.renderHeadingRow.bind(this);
     this.renderRow = this.renderRow.bind(this);
-    this.onClickDelete = this.onClickDelete.bind(this);
-
   }
-  onClickDelete = (index) => {
-    console.warn('deleting song entry in row', index);
+
+  onClickHandler = (index) => {
+    if (this.props.isSearch){
+      console.log('adding song at index', index);
+    } else {
+      console.log('deleting song at index', index);
+    }
   };
 
   renderHeadingRow = (_cell, cellIndex) => {
@@ -30,7 +33,7 @@ export default class DataTable extends React.Component {
   };
   
   renderRow = (_row, rowIndex) => {
-    const {rows} = this.props;
+    const {rows, isSearch} = this.props;
 
     return (
       <tr key={`row-${rowIndex}`}>
@@ -42,7 +45,9 @@ export default class DataTable extends React.Component {
             />
           )
         })}
-        <Button variant='contained' color='secondary' onClick={() => this.onClickDelete(rowIndex)}>Delete Song</Button>
+        <Button variant='contained' color={`${isSearch ? "primary " : "secondary"}`} onClick={() => this.onClickHandler(rowIndex)}>
+          {isSearch ?  "Add Song" : "Delete Song"}
+        </Button>
       </tr>
     )
   };
