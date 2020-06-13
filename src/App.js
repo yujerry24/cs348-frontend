@@ -43,7 +43,7 @@ class App extends Component {
 
   onClickSearch(text){
     // fetch('https://ancient-ceiling-278919.ue.r.appspot.com/playlist1')
-    fetch(`http://localhost:8080/song/songName/${text}`)
+    fetch(`http://localhost:8080/song/${text}`)
       .then(res => res.json())
       .then(res => {
         this.setState({searchResponse: res});
@@ -75,6 +75,8 @@ class App extends Component {
       }, 
       body: JSON.stringify({artist: searchResponse[index].artist, title: searchResponse[index].title, year: searchResponse[index].year})}
     );
+
+    this.callAPI();
   }
 
   callAPIDeleteSong(index){
@@ -86,7 +88,9 @@ class App extends Component {
         'Content-Type': 'application/json;charset=utf-8'
       }, 
       body: JSON.stringify({artist: playlistResponse[index].artist, title: playlistResponse[index].title})}
-    );
+    ).then(() => {
+      this.callAPI()
+    });
   }
 
   callAPI(){
