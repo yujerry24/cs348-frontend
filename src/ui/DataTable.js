@@ -12,11 +12,8 @@ export default class DataTable extends React.Component {
   }
 
   onClickHandler = (index) => {
-    if (this.props.isSearch){
-      console.log('adding song at index', index);
-    } else {
-      console.log('deleting song at index', index);
-    }
+    const {isSearch} = this.props;
+    this.props.onClick(index, isSearch);
   };
 
   renderHeadingRow = (_cell, cellIndex) => {
@@ -45,7 +42,7 @@ export default class DataTable extends React.Component {
             />
           )
         })}
-        <Button variant='contained' color={`${isSearch ? "primary " : "secondary"}`} onClick={() => this.onClickHandler(rowIndex)}>
+        <Button variant='contained' color={isSearch ? "primary" : "secondary"} onClick={() => this.onClickHandler(rowIndex)}>
           {isSearch ?  "Add Song" : "Delete Song"}
         </Button>
       </tr>
