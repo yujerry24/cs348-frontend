@@ -11,9 +11,9 @@ export default class DataTable extends React.Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
-  onClickHandler = (index) => {
+  onClickHandler = (id) => {
     const {isSearch} = this.props;
-    this.props.onClick(index, isSearch);
+    this.props.onClick(id, isSearch);
   };
 
   renderHeadingRow = (_cell, cellIndex) => {
@@ -31,6 +31,7 @@ export default class DataTable extends React.Component {
   
   renderRow = (_row, rowIndex) => {
     const {rows, isSearch} = this.props;
+    console.log(rows);
 
     return (
       <tr key={`row-${rowIndex}`}>
@@ -42,7 +43,7 @@ export default class DataTable extends React.Component {
             />
           )
         })}
-        <Button variant='contained' color={isSearch ? "primary" : "secondary"} onClick={() => this.onClickHandler(rowIndex)}>
+        <Button variant='contained' color={isSearch ? "primary" : "secondary"} onClick={() => this.onClickHandler(rows[rowIndex][0])}>
           {isSearch ?  "Add Song" : "Delete Song"}
         </Button>
       </tr>

@@ -12,16 +12,16 @@ export default class Navbar extends React.Component{
         this.onPlaylistClick = this.onPlaylistClick.bind(this);
     }
 
-    onPlaylistClick(playlistName){
-        this.setState({targetPlaylist: playlistName});
-        this.props.getPlaylist(playlistName);
+    onPlaylistClick(playlistId){
+        this.setState({targetPlaylist: playlistId});
+        this.props.getPlaylist(playlistId);
     }
 
-    playlistRow = (playlistName) => {
+    playlistRow = ({playlist_id, name}) => {
         return (
-            <div className={`playlist-div ${this.state.targetPlaylist === playlistName ? ' selected' : ''}`}
-                onClick={() => this.onPlaylistClick(playlistName)}>
-                {playlistName}
+            <div className={`playlist-div ${this.state.targetPlaylist === playlist_id ? ' selected' : ''}`}
+                onClick={() => this.onPlaylistClick(playlist_id)}>
+                {name}
             </div>
         );
     };
@@ -31,7 +31,7 @@ export default class Navbar extends React.Component{
 
         return (
             <div>
-                {playlists.map(this.playlistRow)}
+                {playlists && playlists.map(this.playlistRow)}
             </div>
         );
     }
