@@ -6,8 +6,8 @@ import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 
-// process.env.ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
-const API = process.env.ENDPOINT || 'http://localhost:8080';
+// process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
+const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 const headings = [
   'Id',
