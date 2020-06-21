@@ -1,0 +1,17 @@
+.playlist-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0px;
+    font-size: 24px;
+    height: 80px;
+
+    &.selected {
+        background-color: #b7a2b7;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}

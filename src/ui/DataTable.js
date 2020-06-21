@@ -1,8 +1,21 @@
 import * as React from 'react';
 import Cell from './Cell';
+import Button from '@material-ui/core/Button';
 import './DataTable.scss';
 
 export default class DataTable extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.renderHeadingRow = this.renderHeadingRow.bind(this);
+    this.renderRow = this.renderRow.bind(this);
+  }
+
+  onClickHandler = (id) => {
+    const {isSearch} = this.props;
+    this.props.onClick(id, isSearch);
+  };
+
   renderHeadingRow = (_cell, cellIndex) => {
     const {headings} = this.props;
 
@@ -11,12 +24,14 @@ export default class DataTable extends React.Component {
         key={`heading-${cellIndex}`}
         content={headings[cellIndex]}
         header={true}
+        headerKey={headings[cellIndex]}
       />
     )
   };
   
   renderRow = (_row, rowIndex) => {
-    const {rows} = this.props;
+    const {rows, isSearch} = this.props;
+    console.log(rows);
 
     return (
       <tr key={`row-${rowIndex}`}>
@@ -28,6 +43,9 @@ export default class DataTable extends React.Component {
             />
           )
         })}
+        <Button variant='contained' color={isSearch ? "primary" : "secondary"} onClick={() => this.onClickHandler(rows[rowIndex][0])}>
+          {isSearch ?  "Add Song" : "Delete Song"}
+        </Button>
       </tr>
     )
   };
@@ -35,9 +53,6 @@ export default class DataTable extends React.Component {
   render() {
     const {headings, rows} = this.props;
 
-    this.renderHeadingRow = this.renderHeadingRow.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    
     const theadMarkup = (
       <tr key="heading">
         {headings.map(this.renderHeadingRow)}
