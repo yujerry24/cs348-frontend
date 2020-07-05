@@ -15,7 +15,7 @@ export default class Searchbar extends React.Component {
   handleKeyUp = e => {
     console.log(e.keyCode);
     if (e.keyCode === 13) {
-      this.props.onSubmit(this.state.searchText);
+      this.props.onSearch(this.state.searchText);
     }
   };
 
@@ -32,7 +32,7 @@ export default class Searchbar extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => this.props.onSubmit(this.state.searchText)}
+            onClick={() => this.props.onSearch(this.state.searchText)}
           >
             Search
           </Button>

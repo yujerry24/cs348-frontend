@@ -41,12 +41,6 @@ class App extends Component {
       .catch(err => err);
   };
 
-  onSearch = () => {
-    console.log('props');
-    this.fetchPlaylist();
-    this.forceUpdate();
-  };
-
   onClickSearch = text => {
     fetch(`${API}/song/${text}`)
       .then(res => res.json())
