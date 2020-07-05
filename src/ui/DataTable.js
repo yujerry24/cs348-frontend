@@ -1,71 +1,118 @@
 import * as React from 'react';
-import Cell from './Cell';
-import Button from '@material-ui/core/Button';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+// import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+// import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+// import TableSortLabel from '@material-ui/core/TableSortLabel';
+
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import Add from '@material-ui/icons/PlaylistAdd';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Delete from '@material-ui/icons/Delete';
 import './DataTable.scss';
 
 export default class DataTable extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-
-    this.renderHeadingRow = this.renderHeadingRow.bind(this);
-    this.renderRow = this.renderRow.bind(this);
   }
 
-  onClickHandler = (id) => {
-    const {isSearch} = this.props;
+  onClickHandler = id => {
+    const { isSearch } = this.props;
     this.props.onClick(id, isSearch);
   };
 
   renderHeadingRow = (_cell, cellIndex) => {
-    const {headings} = this.props;
+    const { headings } = this.props;
 
     return (
-      <Cell
-        key={`heading-${cellIndex}`}
-        content={headings[cellIndex]}
-        header={true}
-        headerKey={headings[cellIndex]}
-      />
-    )
+      <TableCell key={`heading-${cellIndex}`} align={'left'}>
+        {headings[cellIndex]}
+      </TableCell>
+    );
   };
-  
+
   renderRow = (_row, rowIndex) => {
-    const {rows, isSearch} = this.props;
-    console.log(rows);
+    const { rows, isSearch } = this.props;
+
+    const actionButtons = [];
+
+    if (isSearch) {
+      actionButtons.push(
+        <IconButton
+          key={`add-${rowIndex}`}
+          color="primary"
+          size="medium"
+          aria-label="add"
+          edge="start"
+          onClick={() => this.onClickHandler(rows[rowIndex][0])}
+        >
+          <Add />
+        </IconButton>
+      );
+    } else {
+      actionButtons.push(
+        <IconButton
+          key={`delete-${rowIndex}`}
+          color="secondary"
+          size="medium"
+          aria-label="delete"
+          onClick={() => this.onClickHandler(rows[rowIndex][0])}
+        >
+          <Delete />
+        </IconButton>
+      );
+    }
+    actionButtons.push(
+      <Checkbox
+        key={`favorite-${rowIndex}`}
+        icon={<FavoriteBorder />}
+        checkedIcon={<Favorite />}
+        name="favorite"
+      />
+    );
+
+    const rowDisplayData = rows[rowIndex].slice(1) || [];
 
     return (
-      <tr key={`row-${rowIndex}`}>
-        {rows[rowIndex].map((_cell, cellIndex) => {
+      <TableRow key={`row-${rowIndex}`}>
+        {rowDisplayData.map((_cell, cellIndex) => {
           return (
-            <Cell
-              key={`${rowIndex}-${cellIndex}`}
-              content={rows[rowIndex][cellIndex]}
-            />
-          )
+            <TableCell key={`${rowIndex}-${cellIndex}`} align={'left'}>
+              {rowDisplayData[cellIndex]}
+            </TableCell>
+          );
         })}
-        <Button variant='contained' color={isSearch ? "primary" : "secondary"} onClick={() => this.onClickHandler(rows[rowIndex][0])}>
-          {isSearch ?  "Add Song" : "Delete Song"}
-        </Button>
-      </tr>
-    )
+        <TableCell
+          key={`actions-${rowIndex}`}
+          align={'left'}
+          style={{ paddingTop: 0, paddingBottom: 0 }}
+        >
+          {actionButtons}
+        </TableCell>
+      </TableRow>
+    );
   };
 
   render() {
-    const {headings, rows} = this.props;
+    const { headings, rows } = this.props;
 
-    const theadMarkup = (
-      <tr key="heading">
-        {headings.map(this.renderHeadingRow)}
-      </tr>
+    const headerContent = (
+      <TableRow key="heading">{headings.map(this.renderHeadingRow)}</TableRow>
     );
 
-    const tbodyMarkup = rows.map(this.renderRow);
-  
+    const bodyContent = rows.map(this.renderRow);
+
     return (
-      <table className="Table">
-        <thead>{theadMarkup}</thead>
-        <tbody>{tbodyMarkup}</tbody>
-      </table>
+      <Table stickyHeader className="Table">
+        <TableHead>{headerContent}</TableHead>
+        <TableBody>{bodyContent}</TableBody>
+      </Table>
     );
   }
 }

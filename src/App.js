@@ -9,33 +9,21 @@ import Searchbar from './ui/Searchbar';
 // process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
 const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
-const headings = [
-  'Id',
-  'Name',
-  'Duration',
-  'Artist'
-];
+const headings = ['Name', 'Duration', 'Artist', 'Actions'];
 
 let rows = [];
 let searchRows = [];
-let search = [{playlist_id: 'Search', name: 'Search'}];
+let search = [];
 
 class App extends Component {
-  constructor(){
+  constructor() {
     super();
     this.state = {
       playlistResponse: [],
       searchResponse: [],
       availablePlaylists: [],
-      currentPlaylist: 'Search'
+      currentPlaylist: 'Search',
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.callAPI = this.callAPI.bind(this);
-    this.onClickSearch = this.onClickSearch.bind(this);
-    this.callAPIGetPlaylist = this.callAPIGetPlaylist.bind(this);
-    this.callAPIAddSong = this.callAPIAddSong.bind(this);
-    this.callAPIDeleteSong = this.callAPIDeleteSong.bind(this);
-    this.dataTableButtonClick = this.dataTableButtonClick.bind(this);
   }
 
   componentWillMount = () => {
@@ -43,115 +31,141 @@ class App extends Component {
     fetch(`${API}/playlist/list/${userId}`)
       .then(res => res.json())
       .then(res => {
-        this.setState({availablePlaylists: res});
+        this.setState({ availablePlaylists: res });
       })
       .catch(err => err);
-  }
+  };
 
-  onSubmit() {
+  onSubmit = () => {
     console.log('props');
-    this.callAPI();
+    this.fetchPlaylist();
     this.forceUpdate();
-  }
+  };
 
-  onClickSearch(text){
+  onClickSearch = text => {
     fetch(`${API}/song/${text}`)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
-
-        this.setState({searchResponse: res});
+        this.setState({ searchResponse: res });
       })
       .catch(err => err);
+  };
 
-  }
-
-  dataTableButtonClick(id, isSearch){
-    if (isSearch){
-      this.callAPIAddSong(id);
+  dataTableButtonClick = (id, isSearch) => {
+    if (isSearch) {
+      this.callAPIAddSongs([id]);
     } else {
-      this.callAPIDeleteSong(id);
+      this.callAPIDeleteSongs([id]);
     }
-  }
+  };
 
-  callAPIAddSong(songId){
+  callAPIAddSongs = songIds => {
     /**
      * fetch('http://localhost:8080/playlist1', {method: 'POST', headers: {
         'Content-Type': 'application/json;charset=utf-8'
       }, body: JSON.stringify({artist: 'Mili', title: 'sustain++;', year: 2020})})
      * 
      */
-    console.log(songId)
-
     const playlistId = '8092bcc7-37ee-4114-bc5e-eac125b3bb9b';
-    fetch(`${API}/playlist/${playlistId}/${songId}`, {
-      method: 'POST'
+    fetch(`${API}/playlist/add/${playlistId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ songIds: songIds }),
     });
-  }
+  };
 
-  callAPIDeleteSong(songId){
-    fetch(`${API}/playlist/${this.state.currentPlaylist}/${songId}`, {
-      method: 'DELETE', 
-      // headers: {
-      //   'Content-Type': 'application/json;charset=utf-8'
-      // }, 
+  callAPIDeleteSongs = songIds => {
+    fetch(`${API}/playlist/${this.state.currentPlaylist}/${songIds}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ songIds: songIds }),
     }).then(() => {
-      this.callAPI(this.state.currentPlaylist)
+      this.fetchPlaylist(this.state.currentPlaylist);
     });
-  }
+  };
 
-  callAPI(playlistId){
+  fetchPlaylist = playlistId => {
     fetch(`${API}/playlist/${playlistId}`)
       .then(res => res.json())
       .then(res => {
-        this.setState({playlistResponse: res});
+        this.setState({ playlistResponse: res });
       })
       .catch(err => err);
-  }
+  };
 
-  callAPIGetPlaylist(playlistId){
-    console.log("getting playlist", playlistId);
-    this.setState({currentPlaylist: playlistId});
-    this.callAPI(playlistId);
-  }
+  callAPIGetPlaylist = playlistId => {
+    console.log('getting playlist', playlistId);
+    this.setState({ currentPlaylist: playlistId });
+    this.fetchPlaylist(playlistId);
+  };
 
   render() {
     rows = [];
     searchRows = [];
 
     this.state.playlistResponse.forEach(entry => {
-      rows.push([entry.song_id, entry.song_name, entry.video_duration, entry.artist_name]);
+      rows.push([
+        entry.song_id,
+        entry.song_name,
+        entry.video_duration,
+        entry.artist_name,
+      ]);
     });
-    
+
     this.state.searchResponse.forEach(entry => {
-      searchRows.push([entry.song_id, entry.song_name, entry.video_duration, entry.artist_name]);
+      searchRows.push([
+        entry.song_id,
+        entry.song_name,
+        entry.video_duration,
+        entry.artist_name,
+      ]);
     });
 
     return (
-      <div className='master-screen'>
-        <div className='navbar-container'>
-          <Navbar playlists={search.concat(this.state.availablePlaylists)} getPlaylist={this.callAPIGetPlaylist}></Navbar>
+      <div className="master-screen">
+        <div className="navbar-container">
+          <Navbar
+            playlists={search.concat(this.state.availablePlaylists)}
+            getPlaylist={this.callAPIGetPlaylist}
+          ></Navbar>
         </div>
-        <div className = 'song-container'>
-          <Searchbar 
+        <div className="song-container">
+          <Searchbar
             onSubmit={
-              this.state.currentPlaylist === 'Search' 
-              ? this.onClickSearch 
-              : ()=>{console.log('filter playlist contents maybe?')} 
-              /*this.filterPlaylist ? maybe?*/ 
-              }/>
-          {this.state.currentPlaylist === 'Search' && 
-            <div className='search-results-container'>
-              <DataTable headings={headings} rows={searchRows} isSearch={true} onClick={this.dataTableButtonClick}/>
+              this.state.currentPlaylist === 'Search'
+                ? this.onClickSearch
+                : () => {
+                    console.log('filter playlist contents maybe?');
+                  }
+              /*this.filterPlaylist ? maybe?*/
+            }
+          />
+          {this.state.currentPlaylist === 'Search' && (
+            <div className="search-results-container">
+              <DataTable
+                headings={headings}
+                rows={searchRows}
+                isSearch={true}
+                onClick={this.dataTableButtonClick}
+              />
             </div>
-          }
-          {this.state.currentPlaylist !== 'Search' && 
-            <div className='playlist-container'>
-              <DataTable headings={headings} rows={rows} isSearch={false} onClick={this.dataTableButtonClick}/>
+          )}
+          {this.state.currentPlaylist !== 'Search' && (
+            <div className="playlist-container">
+              <DataTable
+                headings={headings}
+                rows={rows}
+                isSearch={false}
+                onClick={this.dataTableButtonClick}
+              />
             </div>
-          }
+          )}
         </div>
-      </div>    
+      </div>
     );
   }
 }
