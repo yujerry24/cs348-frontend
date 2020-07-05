@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Divider,
   Drawer,
@@ -5,14 +6,19 @@ import {
   List,
   ListItem,
   ListItemIcon,
+  ListSubheader,
 } from '@material-ui/core';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Playlist from '@material-ui/icons/PlaylistPlay';
-import Search from '@material-ui/icons/Search';
+import {
+  AccountCircle,
+  Add,
+  ChevronLeft,
+  ChevronRight,
+  PlaylistPlay,
+  Search,
+} from '@material-ui/icons';
 import './Navbar.scss';
 
-const React = require('react');
+const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 export default class Navbar extends React.Component {
   constructor(props) {
@@ -32,9 +38,39 @@ export default class Navbar extends React.Component {
     this.props.getPlaylist(playlistId);
   };
 
+  onCreatePlaylist = () => {
+    // TODO:
+    // open a creation modal to prompt user for a playlist name
+    fetch(`${API}/playlist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({
+        playlistName: `Playlist${this.props.playlists.length}`,
+        userId: this.props.userId,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.props.updateAllPlaylists(this.props.userId);
+        this.setState({ targetPlaylist: res });
+      })
+      .catch(err => err);
+    alert('create a new playlist');
+  };
+
+  onLogout = () => {
+    // TODO:
+    // open a creation modal??
+    // call api
+    alert('logout current user');
+  };
+
   playlistRow = ({ playlist_id, name }) => {
     return (
       <ListItem
+        key={`drawer-${playlist_id}`}
         className="drawer-list-item"
         selected={this.state.targetPlaylist === playlist_id}
         onClick={() =>
@@ -44,7 +80,7 @@ export default class Navbar extends React.Component {
         }
       >
         <ListItemIcon>
-          {playlist_id === 'Search' ? <Search /> : <Playlist />}
+          {playlist_id === 'Search' ? <Search /> : <PlaylistPlay />}
         </ListItemIcon>
         {name}
       </ListItem>
@@ -69,7 +105,34 @@ export default class Navbar extends React.Component {
         <List>
           {this.playlistRow({ playlist_id: 'Search', name: 'Search' })}
           <Divider />
+          {this.state.drawerOpened && (
+            <ListSubheader>{'Playlists'}</ListSubheader>
+          )}
           {playlists && playlists.map(this.playlistRow)}
+          <Divider />
+          {this.state.drawerOpened && (
+            <ListSubheader>{'Other Actions'}</ListSubheader>
+          )}
+          <ListItem
+            key="drawer-create-playlist"
+            className="drawer-list-item"
+            onClick={this.onCreatePlaylist}
+          >
+            <ListItemIcon>
+              <Add />
+            </ListItemIcon>
+            {'Create Playlist'}
+          </ListItem>
+          <ListItem
+            key="drawer-logout"
+            className="drawer-list-item"
+            onClick={this.onLogout}
+          >
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
+            {'Logout'}
+          </ListItem>
         </List>
       </Drawer>
     );

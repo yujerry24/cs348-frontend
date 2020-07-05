@@ -12,11 +12,11 @@
   }
 }
 .drawerClosed {
-  overflow-x: hidden;
   width: 56px;
   .paper {
     background-color: #a997df;
     width: 56px;
+    overflow-x: hidden;
   }
 }
 

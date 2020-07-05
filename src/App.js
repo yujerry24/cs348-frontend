@@ -29,6 +29,10 @@ class App extends Component {
 
   componentWillMount = () => {
     const userId = '63e439ec-8625-4912-8b03-e34d5a7cfaee'; // Timothy
+    this.fetchAllPlaylists(userId);
+  };
+
+  fetchAllPlaylists = userId => {
     fetch(`${API}/playlist/list/${userId}`)
       .then(res => res.json())
       .then(res => {
@@ -37,7 +41,7 @@ class App extends Component {
       .catch(err => err);
   };
 
-  onSubmit = () => {
+  onSearch = () => {
     console.log('props');
     this.fetchPlaylist();
     this.forceUpdate();
@@ -54,20 +58,20 @@ class App extends Component {
 
   dataTableButtonClick = (id, isSearch) => {
     if (isSearch) {
-      this.callAPIAddSongs([id]);
+      // prompt user for which playlist(s) to add to
+      this.callAPIAddSongs([id], '8092bcc7-37ee-4114-bc5e-eac125b3bb9b'); // id for Timothy's Playlist
     } else {
       this.callAPIDeleteSongs([id]);
     }
   };
 
-  callAPIAddSongs = songIds => {
+  callAPIAddSongs = (songIds, playlistId) => {
     /**
      * fetch('http://localhost:8080/playlist1', {method: 'POST', headers: {
         'Content-Type': 'application/json;charset=utf-8'
       }, body: JSON.stringify({artist: 'Mili', title: 'sustain++;', year: 2020})})
      * 
      */
-    const playlistId = '8092bcc7-37ee-4114-bc5e-eac125b3bb9b';
     fetch(`${API}/playlist/add/${playlistId}`, {
       method: 'POST',
       headers: {
@@ -131,14 +135,16 @@ class App extends Component {
         <Navbar
           playlists={search.concat(this.state.availablePlaylists)}
           getPlaylist={this.callAPIGetPlaylist}
-        ></Navbar>
+          updateAllPlaylists={this.fetchAllPlaylists}
+          userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
+        />
         <div className="song-container">
           <Searchbar
-            onSubmit={
+            onSearch={
               this.state.currentPlaylist === 'Search'
                 ? this.onClickSearch
                 : () => {
-                    console.log('filter playlist contents maybe?');
+                    alert('filter playlist contents maybe?');
                   }
               /*this.filterPlaylist ? maybe?*/
             }
