@@ -73,7 +73,7 @@ export default class DataTable extends React.Component {
       />
     );
 
-    const rowDisplayData = rows[rowIndex].slice(1) || [];
+    const rowDisplayData = rows[rowIndex].slice(1);
 
     return (
       <TableRow key={`row-${rowIndex}`}>
@@ -95,14 +95,27 @@ export default class DataTable extends React.Component {
     );
   };
 
-  render() {
+  renderBody = () => {
     const { headings, rows } = this.props;
+    return rows.length > 0 ? (
+      rows.map(this.renderRow)
+    ) : (
+      <TableRow>
+        <TableCell colSpan={headings.length} style={{ textAlign: 'center' }}>
+          {'No Songs Found'}
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  render() {
+    const { headings } = this.props;
 
     const headerContent = (
       <TableRow key="heading">{headings.map(this.renderHeadingRow)}</TableRow>
     );
 
-    const bodyContent = rows.map(this.renderRow);
+    const bodyContent = this.renderBody();
 
     return (
       <Table stickyHeader className="Table">
