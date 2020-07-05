@@ -61,7 +61,7 @@ export default class Navbar extends React.Component {
         classes={{ paper: 'paper' }}
       >
         <div className="drawer-header">
-          <IconButton onClick={this.toggleDrawer}>
+          <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
             {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
           </IconButton>
         </div>

@@ -5,6 +5,7 @@ import DataTable from './ui/DataTable';
 import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
+import Video from './ui/Video';
 
 // process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
 const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
@@ -142,26 +143,27 @@ class App extends Component {
               /*this.filterPlaylist ? maybe?*/
             }
           />
-          {this.state.currentPlaylist === 'Search' && (
-            <div className="search-results-container">
+          <div className="search-results-container">
+            {this.state.currentPlaylist === 'Search' && (
               <DataTable
                 headings={headings}
                 rows={searchRows}
                 isSearch={true}
                 onClick={this.dataTableButtonClick}
               />
-            </div>
-          )}
-          {this.state.currentPlaylist !== 'Search' && (
-            <div className="playlist-container">
+            )}
+            {this.state.currentPlaylist !== 'Search' && (
               <DataTable
                 headings={headings}
                 rows={rows}
                 isSearch={false}
                 onClick={this.dataTableButtonClick}
               />
-            </div>
-          )}
+            )}
+          </div>
+        </div>
+        <div className="video">
+          <Video videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */ />
         </div>
       </div>
     );

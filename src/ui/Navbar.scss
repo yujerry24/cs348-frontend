@@ -23,5 +23,10 @@
 .drawer-header {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   height: 64px;
+
+  .drawer-toggle {
+    height: 48px;
+  }
 }

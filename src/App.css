@@ -35,6 +35,14 @@
   overflow-y: auto;
 }
 
+.video {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 400px;
+  height: 225px;
+}
+
 .button {
   padding: 10px 0px 20px 0px;
 }
