@@ -127,12 +127,10 @@ class App extends Component {
 
     return (
       <div className="master-screen">
-        <div className="navbar-container">
-          <Navbar
-            playlists={search.concat(this.state.availablePlaylists)}
-            getPlaylist={this.callAPIGetPlaylist}
-          ></Navbar>
-        </div>
+        <Navbar
+          playlists={search.concat(this.state.availablePlaylists)}
+          getPlaylist={this.callAPIGetPlaylist}
+        ></Navbar>
         <div className="song-container">
           <Searchbar
             onSubmit={

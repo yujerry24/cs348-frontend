@@ -1,4 +1,15 @@
-import { Divider, Drawer, List, ListItem } from '@material-ui/core';
+import {
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+} from '@material-ui/core';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Playlist from '@material-ui/icons/PlaylistPlay';
+import Search from '@material-ui/icons/Search';
 import './Navbar.scss';
 
 const React = require('react');
@@ -8,23 +19,33 @@ export default class Navbar extends React.Component {
     super(props);
     this.state = {
       targetPlaylist: 'Search',
+      drawerOpened: true,
     };
-    this.playlistRow = this.playlistRow.bind(this);
-    this.onPlaylistClick = this.onPlaylistClick.bind(this);
   }
 
-  onPlaylistClick(playlistId) {
+  toggleDrawer = () => {
+    this.setState({ drawerOpened: !this.state.drawerOpened });
+  };
+
+  onPlaylistClick = playlistId => {
     this.setState({ targetPlaylist: playlistId });
     this.props.getPlaylist(playlistId);
-  }
+  };
 
   playlistRow = ({ playlist_id, name }) => {
     return (
       <ListItem
-        className={`playlist-div`}
+        className="drawer-list-item"
         selected={this.state.targetPlaylist === playlist_id}
-        onClick={() => this.onPlaylistClick(playlist_id)}
+        onClick={() =>
+          !this.state.drawerOpened && playlist_id !== 'Search'
+            ? this.toggleDrawer()
+            : this.onPlaylistClick(playlist_id)
+        }
       >
+        <ListItemIcon>
+          {playlist_id === 'Search' ? <Search /> : <Playlist />}
+        </ListItemIcon>
         {name}
       </ListItem>
     );
@@ -34,7 +55,17 @@ export default class Navbar extends React.Component {
     const { playlists } = this.props;
 
     return (
-      <Drawer variant="permanent" className="drawer">
+      <Drawer
+        variant="permanent"
+        className={this.state.drawerOpened ? 'drawerOpen' : 'drawerClosed'}
+        classes={{ paper: 'paper' }}
+      >
+        <div className="drawer-header">
+          <IconButton onClick={this.toggleDrawer}>
+            {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
+          </IconButton>
+        </div>
+        <Divider />
         <List>
           {this.playlistRow({ playlist_id: 'Search', name: 'Search' })}
           <Divider />

@@ -1,23 +1,27 @@
-.playlist-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin: 20px 0px;
-  font-size: 24px;
-  height: 80px;
-
-  &.selected {
-    background-color: #b7a2b7;
-  }
-
+.drawer-list-item {
   &:hover {
     cursor: pointer;
   }
 }
 
-.drawer {
-  .MuiDrawer-paper {
-    background-color: #b7a2b7;
+.drawerOpen {
+  width: 200px;
+  .paper {
+    background-color: #a997df;
+    width: 200px;
   }
+}
+.drawerClosed {
+  overflow-x: hidden;
+  width: 56px;
+  .paper {
+    background-color: #a997df;
+    width: 56px;
+  }
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: flex-end;
+  height: 64px;
 }

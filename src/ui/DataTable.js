@@ -18,10 +18,6 @@ import Delete from '@material-ui/icons/Delete';
 import './DataTable.scss';
 
 export default class DataTable extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   onClickHandler = id => {
     const { isSearch } = this.props;
     this.props.onClick(id, isSearch);
