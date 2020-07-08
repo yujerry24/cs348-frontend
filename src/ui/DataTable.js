@@ -1,16 +1,22 @@
 import * as React from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Popover,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 // import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 // import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
 // import TableSortLabel from '@material-ui/core/TableSortLabel';
 
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import Add from '@material-ui/icons/PlaylistAdd';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
@@ -18,22 +24,42 @@ import Delete from '@material-ui/icons/Delete';
 import './DataTable.scss';
 
 export default class DataTable extends React.Component {
-  onClickHandler = id => {
+  constructor() {
+    super();
+    this.state = {
+      popoverAnchorEl: null,
+      selectedSongs: [],
+      addToPlaylists: [],
+    };
+  }
+
+  onClickHandler = (ids, playlistId) => {
     const { isSearch } = this.props;
-    this.props.onClick(id, isSearch);
+    this.props.onClick(ids, playlistId, isSearch);
   };
 
-  renderHeadingRow = (_cell, cellIndex) => {
-    const { headings } = this.props;
-
-    return (
-      <TableCell key={`heading-${cellIndex}`} align={'left'}>
-        {headings[cellIndex]}
-      </TableCell>
-    );
+  handlePopoverClose = () => {
+    this.setState({ popoverAnchorEl: null });
   };
 
-  renderRow = (_row, rowIndex) => {
+  handleCheckbox = id => {
+    const index = this.state.addToPlaylists.findIndex(item => item === id);
+    if (index === -1) {
+      this.setState({ addToPlaylists: this.state.addToPlaylists.concat([id]) });
+    } else {
+      this.setState({
+        addToPlaylists: this.state.addToPlaylists.slice(index, 1),
+      });
+    }
+  };
+
+  renderHeadingRow = _cell => (
+    <TableCell key={`heading-${_cell}`} align={'left'}>
+      {_cell}
+    </TableCell>
+  );
+
+  renderRow = ([id, _row]) => {
     const { isSearch } = this.props;
 
     const actionButtons = [];
@@ -41,11 +67,16 @@ export default class DataTable extends React.Component {
     if (isSearch) {
       actionButtons.push(
         <IconButton
-          key={`add-${_row.song_id}`}
+          key={`add-${id}`}
           color="primary"
           size="medium"
           aria-label="add"
-          onClick={() => this.onClickHandler(_row.song_id)}
+          onClick={e => {
+            this.setState({
+              popoverAnchorEl: e.currentTarget,
+              selectedSongs: this.state.selectedSongs.concat(id),
+            });
+          }}
         >
           <Add />
         </IconButton>
@@ -53,11 +84,11 @@ export default class DataTable extends React.Component {
     } else {
       actionButtons.push(
         <IconButton
-          key={`delete-${_row.song_id}`}
+          key={`delete-${id}`}
           color="secondary"
           size="medium"
           aria-label="delete"
-          onClick={() => this.onClickHandler(_row.song_id)}
+          onClick={() => this.onClickHandler([id])}
         >
           <Delete />
         </IconButton>
@@ -65,18 +96,16 @@ export default class DataTable extends React.Component {
     }
     actionButtons.push(
       <Checkbox
-        key={`favorite-${_row.song_id}`}
+        key={`favorite-${id}`}
         icon={<FavoriteBorder />}
         checkedIcon={<Favorite />}
         name="favorite"
       />
     );
 
-    // remove song_id from data to be displayed
-    const rowDisplayData = Object.entries(_row).slice(1);
     return (
-      <TableRow key={`row-${_row.song_id}`}>
-        {rowDisplayData.map(([key, _cell]) => {
+      <TableRow key={`row-${id}`}>
+        {Object.entries(_row).map(([key, _cell]) => {
           let data = _cell;
           if (key === 'video_duration') {
             // convert duration in miliseconds to min:sec format
@@ -85,13 +114,13 @@ export default class DataTable extends React.Component {
             }`;
           }
           return (
-            <TableCell key={`cell-${_row.song_id}-${key}`} align={'left'}>
+            <TableCell key={`cell-${id}-${key}`} align={'left'}>
               {data}
             </TableCell>
           );
         })}
         <TableCell
-          key={`actions-${_row.song_id}`}
+          key={`actions-${id}`}
           align={'left'}
           style={{ padding: 0, minWidth: '90px' }}
         >
@@ -103,8 +132,8 @@ export default class DataTable extends React.Component {
 
   renderBody = () => {
     const { headings, rows } = this.props;
-    return rows.length > 0 ? (
-      rows.map(this.renderRow)
+    return Object.keys(rows).length > 0 ? (
+      Object.entries(rows).map(this.renderRow)
     ) : (
       <TableRow>
         <TableCell colSpan={headings.length} style={{ textAlign: 'center' }}>
@@ -115,19 +144,63 @@ export default class DataTable extends React.Component {
   };
 
   render() {
-    const { headings } = this.props;
+    const { headings, availablePlaylists } = this.props;
 
     const headerContent = (
       <TableRow key="heading">{headings.map(this.renderHeadingRow)}</TableRow>
     );
 
     const bodyContent = this.renderBody();
+    const open = Boolean(this.state.popoverAnchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     return (
-      <Table stickyHeader className="Table">
-        <TableHead>{headerContent}</TableHead>
-        <TableBody>{bodyContent}</TableBody>
-      </Table>
+      <>
+        <Table stickyHeader className="Table">
+          <TableHead>{headerContent}</TableHead>
+          <TableBody>{bodyContent}</TableBody>
+        </Table>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={this.state.popoverAnchorEl}
+          onClose={this.handleClosePopover}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+          <FormGroup>
+            {availablePlaylists &&
+              availablePlaylists.map(playlist => (
+                <FormControlLabel
+                  key={`to-playlist-${playlist.name}`}
+                  control={
+                    <Checkbox
+                      onChange={() => this.handleCheckbox(playlist.playlist_id)}
+                    />
+                  }
+                  label={playlist.name}
+                />
+              ))}
+            <Button
+              onClick={() => {
+                this.state.addToPlaylists.forEach(playlistId =>
+                  this.onClickHandler(this.state.selectedSongs, playlistId)
+                );
+                this.setState({ addToPlaylists: [], selectedSongs: [] });
+                this.handlePopoverClose();
+              }}
+            >
+              Add
+            </Button>
+          </FormGroup>
+        </Popover>
+      </>
     );
   }
 }

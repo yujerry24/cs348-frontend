@@ -46,12 +46,12 @@ class App extends Component {
       .catch(err => err);
   };
 
-  dataTableButtonClick = (id, isSearch) => {
+  dataTableButtonClick = (ids, playlistId, isSearch) => {
     if (isSearch) {
       // prompt user for which playlist(s) to add to
-      this.callAPIAddSongs([id], '8092bcc7-37ee-4114-bc5e-eac125b3bb9b'); // id for Timothy's Playlist
+      this.callAPIAddSongs(ids, playlistId);
     } else {
-      this.callAPIDeleteSongs([id]);
+      this.callAPIDeleteSongs(ids, playlistId);
     }
   };
 
@@ -119,6 +119,7 @@ class App extends Component {
                 rows={this.state.searchResponse}
                 isSearch={true}
                 onClick={this.dataTableButtonClick}
+                availablePlaylists={this.state.availablePlaylists}
               />
             )}
             {this.state.currentPlaylist !== 'Search' && (
