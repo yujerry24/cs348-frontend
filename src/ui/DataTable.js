@@ -41,7 +41,7 @@ export default class DataTable extends React.Component {
     if (isSearch) {
       actionButtons.push(
         <IconButton
-          key={`add-${rowIndex}`}
+          key={`add-${_row.song_id}`}
           color="primary"
           size="medium"
           aria-label="add"
@@ -53,7 +53,7 @@ export default class DataTable extends React.Component {
     } else {
       actionButtons.push(
         <IconButton
-          key={`delete-${rowIndex}`}
+          key={`delete-${_row.song_id}`}
           color="secondary"
           size="medium"
           aria-label="delete"
@@ -65,7 +65,7 @@ export default class DataTable extends React.Component {
     }
     actionButtons.push(
       <Checkbox
-        key={`favorite-${rowIndex}`}
+        key={`favorite-${_row.song_id}`}
         icon={<FavoriteBorder />}
         checkedIcon={<Favorite />}
         name="favorite"
@@ -75,20 +75,23 @@ export default class DataTable extends React.Component {
     // remove song_id from data to be displayed
     const rowDisplayData = Object.entries(_row).slice(1);
     return (
-      <TableRow key={`row-${rowIndex}`}>
-        {rowDisplayData.map(([key, _cell], cellIndex) => {
+      <TableRow key={`row-${_row.song_id}`}>
+        {rowDisplayData.map(([key, _cell]) => {
           let data = _cell;
           if (key === 'video_duration') {
-            data = `${Math.floor(data / 60)}:${data % 60}`;
+            // convert duration in miliseconds to min:sec format
+            data = `${Math.floor(data / 60)}:${
+              data % 60 < 10 ? '0' + (data % 60) : data % 60
+            }`;
           }
           return (
-            <TableCell key={`cell-${rowIndex}-${cellIndex}`} align={'left'}>
+            <TableCell key={`cell-${_row.song_id}-${key}`} align={'left'}>
               {data}
             </TableCell>
           );
         })}
         <TableCell
-          key={`actions-${rowIndex}`}
+          key={`actions-${_row.song_id}`}
           align={'left'}
           style={{ padding: 0, minWidth: '90px' }}
         >
