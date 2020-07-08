@@ -10,11 +10,7 @@ import Video from './ui/Video';
 // process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
 const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
-const headings = ['Name', 'Duration', 'Artist', 'Actions'];
-
-let rows = [];
-let searchRows = [];
-let search = [];
+const headings = ['Name', 'Artist', 'Album', 'Duration', 'Actions'];
 
 class App extends Component {
   constructor() {
@@ -60,12 +56,6 @@ class App extends Component {
   };
 
   callAPIAddSongs = (songIds, playlistId) => {
-    /**
-     * fetch('http://localhost:8080/playlist1', {method: 'POST', headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      }, body: JSON.stringify({artist: 'Mili', title: 'sustain++;', year: 2020})})
-     * 
-     */
     fetch(`${API}/playlist/add/${playlistId}`, {
       method: 'POST',
       headers: {
@@ -103,31 +93,10 @@ class App extends Component {
   };
 
   render() {
-    rows = [];
-    searchRows = [];
-
-    this.state.playlistResponse.forEach(entry => {
-      rows.push([
-        entry.song_id,
-        entry.song_name,
-        entry.video_duration,
-        entry.artist_name,
-      ]);
-    });
-
-    this.state.searchResponse.forEach(entry => {
-      searchRows.push([
-        entry.song_id,
-        entry.song_name,
-        entry.video_duration,
-        entry.artist_name,
-      ]);
-    });
-
     return (
       <div className="master-screen">
         <Navbar
-          playlists={search.concat(this.state.availablePlaylists)}
+          playlists={this.state.availablePlaylists}
           getPlaylist={this.callAPIGetPlaylist}
           updateAllPlaylists={this.fetchAllPlaylists}
           userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
@@ -147,7 +116,7 @@ class App extends Component {
             {this.state.currentPlaylist === 'Search' && (
               <DataTable
                 headings={headings}
-                rows={searchRows}
+                rows={this.state.searchResponse}
                 isSearch={true}
                 onClick={this.dataTableButtonClick}
               />
@@ -155,7 +124,7 @@ class App extends Component {
             {this.state.currentPlaylist !== 'Search' && (
               <DataTable
                 headings={headings}
-                rows={rows}
+                rows={this.state.playlistResponse}
                 isSearch={false}
                 onClick={this.dataTableButtonClick}
               />

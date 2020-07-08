@@ -34,7 +34,7 @@ export default class DataTable extends React.Component {
   };
 
   renderRow = (_row, rowIndex) => {
-    const { rows, isSearch } = this.props;
+    const { isSearch } = this.props;
 
     const actionButtons = [];
 
@@ -45,8 +45,7 @@ export default class DataTable extends React.Component {
           color="primary"
           size="medium"
           aria-label="add"
-          edge="start"
-          onClick={() => this.onClickHandler(rows[rowIndex][0])}
+          onClick={() => this.onClickHandler(_row.song_id)}
         >
           <Add />
         </IconButton>
@@ -58,7 +57,7 @@ export default class DataTable extends React.Component {
           color="secondary"
           size="medium"
           aria-label="delete"
-          onClick={() => this.onClickHandler(rows[rowIndex][0])}
+          onClick={() => this.onClickHandler(_row.song_id)}
         >
           <Delete />
         </IconButton>
@@ -73,21 +72,25 @@ export default class DataTable extends React.Component {
       />
     );
 
-    const rowDisplayData = rows[rowIndex].slice(1);
-
+    // remove song_id from data to be displayed
+    const rowDisplayData = Object.entries(_row).slice(1);
     return (
       <TableRow key={`row-${rowIndex}`}>
-        {rowDisplayData.map((_cell, cellIndex) => {
+        {rowDisplayData.map(([key, _cell], cellIndex) => {
+          let data = _cell;
+          if (key === 'video_duration') {
+            data = `${Math.floor(data / 60)}:${data % 60}`;
+          }
           return (
-            <TableCell key={`${rowIndex}-${cellIndex}`} align={'left'}>
-              {rowDisplayData[cellIndex]}
+            <TableCell key={`cell-${rowIndex}-${cellIndex}`} align={'left'}>
+              {data}
             </TableCell>
           );
         })}
         <TableCell
           key={`actions-${rowIndex}`}
           align={'left'}
-          style={{ paddingTop: 0, paddingBottom: 0 }}
+          style={{ padding: 0, minWidth: '90px' }}
         >
           {actionButtons}
         </TableCell>
