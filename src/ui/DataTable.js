@@ -33,9 +33,9 @@ export default class DataTable extends React.Component {
     };
   }
 
-  onClickHandler = (ids, playlistId) => {
+  onClickHandler = (ids, playlistIds) => {
     const { isSearch } = this.props;
-    this.props.onClick(ids, playlistId, isSearch);
+    this.props.onClick(ids, playlistIds, isSearch);
   };
 
   handleCheckbox = id => {
@@ -175,11 +175,15 @@ export default class DataTable extends React.Component {
             ))}
           <Button
             onClick={() => {
-              this.state.addToPlaylists.forEach(playlistId =>
-                this.onClickHandler(this.state.selectedSongs, playlistId)
+              this.onClickHandler(
+                this.state.selectedSongs,
+                this.state.addToPlaylists
               );
-              this.setState({ addToPlaylists: [], selectedSongs: [] });
-              this.handlePopoverClose();
+              this.setState({
+                addToPlaylists: [],
+                selectedSongs: [],
+                popoverAnchorEl: null,
+              });
             }}
           >
             Add

@@ -46,22 +46,22 @@ class App extends Component {
       .catch(err => err);
   };
 
-  dataTableButtonClick = (ids, playlistId, isSearch) => {
+  dataTableButtonClick = (ids, playlistIds, isSearch) => {
     if (isSearch) {
       // prompt user for which playlist(s) to add to
-      this.callAPIAddSongs(ids, playlistId);
+      this.callAPIAddSongs(ids, playlistIds);
     } else {
-      this.callAPIDeleteSongs(ids, playlistId);
+      this.callAPIDeleteSongs(ids, playlistIds);
     }
   };
 
-  callAPIAddSongs = (songIds, playlistId) => {
-    fetch(`${API}/playlist/add/${playlistId}`, {
+  callAPIAddSongs = (songIds, playlistIds) => {
+    fetch(`${API}/playlist/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
-      body: JSON.stringify({ songIds: songIds }),
+      body: JSON.stringify({ songIds, playlistIds }),
     });
   };
 
