@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import DataTable from './ui/DataTable';
+import PlaylistCreator from './ui/PlaylistCreator';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
 import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 import Video from './ui/Video';
-
-// process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
-const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
+import * as CallApi from './misc/APICalls';
+import * as Constants from './misc/Constants';
 
 const headings = ['Name', 'Artist', 'Album', 'Duration', 'Actions'];
 
 class App extends Component {
   constructor() {
     super();
+    // Consider caching responses somehow?
     this.state = {
       playlistResponse: [],
       searchResponse: [],
       availablePlaylists: [],
-      currentPlaylist: 'Search',
+      currentTab: Constants.TabNames.SEARCH,
     };
   }
 
@@ -29,8 +30,7 @@ class App extends Component {
   };
 
   fetchAllPlaylists = userId => {
-    fetch(`${API}/playlist/list/${userId}`)
-      .then(res => res.json())
+    CallApi.fetchAllPlaylists(userId)
       .then(res => {
         this.setState({ availablePlaylists: res });
       })
@@ -38,8 +38,7 @@ class App extends Component {
   };
 
   onClickSearch = text => {
-    fetch(`${API}/song/${text}`)
-      .then(res => res.json())
+    CallApi.search(text)
       .then(res => {
         this.setState({ searchResponse: res });
       })
@@ -49,62 +48,69 @@ class App extends Component {
   dataTableButtonClick = (ids, playlistIds, isSearch) => {
     if (isSearch) {
       // prompt user for which playlist(s) to add to
-      this.callAPIAddSongs(ids, playlistIds);
+      CallApi.addSongs(ids, playlistIds);
     } else {
-      this.callAPIDeleteSongs(ids, playlistIds);
+      // I don't think we need to call requery when we know what got deleted
+      CallApi.deleteSongs(ids, playlistIds)
+      .then(() => {
+        this.updatePlaylist(this.state.currentTab);
+      });
     }
   };
 
-  callAPIAddSongs = (songIds, playlistIds) => {
-    fetch(`${API}/playlist/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({ songIds, playlistIds }),
-    });
-  };
-
-  callAPIDeleteSongs = songIds => {
-    fetch(`${API}/playlist/${this.state.currentPlaylist}/${songIds}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({ songIds: songIds }),
-    }).then(() => {
-      this.fetchPlaylist(this.state.currentPlaylist);
-    });
-  };
-
-  fetchPlaylist = playlistId => {
-    fetch(`${API}/playlist/${playlistId}`)
-      .then(res => res.json())
+  updatePlaylist = playlistId => {
+    CallApi.fetchPlaylist(playlistId)
       .then(res => {
         this.setState({ playlistResponse: res });
       })
       .catch(err => err);
   };
 
-  callAPIGetPlaylist = playlistId => {
-    console.log('getting playlist', playlistId);
-    this.setState({ currentPlaylist: playlistId });
-    this.fetchPlaylist(playlistId);
-  };
+  setTab = (tab) => {
+    this.setState({currentTab: tab});
+  }
+
+  renderInnerContainer = () => {
+    if (this.state.currentTab === Constants.TabNames.SEARCH) {
+      return (
+      <DataTable
+        headings={headings}
+        rows={this.state.searchResponse}
+        isSearch={true}
+        onClick={this.dataTableButtonClick}
+      />
+      )
+    } else if (this.state.currentTab === "CreatePlaylist") {
+      return (
+        <PlaylistCreator />
+      )
+    } else {
+      // Playlist tab selected
+      return (
+      <DataTable
+        headings={headings}
+        rows={this.state.playlistResponse}
+        isSearch={false}
+        onClick={this.dataTableButtonClick}
+      />
+      )
+    }
+  }
 
   render() {
     return (
       <div className="master-screen">
         <Navbar
           playlists={this.state.availablePlaylists}
-          getPlaylist={this.callAPIGetPlaylist}
+          setTab={this.setTab}
+          updatePlaylist={this.updatePlaylist}
           updateAllPlaylists={this.fetchAllPlaylists}
           userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
         />
         <div className="song-container">
           <Searchbar
             onSearch={
-              this.state.currentPlaylist === 'Search'
+              this.state.currentTab === Constants.TabNames.SEARCH
                 ? this.onClickSearch
                 : () => {
                     alert('filter playlist contents maybe?');
@@ -113,23 +119,7 @@ class App extends Component {
             }
           />
           <div className="search-results-container">
-            {this.state.currentPlaylist === 'Search' && (
-              <DataTable
-                headings={headings}
-                rows={this.state.searchResponse}
-                isSearch={true}
-                onClick={this.dataTableButtonClick}
-                availablePlaylists={this.state.availablePlaylists}
-              />
-            )}
-            {this.state.currentPlaylist !== 'Search' && (
-              <DataTable
-                headings={headings}
-                rows={this.state.playlistResponse}
-                isSearch={false}
-                onClick={this.dataTableButtonClick}
-              />
-            )}
+            {this.renderInnerContainer()}
           </div>
         </div>
         <div className="video">

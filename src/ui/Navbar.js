@@ -15,16 +15,20 @@ import {
   ChevronRight,
   PlaylistPlay,
   Search,
+  Call,
 } from '@material-ui/icons';
 import './Navbar.scss';
+import * as Constants from './../misc/Constants';
 
 const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 export default class Navbar extends React.Component {
+
+
   constructor(props) {
     super(props);
     this.state = {
-      targetPlaylist: 'Search',
+      currentTab: Constants.TabNames.SEARCH,
       drawerOpened: true,
     };
   }
@@ -34,30 +38,23 @@ export default class Navbar extends React.Component {
   };
 
   onPlaylistClick = playlistId => {
-    this.setState({ targetPlaylist: playlistId });
-    this.props.getPlaylist(playlistId);
+    this.setState({ currentTab: playlistId });
+    // TODO: probably should cache playlist results
+    this.props.updatePlaylist(playlistId);
+    this.props.setTab(playlistId);
   };
 
-  onCreatePlaylist = () => {
+  onSearchClick = () => {
+    this.setState({ currentTab: Constants.TabNames.SEARCH });
+    this.props.setTab(Constants.TabNames.SEARCH);
+  }
+
+  onCreatePlaylistClick = () => {
     // TODO:
     // open a creation modal to prompt user for a playlist name
-    fetch(`${API}/playlist`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        playlistName: `Playlist${this.props.playlists.length}`,
-        userId: this.props.userId,
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        this.props.updateAllPlaylists(this.props.userId);
-        this.setState({ targetPlaylist: res });
-      })
-      .catch(err => err);
-    alert('create a new playlist');
+    // this.setState({ currentTab: Constants.TabNames.CREATEPL });
+    this.setState({ currentTab: "CreatePlaylist" });
+    this.props.setTab(Constants.TabNames.CREATEPL);
   };
 
   onLogout = () => {
@@ -72,17 +69,53 @@ export default class Navbar extends React.Component {
       <ListItem
         key={`drawer-${playlist_id}`}
         className="drawer-list-item"
-        selected={this.state.targetPlaylist === playlist_id}
+        selected={this.state.currentTab === playlist_id}
         onClick={() =>
-          !this.state.drawerOpened && playlist_id !== 'Search'
+          !this.state.drawerOpened
             ? this.toggleDrawer()
             : this.onPlaylistClick(playlist_id)
         }
       >
         <ListItemIcon>
-          {playlist_id === 'Search' ? <Search /> : <PlaylistPlay />}
+          {<PlaylistPlay />}
         </ListItemIcon>
         {name}
+      </ListItem>
+    );
+  };
+
+  searchRow = () => {
+    return (
+      <ListItem
+        key={`drawer-search`}
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.SEARCH}
+        onClick={() =>
+          !this.state.drawerOpened
+            ? this.toggleDrawer()
+            : this.onSearchClick()
+        }
+      >
+        <ListItemIcon>
+          <Search />
+        </ListItemIcon>
+        {"Search"}
+      </ListItem>
+    );
+  };
+
+  createPlaylistRow = () => {
+    return (
+      <ListItem
+        key="drawer-create-playlist"
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.CREATEPL}
+        onClick={this.onCreatePlaylistClick}
+      >
+        <ListItemIcon>
+          <Add />
+        </ListItemIcon>
+        {'Create Playlist'}
       </ListItem>
     );
   };
@@ -103,7 +136,7 @@ export default class Navbar extends React.Component {
         </div>
         <Divider />
         <List>
-          {this.playlistRow({ playlist_id: 'Search', name: 'Search' })}
+          {this.searchRow()}
           <Divider />
           {this.state.drawerOpened && (
             <ListSubheader>{'Playlists'}</ListSubheader>
@@ -113,16 +146,7 @@ export default class Navbar extends React.Component {
           {this.state.drawerOpened && (
             <ListSubheader>{'Other Actions'}</ListSubheader>
           )}
-          <ListItem
-            key="drawer-create-playlist"
-            className="drawer-list-item"
-            onClick={this.onCreatePlaylist}
-          >
-            <ListItemIcon>
-              <Add />
-            </ListItemIcon>
-            {'Create Playlist'}
-          </ListItem>
+          {this.createPlaylistRow()}
           <ListItem
             key="drawer-logout"
             className="drawer-list-item"
