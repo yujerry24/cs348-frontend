@@ -38,10 +38,6 @@ export default class DataTable extends React.Component {
     this.props.onClick(ids, playlistId, isSearch);
   };
 
-  handlePopoverClose = () => {
-    this.setState({ popoverAnchorEl: null });
-  };
-
   handleCheckbox = id => {
     const index = this.state.addToPlaylists.findIndex(item => item === id);
     if (index === -1) {
@@ -143,64 +139,74 @@ export default class DataTable extends React.Component {
     );
   };
 
+  renderPopover = () => {
+    const { availablePlaylists } = this.props;
+    const open = Boolean(this.state.popoverAnchorEl);
+    const id = open ? 'add-to-playlist-popover' : undefined;
+    return (
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={this.state.popoverAnchorEl}
+        onClose={() => {
+          this.setState({ popoverAnchorEl: null });
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <FormGroup className="add-to-playlist-list">
+          {availablePlaylists &&
+            availablePlaylists.map(playlist => (
+              <FormControlLabel
+                key={`add-to-playlist-${playlist.name}`}
+                control={
+                  <Checkbox
+                    onChange={() => this.handleCheckbox(playlist.playlist_id)}
+                  />
+                }
+                label={playlist.name}
+              />
+            ))}
+          <Button
+            onClick={() => {
+              this.state.addToPlaylists.forEach(playlistId =>
+                this.onClickHandler(this.state.selectedSongs, playlistId)
+              );
+              this.setState({ addToPlaylists: [], selectedSongs: [] });
+              this.handlePopoverClose();
+            }}
+          >
+            Add
+          </Button>
+        </FormGroup>
+      </Popover>
+    );
+  };
+
   render() {
-    const { headings, availablePlaylists } = this.props;
+    const { headings } = this.props;
 
     const headerContent = (
       <TableRow key="heading">{headings.map(this.renderHeadingRow)}</TableRow>
     );
 
     const bodyContent = this.renderBody();
-    const open = Boolean(this.state.popoverAnchorEl);
-    const id = open ? 'simple-popover' : undefined;
+    const popover = this.renderPopover();
 
     return (
-      <>
+      <div>
         <Table stickyHeader className="Table">
           <TableHead>{headerContent}</TableHead>
           <TableBody>{bodyContent}</TableBody>
         </Table>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={this.state.popoverAnchorEl}
-          onClose={this.handleClosePopover}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          <FormGroup>
-            {availablePlaylists &&
-              availablePlaylists.map(playlist => (
-                <FormControlLabel
-                  key={`to-playlist-${playlist.name}`}
-                  control={
-                    <Checkbox
-                      onChange={() => this.handleCheckbox(playlist.playlist_id)}
-                    />
-                  }
-                  label={playlist.name}
-                />
-              ))}
-            <Button
-              onClick={() => {
-                this.state.addToPlaylists.forEach(playlistId =>
-                  this.onClickHandler(this.state.selectedSongs, playlistId)
-                );
-                this.setState({ addToPlaylists: [], selectedSongs: [] });
-                this.handlePopoverClose();
-              }}
-            >
-              Add
-            </Button>
-          </FormGroup>
-        </Popover>
-      </>
+        {popover}
+      </div>
     );
   }
 }
