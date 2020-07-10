@@ -18,13 +18,9 @@ import {
   Call,
 } from '@material-ui/icons';
 import './Navbar.scss';
-import * as Constants from './../misc/Constants';
-
-const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
+import * as Constants from '../utils/Constants';
 
 export default class Navbar extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -47,13 +43,13 @@ export default class Navbar extends React.Component {
   onSearchClick = () => {
     this.setState({ currentTab: Constants.TabNames.SEARCH });
     this.props.setTab(Constants.TabNames.SEARCH);
-  }
+  };
 
   onCreatePlaylistClick = () => {
     // TODO:
     // open a creation modal to prompt user for a playlist name
     // this.setState({ currentTab: Constants.TabNames.CREATEPL });
-    this.setState({ currentTab: "CreatePlaylist" });
+    this.setState({ currentTab: 'CreatePlaylist' });
     this.props.setTab(Constants.TabNames.CREATEPL);
   };
 
@@ -76,9 +72,7 @@ export default class Navbar extends React.Component {
             : this.onPlaylistClick(playlist_id)
         }
       >
-        <ListItemIcon>
-          {<PlaylistPlay />}
-        </ListItemIcon>
+        <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
         {name}
       </ListItem>
     );
@@ -91,15 +85,13 @@ export default class Navbar extends React.Component {
         className="drawer-list-item"
         selected={this.state.currentTab === Constants.TabNames.SEARCH}
         onClick={() =>
-          !this.state.drawerOpened
-            ? this.toggleDrawer()
-            : this.onSearchClick()
+          !this.state.drawerOpened ? this.toggleDrawer() : this.onSearchClick()
         }
       >
         <ListItemIcon>
           <Search />
         </ListItemIcon>
-        {"Search"}
+        {'Search'}
       </ListItem>
     );
   };

@@ -7,10 +7,10 @@ import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 import Video from './ui/Video';
-import * as CallApi from './misc/APICalls';
-import * as Constants from './misc/Constants';
+import * as CallApi from './utils/APICalls';
+import * as Constants from './utils/Constants';
 
-const headings = ['Name', 'Artist', 'Album', 'Duration', 'Actions'];
+const headings = ['Name', 'Artists', 'Album', 'Duration', 'Actions'];
 
 class App extends Component {
   constructor() {
@@ -51,8 +51,7 @@ class App extends Component {
       CallApi.addSongs(ids, playlistIds);
     } else {
       // I don't think we need to call requery when we know what got deleted
-      CallApi.deleteSongs(ids, playlistIds)
-      .then(() => {
+      CallApi.deleteSongs(ids, this.state.currentTab).then(() => {
         this.updatePlaylist(this.state.currentTab);
       });
     }
@@ -66,36 +65,36 @@ class App extends Component {
       .catch(err => err);
   };
 
-  setTab = (tab) => {
-    this.setState({currentTab: tab});
-  }
+  setTab = tab => {
+    this.setState({ currentTab: tab });
+  };
 
   renderInnerContainer = () => {
     if (this.state.currentTab === Constants.TabNames.SEARCH) {
       return (
-      <DataTable
-        headings={headings}
-        rows={this.state.searchResponse}
-        isSearch={true}
-        onClick={this.dataTableButtonClick}
-      />
-      )
-    } else if (this.state.currentTab === "CreatePlaylist") {
-      return (
-        <PlaylistCreator />
-      )
+        <DataTable
+          headings={headings}
+          rows={this.state.searchResponse}
+          isSearch={true}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
+    } else if (this.state.currentTab === 'CreatePlaylist') {
+      return <PlaylistCreator />;
     } else {
       // Playlist tab selected
       return (
-      <DataTable
-        headings={headings}
-        rows={this.state.playlistResponse}
-        isSearch={false}
-        onClick={this.dataTableButtonClick}
-      />
-      )
+        <DataTable
+          headings={headings}
+          rows={this.state.playlistResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
     }
-  }
+  };
 
   render() {
     return (

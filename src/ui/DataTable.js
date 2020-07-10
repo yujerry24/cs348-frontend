@@ -55,9 +55,8 @@ export default class DataTable extends React.Component {
     </TableCell>
   );
 
-  renderRow = ([id, _row]) => {
+  renderActionButtons = id => {
     const { isSearch } = this.props;
-
     const actionButtons = [];
 
     if (isSearch) {
@@ -98,7 +97,10 @@ export default class DataTable extends React.Component {
         name="favorite"
       />
     );
+    return actionButtons;
+  };
 
+  renderRow = ([id, _row]) => {
     return (
       <TableRow key={`row-${id}`}>
         {Object.entries(_row).map(([key, _cell]) => {
@@ -108,6 +110,9 @@ export default class DataTable extends React.Component {
             data = `${Math.floor(data / 60)}:${
               data % 60 < 10 ? '0' + (data % 60) : data % 60
             }`;
+          } else if (Array.isArray(data)) {
+            // ex. songs with many artists
+            data = data.sort().join(', ');
           }
           return (
             <TableCell key={`cell-${id}-${key}`} align={'left'}>
@@ -120,7 +125,7 @@ export default class DataTable extends React.Component {
           align={'left'}
           style={{ padding: 0, minWidth: '90px' }}
         >
-          {actionButtons}
+          {this.renderActionButtons(id)}
         </TableCell>
       </TableRow>
     );
