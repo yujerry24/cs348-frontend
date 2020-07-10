@@ -15,7 +15,6 @@ import {
   ChevronRight,
   PlaylistPlay,
   Search,
-  Call,
 } from '@material-ui/icons';
 import './Navbar.scss';
 import * as Constants from '../utils/Constants';
