@@ -1,0 +1,26 @@
+.playlist-creator-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 75px;
+
+    .creator-title {
+        font-size: 24px;
+    }
+}
+
+.creator-textfield-container {
+    display: flex;
+    margin-top: 50px;
+    align-items: flex-end;
+
+    .creator-text {
+        margin-right: 20px;
+        width: 300px;
+    }
+
+    .creator-button {
+        font-size: 16px;
+    }
+}
