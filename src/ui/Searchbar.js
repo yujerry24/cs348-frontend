@@ -1,22 +1,42 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import { Button, TextField, Toolbar } from '@material-ui/core';
 import './Searchbar.scss';
 
 export default class Searchbar extends React.Component {
-    constructor(){
-        super();
-        this.state = { searchText: ''};
+  constructor() {
+    super();
+    this.state = { searchText: '' };
+  }
+
+  handleChange = e => {
+    this.setState({ searchText: e.target.value });
+  };
+
+  handleKeyUp = e => {
+    if (e.keyCode === 13) {
+      this.props.onSearch(this.state.searchText);
     }
-    
-    render() {
-        return (
-            <div className='search-bar-container'>
-                <TextField id="standard-basic" label="Search" onChange={e=> this.setState({searchText: e.target.value})} />
-                <Button variant="contained" color="primary" onClick={() => this.props.onSubmit(this.state.searchText)}>
-                   Search
-                </Button>
-            </div>
-        );
-    }
+  };
+
+  render() {
+    return (
+      <div className="search-bar-container">
+        <Toolbar>
+          <TextField
+            id="standard-basic"
+            label="Search"
+            onChange={this.handleChange}
+            onKeyUp={this.handleKeyUp}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.props.onSearch(this.state.searchText)}
+          >
+            Search
+          </Button>
+        </Toolbar>
+      </div>
+    );
+  }
 }

@@ -1,157 +1,130 @@
 import React, { Component } from 'react';
 import DataTable from './ui/DataTable';
+import PlaylistCreator from './ui/PlaylistCreator';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
 import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
+import Video from './ui/Video';
+import * as CallApi from './utils/APICalls';
+import * as Constants from './utils/Constants';
 
-// process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
-const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
-
-const headings = [
-  'Id',
-  'Name',
-  'Duration',
-  'Artist'
-];
-
-let rows = [];
-let searchRows = [];
-let search = [{playlist_id: 'Search', name: 'Search'}];
+const headings = ['Name', 'Artists', 'Album', 'Duration', 'Actions'];
 
 class App extends Component {
-  constructor(){
+  constructor() {
     super();
+    // Consider caching responses somehow?
     this.state = {
       playlistResponse: [],
       searchResponse: [],
       availablePlaylists: [],
-      currentPlaylist: 'Search'
+      currentTab: Constants.TabNames.SEARCH,
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.callAPI = this.callAPI.bind(this);
-    this.onClickSearch = this.onClickSearch.bind(this);
-    this.callAPIGetPlaylist = this.callAPIGetPlaylist.bind(this);
-    this.callAPIAddSong = this.callAPIAddSong.bind(this);
-    this.callAPIDeleteSong = this.callAPIDeleteSong.bind(this);
-    this.dataTableButtonClick = this.dataTableButtonClick.bind(this);
   }
 
   componentWillMount = () => {
     const userId = '63e439ec-8625-4912-8b03-e34d5a7cfaee'; // Timothy
-    fetch(`${API}/playlist/list/${userId}`)
-      .then(res => res.json())
+    this.fetchAllPlaylists(userId);
+  };
+
+  fetchAllPlaylists = userId => {
+    CallApi.fetchAllPlaylists(userId)
       .then(res => {
-        this.setState({availablePlaylists: res});
+        this.setState({ availablePlaylists: res });
       })
       .catch(err => err);
-  }
+  };
 
-  onSubmit() {
-    console.log('props');
-    this.callAPI();
-    this.forceUpdate();
-  }
-
-  onClickSearch(text){
-    fetch(`${API}/song/${text}`)
-      .then(res => res.json())
+  onClickSearch = text => {
+    CallApi.search(text)
       .then(res => {
-        console.log(res);
-
-        this.setState({searchResponse: res});
+        this.setState({ searchResponse: res });
       })
       .catch(err => err);
+  };
 
-  }
-
-  dataTableButtonClick(id, isSearch){
-    if (isSearch){
-      this.callAPIAddSong(id);
+  dataTableButtonClick = (ids, playlistIds, isSearch) => {
+    if (isSearch) {
+      // prompt user for which playlist(s) to add to
+      CallApi.addSongs(ids, playlistIds);
     } else {
-      this.callAPIDeleteSong(id);
+      // I don't think we need to call requery when we know what got deleted
+      CallApi.deleteSongs(ids, this.state.currentTab).then(() => {
+        this.updatePlaylist(this.state.currentTab);
+      });
     }
-  }
+  };
 
-  callAPIAddSong(songId){
-    /**
-     * fetch('http://localhost:8080/playlist1', {method: 'POST', headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      }, body: JSON.stringify({artist: 'Mili', title: 'sustain++;', year: 2020})})
-     * 
-     */
-    console.log(songId)
-
-    const playlistId = '8092bcc7-37ee-4114-bc5e-eac125b3bb9b';
-    fetch(`${API}/playlist/${playlistId}/${songId}`, {
-      method: 'POST'
-    });
-  }
-
-  callAPIDeleteSong(songId){
-    fetch(`${API}/playlist/${this.state.currentPlaylist}/${songId}`, {
-      method: 'DELETE', 
-      // headers: {
-      //   'Content-Type': 'application/json;charset=utf-8'
-      // }, 
-    }).then(() => {
-      this.callAPI(this.state.currentPlaylist)
-    });
-  }
-
-  callAPI(playlistId){
-    fetch(`${API}/playlist/${playlistId}`)
-      .then(res => res.json())
+  updatePlaylist = playlistId => {
+    CallApi.fetchPlaylist(playlistId)
       .then(res => {
-        this.setState({playlistResponse: res});
+        this.setState({ playlistResponse: res });
       })
       .catch(err => err);
-  }
+  };
 
-  callAPIGetPlaylist(playlistId){
-    console.log("getting playlist", playlistId);
-    this.setState({currentPlaylist: playlistId});
-    this.callAPI(playlistId);
-  }
+  setTab = tab => {
+    this.setState({ currentTab: tab });
+  };
+
+  renderInnerContainer = () => {
+    if (this.state.currentTab === Constants.TabNames.SEARCH) {
+      return (
+        <DataTable
+          headings={headings}
+          rows={this.state.searchResponse}
+          isSearch={true}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
+    } else if (this.state.currentTab === 'CreatePlaylist') {
+      return <PlaylistCreator />;
+    } else {
+      // Playlist tab selected
+      return (
+        <DataTable
+          headings={headings}
+          rows={this.state.playlistResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
+    }
+  };
 
   render() {
-    rows = [];
-    searchRows = [];
-
-    this.state.playlistResponse.forEach(entry => {
-      rows.push([entry.song_id, entry.song_name, entry.video_duration, entry.artist_name]);
-    });
-    
-    this.state.searchResponse.forEach(entry => {
-      searchRows.push([entry.song_id, entry.song_name, entry.video_duration, entry.artist_name]);
-    });
-
     return (
-      <div className='master-screen'>
-        <div className='navbar-container'>
-          <Navbar playlists={search.concat(this.state.availablePlaylists)} getPlaylist={this.callAPIGetPlaylist}></Navbar>
+      <div className="master-screen">
+        <Navbar
+          playlists={this.state.availablePlaylists}
+          setTab={this.setTab}
+          updatePlaylist={this.updatePlaylist}
+          updateAllPlaylists={this.fetchAllPlaylists}
+          userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
+        />
+        <div className="song-container">
+          <Searchbar
+            onSearch={
+              this.state.currentTab === Constants.TabNames.SEARCH
+                ? this.onClickSearch
+                : () => {
+                    alert('filter playlist contents maybe?');
+                  }
+              /*this.filterPlaylist ? maybe?*/
+            }
+          />
+          <div className="search-results-container">
+            {this.renderInnerContainer()}
+          </div>
         </div>
-        <div className = 'song-container'>
-          <Searchbar 
-            onSubmit={
-              this.state.currentPlaylist === 'Search' 
-              ? this.onClickSearch 
-              : ()=>{console.log('filter playlist contents maybe?')} 
-              /*this.filterPlaylist ? maybe?*/ 
-              }/>
-          {this.state.currentPlaylist === 'Search' && 
-            <div className='search-results-container'>
-              <DataTable headings={headings} rows={searchRows} isSearch={true} onClick={this.dataTableButtonClick}/>
-            </div>
-          }
-          {this.state.currentPlaylist !== 'Search' && 
-            <div className='playlist-container'>
-              <DataTable headings={headings} rows={rows} isSearch={false} onClick={this.dataTableButtonClick}/>
-            </div>
-          }
+        <div className="video">
+          <Video videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */ />
         </div>
-      </div>    
+      </div>
     );
   }
 }

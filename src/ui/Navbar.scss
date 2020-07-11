@@ -1,17 +1,32 @@
-.playlist-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0px;
-    font-size: 24px;
-    height: 80px;
+.drawer-list-item {
+  &:hover {
+    cursor: pointer;
+  }
+}
 
-    &.selected {
-        background-color: #b7a2b7;
-    }
+.drawerOpen {
+  width: 200px;
+  .paper {
+    background-color: #a997df;
+    width: 200px;
+  }
+}
+.drawerClosed {
+  width: 56px;
+  .paper {
+    background-color: #a997df;
+    width: 56px;
+    overflow-x: hidden;
+  }
+}
 
-    &:hover {
-        cursor: pointer;
-    }
+.drawer-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 64px;
+
+  .drawer-toggle {
+    height: 48px;
+  }
 }

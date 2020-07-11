@@ -10,29 +10,37 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100vh
+  height: 100vh;
 }
 
 .navbar-container {
   position: relative;
   height: 100vh;
-  width: 200px;
-  background-color: #a997df;
+  width: fit-content;
 }
 
 .playlist-container {
+  width: 80%;
   margin-top: 30px;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
-  width: 100%;
 }
 
 .search-results-container {
   margin-top: 30px;
+  width: 80%;
   overflow-y: auto;
+}
+
+.video {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 400px;
+  height: 225px;
 }
 
 .button {
