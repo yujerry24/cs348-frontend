@@ -1,26 +1,31 @@
 .playlist-creator-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    margin-top: 75px;
 
     .creator-title {
-        font-size: 24px;
+        font-size: 50px;
     }
 }
 
 .creator-textfield-container {
+    margin-top: 20px;
     display: flex;
-    margin-top: 50px;
-    align-items: flex-end;
+    flex-direction: column;
+    .creator-nameInput {
+        display: flex;
+        flex-direction: row;
 
-    .creator-text {
-        margin-right: 20px;
-        width: 300px;
+        .creator-text {
+            // margin-right: 20px;
+            width: 300px;
+        }
+    
+        .creator-button {
+            font-size: 16px;
+        }
     }
+}
 
-    .creator-button {
-        font-size: 16px;
-    }
+.creator-playlists{
+    margin-top: 20px;
 }

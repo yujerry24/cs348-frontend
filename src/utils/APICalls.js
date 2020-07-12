@@ -47,5 +47,19 @@ export const createPlaylist = async (name, userId) => {
       playlistName: name,
       userId: userId,
     }),
+  }).then(res => res.json())
+};
+
+export const addPlaylistsToPlaylist = async (finalId, playlistIds) => {
+  return fetch(`${API}/playlist/createFromExisting`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({
+      newPlaylistId: finalId,
+      existingPlaylistIds: playlistIds
+    }),
   }).then(res => res.json());
 };
+

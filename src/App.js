@@ -81,7 +81,7 @@ class App extends Component {
         />
       );
     } else if (this.state.currentTab === 'CreatePlaylist') {
-      return <PlaylistCreator />;
+      return <PlaylistCreator userId='63e439ec-8625-4912-8b03-e34d5a7cfaee' updateAllPlaylists={this.fetchAllPlaylists} playlists={this.state.availablePlaylists}/>;
     } else {
       // Playlist tab selected
       return (
