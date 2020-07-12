@@ -21,16 +21,16 @@ class App extends Component {
       searchResponse: [],
       availablePlaylists: [],
       currentTab: Constants.TabNames.SEARCH,
+      userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
     };
   }
 
   componentWillMount = () => {
-    const userId = '63e439ec-8625-4912-8b03-e34d5a7cfaee'; // Timothy
-    this.fetchAllPlaylists(userId);
+    this.fetchAllPlaylists(this.state.userId); // Timothy
   };
 
-  fetchAllPlaylists = userId => {
-    CallApi.fetchAllPlaylists(userId)
+  fetchAllPlaylists = () => {
+    CallApi.fetchAllPlaylists(this.state.userId)
       .then(res => {
         this.setState({ availablePlaylists: res });
       })
@@ -104,7 +104,6 @@ class App extends Component {
           setTab={this.setTab}
           updatePlaylist={this.updatePlaylist}
           updateAllPlaylists={this.fetchAllPlaylists}
-          userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
         />
         <div className="song-container">
           <Searchbar

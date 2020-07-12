@@ -1,23 +1,28 @@
 import React from 'react';
 import {
+  Button,
   Divider,
   Drawer,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
+  ListItemSecondaryAction,
   ListSubheader,
+  Popover,
 } from '@material-ui/core';
 import {
   AccountCircle,
   Add,
   ChevronLeft,
   ChevronRight,
+  Delete,
   PlaylistPlay,
   Search,
 } from '@material-ui/icons';
 import './Navbar.scss';
 import * as Constants from '../utils/Constants';
+import { deletePlaylist } from '../utils/APICalls';
 
 export default class Navbar extends React.Component {
   constructor(props) {
@@ -25,7 +30,9 @@ export default class Navbar extends React.Component {
     this.state = {
       currentTab: Constants.TabNames.SEARCH,
       drawerOpened: true,
+      popoverAnchor: null,
     };
+    this.popoverAnchorEl = React.createRef();
   }
 
   toggleDrawer = () => {
@@ -52,6 +59,13 @@ export default class Navbar extends React.Component {
     this.props.setTab(Constants.TabNames.CREATEPL);
   };
 
+  onDeletePlaylistClick = () => {
+    this.setState({
+      deletePopoverOpen: true,
+      popoverAnchor: this.popoverAnchorEl.current,
+    });
+  };
+
   onLogout = () => {
     // TODO:
     // open a creation modal??
@@ -64,6 +78,7 @@ export default class Navbar extends React.Component {
       <ListItem
         key={`drawer-${playlist_id}`}
         className="drawer-list-item"
+        button
         selected={this.state.currentTab === playlist_id}
         onClick={() =>
           !this.state.drawerOpened
@@ -73,6 +88,19 @@ export default class Navbar extends React.Component {
       >
         <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
         {name}
+        {this.state.currentTab === playlist_id && this.state.drawerOpened && (
+          <ListItemSecondaryAction>
+            <IconButton
+              size="small"
+              edge="end"
+              aria-label="delete"
+              onClick={this.onDeletePlaylistClick}
+              ref={this.popoverAnchorEl}
+            >
+              <Delete fontSize="small" />
+            </IconButton>
+          </ListItemSecondaryAction>
+        )}
       </ListItem>
     );
   };
@@ -82,6 +110,7 @@ export default class Navbar extends React.Component {
       <ListItem
         key={`drawer-search`}
         className="drawer-list-item"
+        button
         selected={this.state.currentTab === Constants.TabNames.SEARCH}
         onClick={() =>
           !this.state.drawerOpened ? this.toggleDrawer() : this.onSearchClick()
@@ -100,6 +129,7 @@ export default class Navbar extends React.Component {
       <ListItem
         key="drawer-create-playlist"
         className="drawer-list-item"
+        button
         selected={this.state.currentTab === Constants.TabNames.CREATEPL}
         onClick={this.onCreatePlaylistClick}
       >
@@ -108,6 +138,56 @@ export default class Navbar extends React.Component {
         </ListItemIcon>
         {'Create Playlist'}
       </ListItem>
+    );
+  };
+
+  renderPopover = () => {
+    const open = Boolean(this.state.popoverAnchor);
+    const id = open ? 'delete-playlist-popover' : undefined;
+    return (
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={this.state.popoverAnchor}
+        onClose={() => {
+          this.setState({ popoverAnchor: null });
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <div className="popover-container">
+          {'Are you sure you want to delete this playlist?'}
+          <div className="popover-buttons">
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                this.setState({ popoverAnchor: null });
+              }}
+            >
+              No
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                deletePlaylist(this.state.currentTab).then(() => {
+                  this.props.updateAllPlaylists();
+                });
+                this.setState({ popoverAnchor: null });
+              }}
+            >
+              Yes
+            </Button>
+          </div>
+        </div>
+      </Popover>
     );
   };
 
@@ -141,6 +221,7 @@ export default class Navbar extends React.Component {
           <ListItem
             key="drawer-logout"
             className="drawer-list-item"
+            button
             onClick={this.onLogout}
           >
             <ListItemIcon>
@@ -149,6 +230,7 @@ export default class Navbar extends React.Component {
             {'Logout'}
           </ListItem>
         </List>
+        {this.renderPopover()}
       </Drawer>
     );
   }
