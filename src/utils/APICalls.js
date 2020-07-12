@@ -37,6 +37,14 @@ export const fetchPlaylist = async playlistId => {
   return fetch(`${API}/playlist/${playlistId}`).then(res => res.json());
 };
 
+export const fetchMostPopularSongs = async () => {
+  return fetch(`${API}/song/popularSongs`).then(res => res.json());
+}
+
+export const fetchMostPopularArtists = async () => {
+  return fetch(`${API}/song/popularArtists`).then(res => res.json());
+}
+
 export const createPlaylist = async (name, userId) => {
   return fetch(`${API}/playlist`, {
     method: 'POST',
