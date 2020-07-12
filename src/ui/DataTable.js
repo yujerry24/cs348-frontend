@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 
 import {
   Button,
@@ -23,7 +24,10 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Delete from '@material-ui/icons/Delete';
 import './DataTable.scss';
 
-export default class DataTable extends React.Component {
+import * as CallApi from '../utils/APICalls';
+import { fetchPlaylist } from '../store/fetchCalls';
+
+class DataTable extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -33,9 +37,20 @@ export default class DataTable extends React.Component {
     };
   }
 
-  onClickHandler = (ids, playlistIds) => {
-    const { isSearch } = this.props;
-    this.props.onClick(ids, playlistIds, isSearch);
+  onAdd = (ids, playlistIds) => {
+    CallApi.addSongs(ids, playlistIds).then(() => {
+      playlistIds.forEach(id => {
+        this.props.fetchPlaylist(id);
+      });
+    });
+  };
+  // prompt user for which playlist(s) to add to
+
+  onDelete = ids => {
+    // I don't think we need to call requery when we know what got deleted
+    CallApi.deleteSongs(ids, this.props.currentTab).then(() => {
+      this.props.fetchPlaylist(this.props.currentTab);
+    });
   };
 
   handleCheckbox = id => {
@@ -83,7 +98,7 @@ export default class DataTable extends React.Component {
           color="secondary"
           size="medium"
           aria-label="delete"
-          onClick={() => this.onClickHandler([id])}
+          onClick={() => this.onDelete([id])}
         >
           <Delete />
         </IconButton>
@@ -133,7 +148,7 @@ export default class DataTable extends React.Component {
 
   renderBody = () => {
     const { headings, rows } = this.props;
-    return Object.keys(rows).length > 0 ? (
+    return rows && Object.keys(rows).length > 0 ? (
       Object.entries(rows).map(this.renderRow)
     ) : (
       <TableRow>
@@ -145,7 +160,7 @@ export default class DataTable extends React.Component {
   };
 
   renderPopover = () => {
-    const { availablePlaylists } = this.props;
+    const { allPlaylists } = this.props;
     const open = Boolean(this.state.popoverAnchorEl);
     const id = open ? 'add-to-playlist-popover' : undefined;
     return (
@@ -166,8 +181,8 @@ export default class DataTable extends React.Component {
         }}
       >
         <FormGroup className="add-to-playlist-list">
-          {availablePlaylists &&
-            availablePlaylists.map(playlist => (
+          {allPlaylists &&
+            allPlaylists.map(playlist => (
               <FormControlLabel
                 key={`add-to-playlist-${playlist.name}`}
                 control={
@@ -180,10 +195,7 @@ export default class DataTable extends React.Component {
             ))}
           <Button
             onClick={() => {
-              this.onClickHandler(
-                this.state.selectedSongs,
-                this.state.addToPlaylists
-              );
+              this.onAdd(this.state.selectedSongs, this.state.addToPlaylists);
               this.setState({
                 addToPlaylists: [],
                 selectedSongs: [],
@@ -219,3 +231,14 @@ export default class DataTable extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state, ownProps) => ({
+    allPlaylists: state.allPlaylists.playlists,
+    currentTab: state.mainApp.currentTab,
+    rows: state.playlistsById[state.mainApp.currentTab]
+      ? state.playlistsById[state.mainApp.currentTab].songsById
+      : ownProps.rows,
+  }),
+  { fetchPlaylist }
+)(DataTable);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Button,
   Divider,
@@ -24,11 +25,13 @@ import './Navbar.scss';
 import * as Constants from '../utils/Constants';
 import { deletePlaylist } from '../utils/APICalls';
 
-export default class Navbar extends React.Component {
+import { fetchAllPlaylists } from '../store/fetchCalls';
+import { setCurrentTab } from '../store/actions';
+
+class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTab: Constants.TabNames.SEARCH,
       drawerOpened: true,
       popoverAnchor: null,
     };
@@ -40,23 +43,18 @@ export default class Navbar extends React.Component {
   };
 
   onPlaylistClick = playlistId => {
-    this.setState({ currentTab: playlistId });
-    // TODO: probably should cache playlist results
-    this.props.updatePlaylist(playlistId);
-    this.props.setTab(playlistId);
+    this.props.setCurrentTab(playlistId);
   };
 
   onSearchClick = () => {
-    this.setState({ currentTab: Constants.TabNames.SEARCH });
-    this.props.setTab(Constants.TabNames.SEARCH);
+    this.props.setCurrentTab(Constants.TabNames.SEARCH);
   };
 
   onCreatePlaylistClick = () => {
     // TODO:
     // open a creation modal to prompt user for a playlist name
     // this.setState({ currentTab: Constants.TabNames.CREATEPL });
-    this.setState({ currentTab: 'CreatePlaylist' });
-    this.props.setTab(Constants.TabNames.CREATEPL);
+    this.props.setCurrentTab(Constants.TabNames.CREATEPL);
   };
 
   onDeletePlaylistClick = () => {
@@ -74,12 +72,13 @@ export default class Navbar extends React.Component {
   };
 
   playlistRow = ({ playlist_id, name }) => {
+    const { currentTab } = this.props;
     return (
       <ListItem
         key={`drawer-${playlist_id}`}
         className="drawer-list-item"
         button
-        selected={this.state.currentTab === playlist_id}
+        selected={currentTab === playlist_id}
         onClick={() =>
           !this.state.drawerOpened
             ? this.toggleDrawer()
@@ -88,7 +87,7 @@ export default class Navbar extends React.Component {
       >
         <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
         {name}
-        {this.state.currentTab === playlist_id && this.state.drawerOpened && (
+        {currentTab === playlist_id && this.state.drawerOpened && (
           <ListItemSecondaryAction>
             <IconButton
               size="small"
@@ -111,7 +110,7 @@ export default class Navbar extends React.Component {
         key={`drawer-search`}
         className="drawer-list-item"
         button
-        selected={this.state.currentTab === Constants.TabNames.SEARCH}
+        selected={this.props.currentTab === Constants.TabNames.SEARCH}
         onClick={() =>
           !this.state.drawerOpened ? this.toggleDrawer() : this.onSearchClick()
         }
@@ -130,7 +129,7 @@ export default class Navbar extends React.Component {
         key="drawer-create-playlist"
         className="drawer-list-item"
         button
-        selected={this.state.currentTab === Constants.TabNames.CREATEPL}
+        selected={this.props.currentTab === Constants.TabNames.CREATEPL}
         onClick={this.onCreatePlaylistClick}
       >
         <ListItemIcon>
@@ -177,8 +176,9 @@ export default class Navbar extends React.Component {
               variant="outlined"
               color="primary"
               onClick={() => {
-                deletePlaylist(this.state.currentTab).then(() => {
-                  this.props.updateAllPlaylists();
+                deletePlaylist(this.props.currentTab).then(() => {
+                  this.props.fetchAllPlaylists(this.props.userId);
+                  this.props.setCurrentTab(Constants.TabNames.SEARCH);
                 });
                 this.setState({ popoverAnchor: null });
               }}
@@ -192,7 +192,7 @@ export default class Navbar extends React.Component {
   };
 
   render() {
-    const { playlists } = this.props;
+    const { allPlaylists } = this.props;
 
     return (
       <Drawer
@@ -212,7 +212,7 @@ export default class Navbar extends React.Component {
           {this.state.drawerOpened && (
             <ListSubheader>{'Playlists'}</ListSubheader>
           )}
-          {playlists && playlists.map(this.playlistRow)}
+          {allPlaylists && allPlaylists.map(this.playlistRow)}
           <Divider />
           {this.state.drawerOpened && (
             <ListSubheader>{'Other Actions'}</ListSubheader>
@@ -235,3 +235,15 @@ export default class Navbar extends React.Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    allPlaylists: state.allPlaylists.playlists,
+    currentTab: state.mainApp.currentTab,
+    userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
+  }),
+  {
+    setCurrentTab,
+    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
+  }
+)(Navbar);

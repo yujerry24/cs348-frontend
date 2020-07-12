@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import DataTable from './ui/DataTable';
 import PlaylistCreator from './ui/PlaylistCreator';
 // import Input from './ui/Input';
@@ -7,34 +9,35 @@ import './App.css';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 import Video from './ui/Video';
+
 import * as CallApi from './utils/APICalls';
 import * as Constants from './utils/Constants';
+import { fetchAllPlaylists, fetchPlaylist } from './store/fetchCalls';
 
 const headings = ['Name', 'Artists', 'Album', 'Duration', 'Actions'];
 
 class App extends Component {
   constructor() {
     super();
-    // Consider caching responses somehow?
+    // Consider caching search responses?
     this.state = {
-      playlistResponse: [],
       searchResponse: [],
-      availablePlaylists: [],
-      currentTab: Constants.TabNames.SEARCH,
-      userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
     };
   }
 
   componentWillMount = () => {
-    this.fetchAllPlaylists(this.state.userId); // Timothy
+    this.props.fetchAllPlaylists(this.props.userId);
   };
 
-  fetchAllPlaylists = () => {
-    CallApi.fetchAllPlaylists(this.state.userId)
-      .then(res => {
-        this.setState({ availablePlaylists: res });
-      })
-      .catch(err => err);
+  componentDidUpdate = prevProps => {
+    if (
+      prevProps.allPlaylists.length === 0 &&
+      this.props.allPlaylists.length > 0
+    ) {
+      this.props.allPlaylists.forEach(({ playlist_id }) =>
+        this.props.fetchPlaylist(playlist_id)
+      );
+    }
   };
 
   onClickSearch = text => {
@@ -45,70 +48,31 @@ class App extends Component {
       .catch(err => err);
   };
 
-  dataTableButtonClick = (ids, playlistIds, isSearch) => {
-    if (isSearch) {
-      // prompt user for which playlist(s) to add to
-      CallApi.addSongs(ids, playlistIds);
-    } else {
-      // I don't think we need to call requery when we know what got deleted
-      CallApi.deleteSongs(ids, this.state.currentTab).then(() => {
-        this.updatePlaylist(this.state.currentTab);
-      });
-    }
-  };
-
-  updatePlaylist = playlistId => {
-    CallApi.fetchPlaylist(playlistId)
-      .then(res => {
-        this.setState({ playlistResponse: res });
-      })
-      .catch(err => err);
-  };
-
-  setTab = tab => {
-    this.setState({ currentTab: tab });
-  };
-
   renderInnerContainer = () => {
-    if (this.state.currentTab === Constants.TabNames.SEARCH) {
+    if (this.props.currentTab === Constants.TabNames.SEARCH) {
       return (
         <DataTable
           headings={headings}
           rows={this.state.searchResponse}
           isSearch={true}
-          onClick={this.dataTableButtonClick}
-          availablePlaylists={this.state.availablePlaylists}
         />
       );
-    } else if (this.state.currentTab === 'CreatePlaylist') {
+    } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else {
       // Playlist tab selected
-      return (
-        <DataTable
-          headings={headings}
-          rows={this.state.playlistResponse}
-          isSearch={false}
-          onClick={this.dataTableButtonClick}
-          availablePlaylists={this.state.availablePlaylists}
-        />
-      );
+      return <DataTable headings={headings} isSearch={false} />;
     }
   };
 
   render() {
     return (
       <div className="master-screen">
-        <Navbar
-          playlists={this.state.availablePlaylists}
-          setTab={this.setTab}
-          updatePlaylist={this.updatePlaylist}
-          updateAllPlaylists={this.fetchAllPlaylists}
-        />
+        <Navbar />
         <div className="song-container">
           <Searchbar
             onSearch={
-              this.state.currentTab === Constants.TabNames.SEARCH
+              this.props.currentTab === Constants.TabNames.SEARCH
                 ? this.onClickSearch
                 : () => {
                     alert('filter playlist contents maybe?');
@@ -128,4 +92,14 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(
+  state => ({
+    allPlaylists: state.allPlaylists.playlists,
+    currentTab: state.mainApp.currentTab,
+    userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
+  }),
+  {
+    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
+    fetchPlaylist: playlistId => fetchPlaylist(playlistId),
+  }
+)(App);
