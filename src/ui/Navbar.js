@@ -44,6 +44,18 @@ export default class Navbar extends React.Component {
     this.props.setTab(Constants.TabNames.SEARCH);
   };
 
+  onMostPopSongsClick = () => {
+    this.setState({ currentTab: Constants.TabNames.TOPSONGS });
+    this.props.fetchMostPopularSongs();
+    this.props.setTab(Constants.TabNames.TOPSONGS);
+  };
+
+  onMostPopArtistsClick = () => {
+    this.setState({ currentTab: Constants.TabNames.TOPARTISTS });
+    this.props.fetchMostPopularArtists();
+    this.props.setTab(Constants.TabNames.TOPARTISTS);
+  }
+
   onCreatePlaylistClick = () => {
     // TODO:
     // open a creation modal to prompt user for a playlist name
@@ -74,6 +86,42 @@ export default class Navbar extends React.Component {
       >
         <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
         {name}
+      </ListItem>
+    );
+  };
+
+  topSongs = () => {
+    return (
+      <ListItem
+        key={`drawer-top-songs`}
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.TOPSONGS}
+        onClick={() =>
+          !this.state.drawerOpened
+            ? this.toggleDrawer()
+            : this.onMostPopSongsClick()
+        }
+      >
+        <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
+        {'Top 20 Songs'}
+      </ListItem>
+    );
+  };
+
+  topArtists = () => {
+    return (
+      <ListItem
+        key={`drawer-top-artists`}
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.TOPARTISTS}
+        onClick={() =>
+          !this.state.drawerOpened
+            ? this.toggleDrawer()
+            : this.onMostPopArtistsClick()
+        }
+      >
+        <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
+        {'Top 20 Artists'}
       </ListItem>
     );
   };
@@ -129,6 +177,12 @@ export default class Navbar extends React.Component {
         <Divider />
         <List>
           {this.searchRow()}
+          <Divider />
+          {this.state.drawerOpened && (
+            <ListSubheader>{'Most Popular'}</ListSubheader>
+          )}
+          {this.topSongs()}
+          {this.topArtists()}
           <Divider />
           {this.state.drawerOpened && (
             <ListSubheader>{'Playlists'}</ListSubheader>

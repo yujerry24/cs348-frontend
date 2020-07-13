@@ -12,6 +12,7 @@ import * as CallApi from './utils/APICalls';
 import * as Constants from './utils/Constants';
 
 const headings = ['Name', 'Artists', 'Album', 'Duration', 'Actions'];
+const topArtistsHeading = ['Artist Name', 'In Number Of Playlists'];
 
 class App extends Component {
   constructor() {
@@ -22,6 +23,8 @@ class App extends Component {
       userId: '',
       playlistResponse: [],
       searchResponse: [],
+      mostPopSongsResponse: [],
+      mostPopArtistsResponse: [],
       availablePlaylists: [],
       currentTab: Constants.TabNames.SEARCH,
     };
@@ -38,6 +41,24 @@ class App extends Component {
         this.setState({ availablePlaylists: res });
       })
       .catch(err => err);
+  };
+
+  fetchMostPopularSongs = () => {
+    CallApi.fetchMostPopularSongs()
+    .then(res => {
+      this.setState({ mostPopSongsResponse: res });
+    })
+    .catch(err => err);
+  };
+
+  fetchMostPopularArtists = () => {
+    CallApi.fetchMostPopularArtists()
+    .then(res => {
+      this.setState({ mostPopArtistsResponse: res });
+    })
+    .catch(err => err);
+
+   
   };
 
   onClickSearch = text => {
@@ -93,6 +114,26 @@ class App extends Component {
       );
     } else if (this.state.currentTab === 'CreatePlaylist') {
       return <PlaylistCreator />;
+    } else if (this.state.currentTab === Constants.TabNames.TOPSONGS) { 
+      return (
+        <DataTable
+          headings={headings}
+          rows={this.state.mostPopSongsResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
+    } else if (this.state.currentTab === Constants.TabNames.TOPARTISTS) { 
+      return (
+        <DataTable
+          headings={topArtistsHeading}
+          rows={this.state.mostPopArtistsResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
     } else {
       // Playlist tab selected
       return (
@@ -120,8 +161,9 @@ class App extends Component {
                 setTab={this.setTab}
                 updatePlaylist={this.updatePlaylist}
                 updateAllPlaylists={this.fetchAllPlaylists}
+                fetchMostPopularSongs={this.fetchMostPopularSongs}
+                fetchMostPopularArtists={this.fetchMostPopularArtists}
                 userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
-                setValidLogin={this.setValidLogin}
               />
               <div className="song-container">
                 <Searchbar
@@ -130,8 +172,6 @@ class App extends Component {
                       ? this.onClickSearch
                       : () => {
                           alert('filter playlist contents maybe?');
-                        }
-                    /*this.filterPlaylist ? maybe?*/
                   }
                 />
                 <div className="search-results-container">
