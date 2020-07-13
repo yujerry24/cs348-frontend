@@ -4,6 +4,7 @@ import PlaylistCreator from './ui/PlaylistCreator';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
 import './App.css';
+import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 import Video from './ui/Video';
@@ -17,6 +18,8 @@ class App extends Component {
     super();
     // Consider caching responses somehow?
     this.state = {
+      validLogin: false,
+      userId: '',
       playlistResponse: [],
       searchResponse: [],
       availablePlaylists: [],
@@ -69,6 +72,14 @@ class App extends Component {
     this.setState({ currentTab: tab });
   };
 
+  setValidLogin = valid => {
+    this.setState({validLogin: valid});
+  }
+
+  setUserId = userId => {
+    this.setState({userId: userId});
+  }
+
   renderInnerContainer = () => {
     if (this.state.currentTab === Constants.TabNames.SEARCH) {
       return (
@@ -99,31 +110,41 @@ class App extends Component {
   render() {
     return (
       <div className="master-screen">
-        <Navbar
-          playlists={this.state.availablePlaylists}
-          setTab={this.setTab}
-          updatePlaylist={this.updatePlaylist}
-          updateAllPlaylists={this.fetchAllPlaylists}
-          userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
-        />
-        <div className="song-container">
-          <Searchbar
-            onSearch={
-              this.state.currentTab === Constants.TabNames.SEARCH
-                ? this.onClickSearch
-                : () => {
-                    alert('filter playlist contents maybe?');
+        {!this.state.validLogin ? 
+          (
+            <Login setValidLogin={this.setValidLogin} setUserId={this.setUserId} />
+          ) : (
+            <>
+              <Navbar
+                playlists={this.state.availablePlaylists}
+                setTab={this.setTab}
+                updatePlaylist={this.updatePlaylist}
+                updateAllPlaylists={this.fetchAllPlaylists}
+                userId={'63e439ec-8625-4912-8b03-e34d5a7cfaee'}
+                setValidLogin={this.setValidLogin}
+              />
+              <div className="song-container">
+                <Searchbar
+                  onSearch={
+                    this.state.currentTab === Constants.TabNames.SEARCH
+                      ? this.onClickSearch
+                      : () => {
+                          alert('filter playlist contents maybe?');
+                        }
+                    /*this.filterPlaylist ? maybe?*/
                   }
-              /*this.filterPlaylist ? maybe?*/
-            }
-          />
-          <div className="search-results-container">
-            {this.renderInnerContainer()}
-          </div>
-        </div>
-        <div className="video">
-          <Video videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */ />
-        </div>
+                />
+                <div className="search-results-container">
+                  {this.renderInnerContainer()}
+                </div>
+              </div>
+              <div className="video">
+                <Video videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */ />
+              </div>
+            </>
+          )
+        }
+        
       </div>
     );
   }

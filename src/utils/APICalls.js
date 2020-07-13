@@ -49,3 +49,17 @@ export const createPlaylist = async (name, userId) => {
     }),
   }).then(res => res.json());
 };
+
+export const findUser = async (name) => {
+  return fetch(`${API}/user/${name}`).then(res => res.json());
+}
+
+export const createUser = async (name) => {
+  return fetch(`${API}/user/new`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({userId: name}),
+  }).then(res => res.json());
+}
