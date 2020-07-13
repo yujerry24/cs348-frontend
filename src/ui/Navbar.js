@@ -26,7 +26,7 @@ import * as Constants from '../utils/Constants';
 import { deletePlaylist } from '../utils/APICalls';
 
 import { fetchAllPlaylists } from '../store/fetchCalls';
-import { setCurrentTab } from '../store/actions';
+import { setUser, setCurrentTab, setValidLogin } from '../store/actions';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -80,6 +80,7 @@ class Navbar extends React.Component {
     // call api
     // alert('logout current user');
     this.props.setValidLogin(false);
+    this.props.setUser('');
   };
 
   playlistRow = ({ playlist_id, name }) => {
@@ -296,7 +297,9 @@ export default connect(
     userId: state.mainApp.userId,
   }),
   {
+    setUser,
     setCurrentTab,
+    setValidLogin,
     fetchAllPlaylists: userId => fetchAllPlaylists(userId),
   }
 )(Navbar);

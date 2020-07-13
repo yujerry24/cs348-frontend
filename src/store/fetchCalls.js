@@ -11,7 +11,9 @@ export const fetchAllPlaylists = userId => {
         if (res.error) {
           throw res.error;
         }
-        dispatch(actions.fetchAllPlaylistsSuccess(res));
+        dispatch(
+          actions.fetchAllPlaylistsSuccess(Array.isArray(res) ? res : [])
+        );
         return res;
       })
       .catch(error => {

@@ -1,10 +1,10 @@
 import * as types from './actionTypes';
 import { TabNames } from '../utils/Constants';
-// import * as filters from './filters';
 
 const initAppState = {
   userId: '',
   currentTab: TabNames.SEARCH,
+  validLogin: false,
 };
 
 export const mainApp = (state = initAppState, action) => {
@@ -18,6 +18,11 @@ export const mainApp = (state = initAppState, action) => {
       return {
         ...state,
         currentTab: action.tab,
+      };
+    case types.SET_LOGIN_VALIDITY:
+      return {
+        ...state,
+        validLogin: action.isValid,
       };
     default:
       return state;

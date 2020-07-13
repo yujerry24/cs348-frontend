@@ -14,6 +14,13 @@ export const setCurrentTab = tab => {
   };
 };
 
+export const setValidLogin = isValid => {
+  return {
+    type: actions.SET_LOGIN_VALIDITY,
+    isValid,
+  };
+};
+
 export const fetchAllPlaylistsPending = () => {
   return {
     type: actions.FETCH_ALL_PLAYLISTS_PENDING,

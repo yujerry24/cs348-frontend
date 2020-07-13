@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 import { findUser, createUser } from '../utils/APICalls';
-import { setUser } from '../store/actions';
+import { setUser, setValidLogin } from '../store/actions';
 
 import './Login.css';
 
@@ -112,4 +112,5 @@ class Login extends Component {
 
 export default connect(null, {
   setUser,
+  setValidLogin,
 })(Login);

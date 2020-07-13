@@ -23,7 +23,6 @@ class App extends Component {
     super();
     // Consider caching search responses?
     this.state = {
-      validLogin: false,
       searchResponse: [],
       mostPopSongsResponse: [],
       mostPopArtistsResponse: [],
@@ -67,10 +66,6 @@ class App extends Component {
       .catch(err => err);
   };
 
-  setValidLogin = valid => {
-    this.setState({ validLogin: valid });
-  };
-
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
       return (
@@ -107,8 +102,8 @@ class App extends Component {
   render() {
     return (
       <div className="master-screen">
-        {!this.state.validLogin ? (
-          <Login setValidLogin={this.setValidLogin} />
+        {!this.props.validLogin ? (
+          <Login />
         ) : (
           <>
             <Navbar
@@ -144,8 +139,7 @@ class App extends Component {
 export default connect(
   state => ({
     allPlaylists: state.allPlaylists.playlists,
-    currentTab: state.mainApp.currentTab,
-    userId: state.mainApp.userId,
+    ...state.mainApp,
   }),
   {
     fetchAllPlaylists: userId => fetchAllPlaylists(userId),
