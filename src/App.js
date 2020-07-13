@@ -108,7 +108,7 @@ class App extends Component {
         <DataTable
           headings={headings}
           rows={this.state.mostPopSongsResponse}
-          isSearch={true}
+          isSearch={false}
           onClick={this.dataTableButtonClick}
           availablePlaylists={this.state.availablePlaylists}
         />
@@ -118,7 +118,7 @@ class App extends Component {
         <DataTable
           headings={topArtistsHeading}
           rows={this.state.mostPopArtistsResponse}
-          isSearch={true}
+          isSearch={false}
           onClick={this.dataTableButtonClick}
           availablePlaylists={this.state.availablePlaylists}
         />
