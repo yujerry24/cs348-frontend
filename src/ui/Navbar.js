@@ -68,7 +68,8 @@ export default class Navbar extends React.Component {
     // TODO:
     // open a creation modal??
     // call api
-    alert('logout current user');
+    // alert('logout current user');
+    this.props.setValidLogin(false);
   };
 
   playlistRow = ({ playlist_id, name }) => {
