@@ -39,11 +39,11 @@ export const fetchPlaylist = async playlistId => {
 
 export const fetchMostPopularSongs = async () => {
   return fetch(`${API}/song/popularSongs`).then(res => res.json());
-}
+};
 
 export const fetchMostPopularArtists = async () => {
   return fetch(`${API}/song/popularArtists`).then(res => res.json());
-}
+};
 
 export const createPlaylist = async (name, userId) => {
   return fetch(`${API}/playlist`, {
@@ -58,16 +58,25 @@ export const createPlaylist = async (name, userId) => {
   }).then(res => res.json());
 };
 
-export const findUser = async (name) => {
-  return fetch(`${API}/user/${name}`).then(res => res.json());
-}
+export const deletePlaylist = async playlistId => {
+  return fetch(`${API}/playlist/${playlistId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+  }).then(res => res);
+};
 
-export const createUser = async (name) => {
+export const findUser = async name => {
+  return fetch(`${API}/user/${name}`).then(res => res.json());
+};
+
+export const createUser = async name => {
   return fetch(`${API}/user/new`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
     },
-    body: JSON.stringify({userId: name}),
+    body: JSON.stringify({ userId: name }),
   }).then(res => res.json());
-}
+};
