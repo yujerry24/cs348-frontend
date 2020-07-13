@@ -4,5 +4,5 @@ export class TabNames {
     static SEARCH = "Search";
     static CREATEPL = "CreatePlaylist";
     static TOPSONGS = "TopSongs";
-    static TOPARTS = "TopArtists";
+    static TOPARTISTS = "TopArtists";
 } 

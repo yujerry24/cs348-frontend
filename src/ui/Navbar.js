@@ -51,9 +51,9 @@ export default class Navbar extends React.Component {
   };
 
   onMostPopArtistsClick = () => {
-    this.setState({ currentTab: Constants.TabNames.TOPARTS });
+    this.setState({ currentTab: Constants.TabNames.TOPARTISTS });
     this.props.fetchMostPopularArtists();
-    this.props.setTab(Constants.TabNames.TOPARTS);
+    this.props.setTab(Constants.TabNames.TOPARTISTS);
   }
 
   onCreatePlaylistClick = () => {
@@ -112,7 +112,7 @@ export default class Navbar extends React.Component {
       <ListItem
         key={`drawer-top-artists`}
         className="drawer-list-item"
-        selected={this.state.currentTab === Constants.TabNames.TOPARTS}
+        selected={this.state.currentTab === Constants.TabNames.TOPARTISTS}
         onClick={() =>
           !this.state.drawerOpened
             ? this.toggleDrawer()

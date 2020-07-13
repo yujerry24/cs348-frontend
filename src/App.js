@@ -113,7 +113,7 @@ class App extends Component {
           availablePlaylists={this.state.availablePlaylists}
         />
       );
-    } else if (this.state.currentTab === Constants.TabNames.TOPARTS) { 
+    } else if (this.state.currentTab === Constants.TabNames.TOPARTISTS) { 
       return (
         <DataTable
           headings={topArtistsHeading}
