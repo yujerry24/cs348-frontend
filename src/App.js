@@ -6,6 +6,7 @@ import PlaylistCreator from './ui/PlaylistCreator';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
 import './App.css';
+import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
 import Video from './ui/Video';
@@ -22,15 +23,12 @@ class App extends Component {
     super();
     // Consider caching search responses?
     this.state = {
+      validLogin: false,
       searchResponse: [],
       mostPopSongsResponse: [],
       mostPopArtistsResponse: [],
     };
   }
-
-  componentWillMount = () => {
-    this.props.fetchAllPlaylists(this.props.userId);
-  };
 
   componentDidUpdate = prevProps => {
     if (
@@ -40,6 +38,8 @@ class App extends Component {
       this.props.allPlaylists.forEach(({ playlist_id }) =>
         this.props.fetchPlaylist(playlist_id)
       );
+    } else if (prevProps.userId !== this.props.userId) {
+      this.props.fetchAllPlaylists(this.props.userId);
     }
   };
 
@@ -65,6 +65,10 @@ class App extends Component {
         this.setState({ searchResponse: res });
       })
       .catch(err => err);
+  };
+
+  setValidLogin = valid => {
+    this.setState({ validLogin: valid });
   };
 
   renderInnerContainer = () => {
@@ -103,28 +107,35 @@ class App extends Component {
   render() {
     return (
       <div className="master-screen">
-        <Navbar
-          fetchMostPopularSongs={this.fetchMostPopularSongs}
-          fetchMostPopularArtists={this.fetchMostPopularArtists}
-        />
-        <div className="song-container">
-          <Searchbar
-            onSearch={
-              this.props.currentTab === Constants.TabNames.SEARCH
-                ? this.onClickSearch
-                : () => {
-                    alert('filter playlist contents maybe?');
-                  }
-              /*this.filterPlaylist ? maybe?*/
-            }
-          />
-          <div className="search-results-container">
-            {this.renderInnerContainer()}
-          </div>
-        </div>
-        <div className="video">
-          <Video videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */ />
-        </div>
+        {!this.state.validLogin ? (
+          <Login setValidLogin={this.setValidLogin} />
+        ) : (
+          <>
+            <Navbar
+              fetchMostPopularSongs={this.fetchMostPopularSongs}
+              fetchMostPopularArtists={this.fetchMostPopularArtists}
+            />
+            <div className="song-container">
+              <Searchbar
+                onSearch={
+                  this.props.currentTab === Constants.TabNames.SEARCH
+                    ? this.onClickSearch
+                    : () => {
+                        alert('filter playlist contents maybe?');
+                      }
+                }
+              />
+              <div className="search-results-container">
+                {this.renderInnerContainer()}
+              </div>
+            </div>
+            <div className="video">
+              <Video
+                videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }
@@ -134,7 +145,7 @@ export default connect(
   state => ({
     allPlaylists: state.allPlaylists.playlists,
     currentTab: state.mainApp.currentTab,
-    userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
+    userId: state.mainApp.userId,
   }),
   {
     fetchAllPlaylists: userId => fetchAllPlaylists(userId),
