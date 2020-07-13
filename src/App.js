@@ -78,24 +78,20 @@ class App extends Component {
       );
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
-    } else if (this.state.currentTab === Constants.TabNames.TOPSONGS) {
+    } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
       return (
         <DataTable
           headings={headings}
           rows={this.state.mostPopSongsResponse}
           isSearch={false}
-          onClick={this.dataTableButtonClick}
-          availablePlaylists={this.state.availablePlaylists}
         />
       );
-    } else if (this.state.currentTab === Constants.TabNames.TOPARTISTS) {
+    } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
       return (
         <DataTable
           headings={topArtistsHeading}
           rows={this.state.mostPopArtistsResponse}
           isSearch={false}
-          onClick={this.dataTableButtonClick}
-          availablePlaylists={this.state.availablePlaylists}
         />
       );
     } else {

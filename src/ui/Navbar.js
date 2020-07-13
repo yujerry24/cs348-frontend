@@ -51,16 +51,14 @@ class Navbar extends React.Component {
   };
 
   onMostPopSongsClick = () => {
-    this.setState({ currentTab: Constants.TabNames.TOPSONGS });
+    this.props.setCurrentTab(Constants.TabNames.TOPSONGS);
     this.props.fetchMostPopularSongs();
-    this.props.setTab(Constants.TabNames.TOPSONGS);
   };
 
   onMostPopArtistsClick = () => {
-    this.setState({ currentTab: Constants.TabNames.TOPARTISTS });
+    this.props.setCurrentTab(Constants.TabNames.TOPARTISTS);
     this.props.fetchMostPopularArtists();
-    this.props.setTab(Constants.TabNames.TOPARTISTS);
-  }
+  };
 
   onCreatePlaylistClick = () => {
     // TODO:

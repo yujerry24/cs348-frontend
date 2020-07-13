@@ -135,13 +135,15 @@ class DataTable extends React.Component {
             </TableCell>
           );
         })}
-        <TableCell
-          key={`actions-${id}`}
-          align={'left'}
-          style={{ padding: 0, minWidth: '90px' }}
-        >
-          {this.renderActionButtons(id)}
-        </TableCell>
+        {this.props.headings.indexOf('Actions') !== -1 && (
+          <TableCell
+            key={`actions-${id}`}
+            align={'left'}
+            style={{ padding: 0, minWidth: '90px' }}
+          >
+            {this.renderActionButtons(id)}
+          </TableCell>
+        )}
       </TableRow>
     );
   };
@@ -236,9 +238,10 @@ export default connect(
   (state, ownProps) => ({
     allPlaylists: state.allPlaylists.playlists,
     currentTab: state.mainApp.currentTab,
-    rows: state.playlistsById[state.mainApp.currentTab]
-      ? state.playlistsById[state.mainApp.currentTab].songsById
-      : ownProps.rows,
+    rows:
+      ownProps.rows ||
+      (state.playlistsById[state.mainApp.currentTab] &&
+        state.playlistsById[state.mainApp.currentTab].songsById),
   }),
   { fetchPlaylist }
 )(DataTable);
