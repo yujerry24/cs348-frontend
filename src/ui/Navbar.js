@@ -1,31 +1,41 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
+  Button,
   Divider,
   Drawer,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
+  ListItemSecondaryAction,
   ListSubheader,
+  Popover,
 } from '@material-ui/core';
 import {
   AccountCircle,
   Add,
   ChevronLeft,
   ChevronRight,
+  Delete,
   PlaylistPlay,
   Search,
 } from '@material-ui/icons';
 import './Navbar.scss';
 import * as Constants from '../utils/Constants';
+import { deletePlaylist } from '../utils/APICalls';
 
-export default class Navbar extends React.Component {
+import { fetchAllPlaylists } from '../store/fetchCalls';
+import { setCurrentTab } from '../store/actions';
+
+class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTab: Constants.TabNames.SEARCH,
       drawerOpened: true,
+      popoverAnchor: null,
     };
+    this.popoverAnchorEl = React.createRef();
   }
 
   toggleDrawer = () => {
@@ -33,38 +43,53 @@ export default class Navbar extends React.Component {
   };
 
   onPlaylistClick = playlistId => {
-    this.setState({ currentTab: playlistId });
-    // TODO: probably should cache playlist results
-    this.props.updatePlaylist(playlistId);
-    this.props.setTab(playlistId);
+    this.props.setCurrentTab(playlistId);
   };
 
   onSearchClick = () => {
-    this.setState({ currentTab: Constants.TabNames.SEARCH });
-    this.props.setTab(Constants.TabNames.SEARCH);
+    this.props.setCurrentTab(Constants.TabNames.SEARCH);
+  };
+
+  onMostPopSongsClick = () => {
+    this.props.setCurrentTab(Constants.TabNames.TOPSONGS);
+    this.props.fetchMostPopularSongs();
+  };
+
+  onMostPopArtistsClick = () => {
+    this.props.setCurrentTab(Constants.TabNames.TOPARTISTS);
+    this.props.fetchMostPopularArtists();
   };
 
   onCreatePlaylistClick = () => {
     // TODO:
     // open a creation modal to prompt user for a playlist name
     // this.setState({ currentTab: Constants.TabNames.CREATEPL });
-    this.setState({ currentTab: 'CreatePlaylist' });
-    this.props.setTab(Constants.TabNames.CREATEPL);
+    this.props.setCurrentTab(Constants.TabNames.CREATEPL);
+  };
+
+  onDeletePlaylistClick = () => {
+    this.setState({
+      deletePopoverOpen: true,
+      popoverAnchor: this.popoverAnchorEl.current,
+    });
   };
 
   onLogout = () => {
     // TODO:
     // open a creation modal??
     // call api
-    alert('logout current user');
+    // alert('logout current user');
+    this.props.setValidLogin(false);
   };
 
   playlistRow = ({ playlist_id, name }) => {
+    const { currentTab } = this.props;
     return (
       <ListItem
         key={`drawer-${playlist_id}`}
         className="drawer-list-item"
-        selected={this.state.currentTab === playlist_id}
+        button
+        selected={currentTab === playlist_id}
         onClick={() =>
           !this.state.drawerOpened
             ? this.toggleDrawer()
@@ -73,6 +98,55 @@ export default class Navbar extends React.Component {
       >
         <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
         {name}
+        {currentTab === playlist_id && this.state.drawerOpened && (
+          <ListItemSecondaryAction>
+            <IconButton
+              size="small"
+              edge="end"
+              aria-label="delete"
+              onClick={this.onDeletePlaylistClick}
+              ref={this.popoverAnchorEl}
+            >
+              <Delete fontSize="small" />
+            </IconButton>
+          </ListItemSecondaryAction>
+        )}
+      </ListItem>
+    );
+  };
+
+  topSongs = () => {
+    return (
+      <ListItem
+        key={`drawer-top-songs`}
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.TOPSONGS}
+        onClick={() =>
+          !this.state.drawerOpened
+            ? this.toggleDrawer()
+            : this.onMostPopSongsClick()
+        }
+      >
+        <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
+        {'Top 20 Songs'}
+      </ListItem>
+    );
+  };
+
+  topArtists = () => {
+    return (
+      <ListItem
+        key={`drawer-top-artists`}
+        className="drawer-list-item"
+        selected={this.state.currentTab === Constants.TabNames.TOPARTISTS}
+        onClick={() =>
+          !this.state.drawerOpened
+            ? this.toggleDrawer()
+            : this.onMostPopArtistsClick()
+        }
+      >
+        <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
+        {'Top 20 Artists'}
       </ListItem>
     );
   };
@@ -82,7 +156,8 @@ export default class Navbar extends React.Component {
       <ListItem
         key={`drawer-search`}
         className="drawer-list-item"
-        selected={this.state.currentTab === Constants.TabNames.SEARCH}
+        button
+        selected={this.props.currentTab === Constants.TabNames.SEARCH}
         onClick={() =>
           !this.state.drawerOpened ? this.toggleDrawer() : this.onSearchClick()
         }
@@ -100,7 +175,8 @@ export default class Navbar extends React.Component {
       <ListItem
         key="drawer-create-playlist"
         className="drawer-list-item"
-        selected={this.state.currentTab === Constants.TabNames.CREATEPL}
+        button
+        selected={this.props.currentTab === Constants.TabNames.CREATEPL}
         onClick={this.onCreatePlaylistClick}
       >
         <ListItemIcon>
@@ -111,8 +187,59 @@ export default class Navbar extends React.Component {
     );
   };
 
+  renderPopover = () => {
+    const open = Boolean(this.state.popoverAnchor);
+    const id = open ? 'delete-playlist-popover' : undefined;
+    return (
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={this.state.popoverAnchor}
+        onClose={() => {
+          this.setState({ popoverAnchor: null });
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <div className="popover-container">
+          {'Are you sure you want to delete this playlist?'}
+          <div className="popover-buttons">
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                this.setState({ popoverAnchor: null });
+              }}
+            >
+              No
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                deletePlaylist(this.props.currentTab).then(() => {
+                  this.props.fetchAllPlaylists(this.props.userId);
+                  this.props.setCurrentTab(Constants.TabNames.SEARCH);
+                });
+                this.setState({ popoverAnchor: null });
+              }}
+            >
+              Yes
+            </Button>
+          </div>
+        </div>
+      </Popover>
+    );
+  };
+
   render() {
-    const { playlists } = this.props;
+    const { allPlaylists } = this.props;
 
     return (
       <Drawer
@@ -130,9 +257,15 @@ export default class Navbar extends React.Component {
           {this.searchRow()}
           <Divider />
           {this.state.drawerOpened && (
+            <ListSubheader>{'Most Popular'}</ListSubheader>
+          )}
+          {this.topSongs()}
+          {this.topArtists()}
+          <Divider />
+          {this.state.drawerOpened && (
             <ListSubheader>{'Playlists'}</ListSubheader>
           )}
-          {playlists && playlists.map(this.playlistRow)}
+          {allPlaylists && allPlaylists.map(this.playlistRow)}
           <Divider />
           {this.state.drawerOpened && (
             <ListSubheader>{'Other Actions'}</ListSubheader>
@@ -141,6 +274,7 @@ export default class Navbar extends React.Component {
           <ListItem
             key="drawer-logout"
             className="drawer-list-item"
+            button
             onClick={this.onLogout}
           >
             <ListItemIcon>
@@ -149,7 +283,20 @@ export default class Navbar extends React.Component {
             {'Logout'}
           </ListItem>
         </List>
+        {this.renderPopover()}
       </Drawer>
     );
   }
 }
+
+export default connect(
+  state => ({
+    allPlaylists: state.allPlaylists.playlists,
+    currentTab: state.mainApp.currentTab,
+    userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
+  }),
+  {
+    setCurrentTab,
+    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
+  }
+)(Navbar);
