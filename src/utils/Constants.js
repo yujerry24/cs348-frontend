@@ -3,4 +3,6 @@
 export class TabNames {
     static SEARCH = "Search";
     static CREATEPL = "CreatePlaylist";
+    static TOPSONGS = "TopSongs";
+    static TOPARTISTS = "TopArtists";
 } 
