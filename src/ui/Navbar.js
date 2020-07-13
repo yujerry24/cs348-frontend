@@ -120,7 +120,7 @@ class Navbar extends React.Component {
       <ListItem
         key={`drawer-top-songs`}
         className="drawer-list-item"
-        selected={this.state.currentTab === Constants.TabNames.TOPSONGS}
+        selected={this.props.currentTab === Constants.TabNames.TOPSONGS}
         onClick={() =>
           !this.state.drawerOpened
             ? this.toggleDrawer()
@@ -138,7 +138,7 @@ class Navbar extends React.Component {
       <ListItem
         key={`drawer-top-artists`}
         className="drawer-list-item"
-        selected={this.state.currentTab === Constants.TabNames.TOPARTISTS}
+        selected={this.props.currentTab === Constants.TabNames.TOPARTISTS}
         onClick={() =>
           !this.state.drawerOpened
             ? this.toggleDrawer()
@@ -293,7 +293,7 @@ export default connect(
   state => ({
     allPlaylists: state.allPlaylists.playlists,
     currentTab: state.mainApp.currentTab,
-    userId: '63e439ec-8625-4912-8b03-e34d5a7cfaee',
+    userId: state.mainApp.userId,
   }),
   {
     setCurrentTab,

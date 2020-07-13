@@ -58,6 +58,13 @@ class Login extends Component {
     this.setState({ username: e.target.value });
   };
 
+  handleKeyDown = e => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      this.handleLogin();
+    }
+  };
+
   render() {
     return (
       <form className="login-container" noValidate autoComplete="off">
@@ -75,6 +82,7 @@ class Login extends Component {
                 placeholder="Username"
                 margin="normal"
                 onChange={this.setLogin}
+                onKeyDown={this.handleKeyDown}
               />
             </div>
           </CardContent>

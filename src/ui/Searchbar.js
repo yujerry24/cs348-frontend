@@ -12,7 +12,7 @@ export default class Searchbar extends React.Component {
     this.setState({ searchText: e.target.value });
   };
 
-  handleKeyUp = e => {
+  handleKeyDown = e => {
     if (e.keyCode === 13) {
       this.props.onSearch(this.state.searchText);
     }
@@ -26,7 +26,7 @@ export default class Searchbar extends React.Component {
             id="standard-basic"
             label="Search"
             onChange={this.handleChange}
-            onKeyUp={this.handleKeyUp}
+            onKeyDown={this.handleKeyDown}
           />
           <Button
             variant="contained"
