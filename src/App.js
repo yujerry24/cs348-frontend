@@ -15,6 +15,7 @@ import * as Constants from './utils/Constants';
 import { fetchAllPlaylists, fetchPlaylist } from './store/fetchCalls';
 
 const headings = ['Name', 'Artists', 'Album', 'Duration', 'Actions'];
+const topArtistsHeading = ['Artist Name', 'In Number Of Playlists'];
 
 class App extends Component {
   constructor() {
@@ -22,6 +23,8 @@ class App extends Component {
     // Consider caching search responses?
     this.state = {
       searchResponse: [],
+      mostPopSongsResponse: [],
+      mostPopArtistsResponse: [],
     };
   }
 
@@ -38,6 +41,22 @@ class App extends Component {
         this.props.fetchPlaylist(playlist_id)
       );
     }
+  };
+
+  fetchMostPopularSongs = () => {
+    CallApi.fetchMostPopularSongs()
+      .then(res => {
+        this.setState({ mostPopSongsResponse: res });
+      })
+      .catch(err => err);
+  };
+
+  fetchMostPopularArtists = () => {
+    CallApi.fetchMostPopularArtists()
+      .then(res => {
+        this.setState({ mostPopArtistsResponse: res });
+      })
+      .catch(err => err);
   };
 
   onClickSearch = text => {
@@ -59,6 +78,26 @@ class App extends Component {
       );
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
+    } else if (this.state.currentTab === Constants.TabNames.TOPSONGS) {
+      return (
+        <DataTable
+          headings={headings}
+          rows={this.state.mostPopSongsResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
+    } else if (this.state.currentTab === Constants.TabNames.TOPARTISTS) {
+      return (
+        <DataTable
+          headings={topArtistsHeading}
+          rows={this.state.mostPopArtistsResponse}
+          isSearch={false}
+          onClick={this.dataTableButtonClick}
+          availablePlaylists={this.state.availablePlaylists}
+        />
+      );
     } else {
       // Playlist tab selected
       return <DataTable headings={headings} isSearch={false} />;
@@ -68,7 +107,10 @@ class App extends Component {
   render() {
     return (
       <div className="master-screen">
-        <Navbar />
+        <Navbar
+          fetchMostPopularSongs={this.fetchMostPopularSongs}
+          fetchMostPopularArtists={this.fetchMostPopularArtists}
+        />
         <div className="song-container">
           <Searchbar
             onSearch={
