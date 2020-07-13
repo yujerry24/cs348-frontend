@@ -1,0 +1,31 @@
+.playlist-creator-container {
+    display: flex;
+    flex-direction: column;
+
+    .creator-title {
+        font-size: 50px;
+    }
+}
+
+.creator-textfield-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    .creator-nameInput {
+        display: flex;
+        flex-direction: row;
+
+        .creator-text {
+            // margin-right: 20px;
+            width: 300px;
+        }
+    
+        .creator-button {
+            font-size: 16px;
+        }
+    }
+}
+
+.creator-playlists{
+    margin-top: 20px;
+}
