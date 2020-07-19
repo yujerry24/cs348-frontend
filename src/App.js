@@ -9,7 +9,7 @@ import './App.css';
 import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
-import Video from './ui/Video';
+import Video from './ui/VideoDrawer';
 
 import * as CallApi from './utils/APICalls';
 import * as Constants from './utils/Constants';
@@ -35,7 +35,7 @@ class App extends Component {
       this.props.allPlaylists.length > 0
     ) {
       this.props.allPlaylists.forEach(({ playlist_id }) =>
-        this.props.fetchPlaylist(playlist_id)
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
       );
     } else if (prevProps.userId !== this.props.userId) {
       this.props.fetchAllPlaylists(this.props.userId);
@@ -124,11 +124,7 @@ class App extends Component {
                 {this.renderInnerContainer()}
               </div>
             </div>
-            <div className="video">
-              <Video
-                videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */
-              />
-            </div>
+            <Video />
           </>
         )}
       </div>
@@ -142,7 +138,7 @@ export default connect(
     ...state.mainApp,
   }),
   {
-    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
-    fetchPlaylist: playlistId => fetchPlaylist(playlistId),
+    fetchAllPlaylists,
+    fetchPlaylist,
   }
 )(App);

@@ -33,8 +33,8 @@ export const deleteSongs = async (songIds, playlistId) => {
   });
 };
 
-export const fetchPlaylist = async playlistId => {
-  return fetch(`${API}/playlist/${playlistId}`).then(res => res.json());
+export const fetchPlaylist = async (playlistId, userId) => {
+  return fetch(`${API}/playlist/${playlistId}/userId`).then(res => res.json());
 };
 
 export const fetchMostPopularSongs = async () => {

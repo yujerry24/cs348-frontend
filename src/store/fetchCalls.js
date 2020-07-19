@@ -22,10 +22,10 @@ export const fetchAllPlaylists = userId => {
   };
 };
 
-export const fetchPlaylist = playlistId => {
+export const fetchPlaylist = (playlistId, userId) => {
   return dispatch => {
-    dispatch(actions.fetchPlaylistPending);
-    fetch(`${API}/playlist/${playlistId}`)
+    dispatch(actions.fetchPlaylistPending(playlistId));
+    fetch(`${API}/playlist/getUserPlaylists/${playlistId}/${userId}`)
       .then(res => res.json())
       .then(res => {
         dispatch(actions.fetchPlaylistSuccess(playlistId, res));

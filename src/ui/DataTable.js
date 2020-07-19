@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   Button,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -18,13 +19,17 @@ import {
 // import TablePagination from '@material-ui/core/TablePagination';
 // import TableSortLabel from '@material-ui/core/TableSortLabel';
 
-import Add from '@material-ui/icons/PlaylistAdd';
-import Favorite from '@material-ui/icons/Favorite';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import Delete from '@material-ui/icons/Delete';
+import {
+  Add,
+  Favorite,
+  FavoriteBorder,
+  Delete,
+  PlayArrow,
+} from '@material-ui/icons';
 import './DataTable.scss';
 
 import * as CallApi from '../utils/APICalls';
+import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
 class DataTable extends React.Component {
@@ -40,7 +45,7 @@ class DataTable extends React.Component {
   onAdd = (ids, playlistIds) => {
     CallApi.addSongs(ids, playlistIds).then(() => {
       playlistIds.forEach(id => {
-        this.props.fetchPlaylist(id);
+        this.props.fetchPlaylist(id, this.props.userId);
       });
     });
   };
@@ -51,6 +56,11 @@ class DataTable extends React.Component {
     CallApi.deleteSongs(ids, this.props.currentTab).then(() => {
       this.props.fetchPlaylist(this.props.currentTab);
     });
+  };
+
+  onPlay = songId => {
+    this.props.setPlayingPlaylist(this.props.currentTab);
+    this.props.setPlayingSong(songId);
   };
 
   handleCheckbox = id => {
@@ -79,7 +89,7 @@ class DataTable extends React.Component {
         <IconButton
           key={`add-${id}`}
           color="primary"
-          size="medium"
+          size="small"
           aria-label="add"
           onClick={e => {
             this.setState({
@@ -96,7 +106,7 @@ class DataTable extends React.Component {
         <IconButton
           key={`delete-${id}`}
           color="secondary"
-          size="medium"
+          size="small"
           aria-label="delete"
           onClick={() => this.onDelete([id])}
         >
@@ -104,6 +114,17 @@ class DataTable extends React.Component {
         </IconButton>
       );
     }
+    actionButtons.push(
+      <IconButton
+        key={`play-${id}`}
+        color="secondary"
+        size="small"
+        aria-label="play"
+        onClick={() => this.onPlay(id)}
+      >
+        <PlayArrow />
+      </IconButton>
+    );
     actionButtons.push(
       <Checkbox
         key={`favorite-${id}`}
@@ -116,30 +137,37 @@ class DataTable extends React.Component {
   };
 
   renderRow = ([id, _row]) => {
+    const dataCells = [];
+    Object.entries(_row).forEach(([key, _cell]) => {
+      let data = _cell;
+      let skipAttrs = ['isfavourite', 'video_id'];
+
+      if (key === 'video_duration') {
+        // convert duration in miliseconds to min:sec format
+        data = `${Math.floor(data / 60)}:${
+          data % 60 < 10 ? '0' + (data % 60) : data % 60
+        }`;
+      } else if (Array.isArray(data)) {
+        // ex. songs with many artists
+        data = data.sort().join(', ');
+      }
+
+      !skipAttrs.includes(key) &&
+        dataCells.push(
+          <TableCell key={`cell-${id}-${key}`} align={'left'}>
+            {data}
+          </TableCell>
+        );
+    });
+
     return (
       <TableRow key={`row-${id}`}>
-        {Object.entries(_row).map(([key, _cell]) => {
-          let data = _cell;
-          if (key === 'video_duration') {
-            // convert duration in miliseconds to min:sec format
-            data = `${Math.floor(data / 60)}:${
-              data % 60 < 10 ? '0' + (data % 60) : data % 60
-            }`;
-          } else if (Array.isArray(data)) {
-            // ex. songs with many artists
-            data = data.sort().join(', ');
-          }
-          return (
-            <TableCell key={`cell-${id}-${key}`} align={'left'}>
-              {data}
-            </TableCell>
-          );
-        })}
+        {dataCells}
         {this.props.headings.indexOf('Actions') !== -1 && (
           <TableCell
             key={`actions-${id}`}
             align={'left'}
-            style={{ padding: 0, minWidth: '90px' }}
+            style={{ padding: 0, minWidth: '110px' }}
           >
             {this.renderActionButtons(id)}
           </TableCell>
@@ -221,9 +249,14 @@ class DataTable extends React.Component {
 
     const bodyContent = this.renderBody();
     const popover = this.renderPopover();
-
+    const loading = this.props.pending && (
+      <div className="loading">
+        <CircularProgress />
+      </div>
+    );
     return (
       <div>
+        {loading}
         <Table stickyHeader className="Table">
           <TableHead>{headerContent}</TableHead>
           <TableBody>{bodyContent}</TableBody>
@@ -238,10 +271,14 @@ export default connect(
   (state, ownProps) => ({
     allPlaylists: state.allPlaylists.playlists,
     currentTab: state.mainApp.currentTab,
+    userId: state.mainApp.userId,
     rows:
       ownProps.rows ||
       (state.playlistsById[state.mainApp.currentTab] &&
         state.playlistsById[state.mainApp.currentTab].songsById),
+    pending:
+      state.playlistsById[state.mainApp.currentTab] &&
+      state.playlistsById[state.mainApp.currentTab].pending,
   }),
-  { fetchPlaylist }
+  { setPlayingPlaylist, setPlayingSong, fetchPlaylist }
 )(DataTable);
