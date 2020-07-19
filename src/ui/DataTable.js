@@ -255,14 +255,14 @@ class DataTable extends React.Component {
       </div>
     );
     return (
-      <div>
+      <>
         {loading}
         <Table stickyHeader className="Table">
           <TableHead>{headerContent}</TableHead>
           <TableBody>{bodyContent}</TableBody>
         </Table>
         {popover}
-      </div>
+      </>
     );
   }
 }

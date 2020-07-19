@@ -59,7 +59,7 @@ class App extends Component {
   };
 
   onClickSearch = text => {
-    CallApi.search(text)
+    CallApi.search(text, this.props.userId)
       .then(res => {
         this.setState({ searchResponse: res });
       })

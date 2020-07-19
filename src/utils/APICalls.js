@@ -5,8 +5,8 @@ export const fetchAllPlaylists = async userId => {
   return fetch(`${API}/playlist/list/${userId}`).then(res => res.json());
 };
 
-export const search = async text => {
-  return fetch(`${API}/song/search/${text}`).then(res => res.json());
+export const search = async (text, userId) => {
+  return fetch(`${API}/song/search/${userId}/${text}`).then(res => res.json());
 };
 
 export const addSongs = async (songIds, playlistIds) => {
