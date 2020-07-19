@@ -21,6 +21,20 @@ export const setValidLogin = isValid => {
   };
 };
 
+export const setPlayingSong = songId => {
+  return {
+    type: actions.SET_PLAYING_SONG,
+    songId,
+  };
+};
+
+export const setPlayingPlaylist = playlistId => {
+  return {
+    type: actions.SET_PLAYING_PLAYLIST,
+    playlistId,
+  };
+};
+
 export const fetchAllPlaylistsPending = () => {
   return {
     type: actions.FETCH_ALL_PLAYLISTS_PENDING,

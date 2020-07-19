@@ -24,6 +24,16 @@ export const mainApp = (state = initAppState, action) => {
         ...state,
         validLogin: action.isValid,
       };
+    case types.SET_PLAYING_SONG:
+      return {
+        ...state,
+        playingSong: action.songId,
+      };
+    case types.SET_PLAYING_PLAYLIST:
+      return {
+        ...state,
+        playingPlaylist: action.playlistId,
+      };
     default:
       return state;
   }
@@ -64,7 +74,7 @@ export function playlistsById(state = {}, action) {
     case types.FETCH_PLAYLIST_PENDING:
       return {
         ...state,
-        [action.playlistId]: { pending: true },
+        [action.playlistId]: { ...state[action.playlistId], pending: true },
       };
     case types.FETCH_PLAYLIST_SUCCESS:
       return {
