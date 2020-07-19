@@ -1,0 +1,44 @@
+.videoDrawerOpen {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  height: 225px;
+  width: 400px;
+
+  .paper {
+    position: relative;
+    height: 225px;
+    width: 400px;
+    background-color: #dccfec;
+  }
+}
+
+.videoDrawerClosed {
+  position: absolute;
+  bottom: 24px;
+  right: 12px;
+  height: 225px;
+  width: 64px;
+  overflow-x: hidden;
+
+  .paper {
+    position: relative;
+    width: 64px;
+    background-color: #dccfec;
+    overflow-x: hidden;
+  }
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.video {
+  height: 100%;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
