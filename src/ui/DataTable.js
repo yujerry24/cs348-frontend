@@ -39,8 +39,15 @@ class DataTable extends React.Component {
       popoverAnchorEl: null,
       selectedSongs: [],
       addToPlaylists: [],
+      multiSong: false,
     };
   }
+
+  componentDidUpdate = prevProps => {
+    if (prevProps.currentTab !== this.props.currentTab) {
+      this.setState({ selectedSongs: [] });
+    }
+  };
 
   onAdd = (ids, playlistIds) => {
     CallApi.addSongs(ids, playlistIds).then(() => {
@@ -63,13 +70,45 @@ class DataTable extends React.Component {
     this.props.setPlayingSong(songId);
   };
 
-  handleCheckbox = id => {
+  handleSongsCheck = id => {
+    const index = this.state.selectedSongs.findIndex(item => item === id);
+    if (index === -1) {
+      this.setState({
+        selectedSongs: this.state.selectedSongs.concat([id]),
+        multiSong: true,
+      });
+    } else if (this.state.multiSong && this.state.selectedSongs.length === 1) {
+      this.setState({
+        selectedSongs: [],
+        multiSong: false,
+      });
+    } else {
+      this.setState({
+        selectedSongs: this.state.selectedSongs
+          .slice(0, index)
+          .concat(this.state.selectedSongs.slice(index + 1)),
+      });
+    }
+  };
+
+  handleToggleAllSongs = () => {
+    const { rows } = this.props;
+    if (this.state.selectedSongs.length === Object.keys(rows).length) {
+      this.setState({ selectedSongs: [], multiSong: false });
+    } else {
+      this.setState({ selectedSongs: Object.keys(rows), multiSong: true });
+    }
+  };
+
+  handlePlaylistsCheck = id => {
     const index = this.state.addToPlaylists.findIndex(item => item === id);
     if (index === -1) {
       this.setState({ addToPlaylists: this.state.addToPlaylists.concat([id]) });
     } else {
       this.setState({
-        addToPlaylists: this.state.addToPlaylists.slice(index, 1),
+        addToPlaylists: this.state.addToPlaylists
+          .slice(0, index)
+          .concat(this.state.addToPlaylists.slice(index + 1)),
       });
     }
   };
@@ -162,6 +201,13 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
+        <TableCell>
+          <Checkbox
+            key={`song-checkbox-${id}`}
+            checked={this.state.selectedSongs.includes(id)}
+            onChange={() => this.handleSongsCheck(id)}
+          />
+        </TableCell>
         {dataCells}
         {this.props.headings.indexOf('Actions') !== -1 && (
           <TableCell
@@ -203,7 +249,9 @@ class DataTable extends React.Component {
                 key={`add-to-playlist-${playlist.name}`}
                 control={
                   <Checkbox
-                    onChange={() => this.handleCheckbox(playlist.playlist_id)}
+                    onChange={() =>
+                      this.handlePlaylistsCheck(playlist.playlist_id)
+                    }
                   />
                 }
                 label={playlist.name}
@@ -216,6 +264,7 @@ class DataTable extends React.Component {
                 addToPlaylists: [],
                 selectedSongs: [],
                 popoverAnchorEl: null,
+                multiSong: false,
               });
             }}
           >
@@ -233,7 +282,12 @@ class DataTable extends React.Component {
         open={open}
         anchorEl={this.state.popoverAnchorEl}
         onClose={() => {
-          this.setState({ popoverAnchorEl: null });
+          this.setState({
+            addToPlaylists: [],
+            selectedSongs: [],
+            popoverAnchorEl: null,
+            multiSong: false,
+          });
         }}
         anchorOrigin={{
           vertical: 'bottom',
@@ -249,11 +303,84 @@ class DataTable extends React.Component {
     );
   };
 
+  renderToolbar = () => {
+    let currPlaylist = this.props.allPlaylists.find(
+      p => p.playlist_id === this.props.currentTab
+    );
+    return (
+      <div
+        className={
+          this.state.multiSong ? 'table-toolbar-selected' : 'table-toolbar'
+        }
+      >
+        <div className="table-toolbar-title">
+          {this.props.isPlaylist && currPlaylist
+            ? currPlaylist.name
+            : this.props.currentTab}
+        </div>
+        {this.state.multiSong && (
+          <div className="table-toolbar-multi-actions">
+            <p>{`${this.state.selectedSongs.length} selected`}</p>
+            <div className="table-toolbar-button">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={e => {
+                  this.setState({
+                    popoverAnchorEl: e.currentTarget,
+                  });
+                }}
+              >
+                Add to Playlists
+              </Button>
+            </div>
+            {this.props.isPlaylist && (
+              <div className="table-toolbar-button">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => {
+                    this.onDelete(this.state.selectedSongs);
+                    this.setState({ selectedSongs: [], multiSong: false });
+                  }}
+                >
+                  Delete from playlist
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   render() {
-    const { headings } = this.props;
+    const { headings, rows } = this.props;
+    const rowsLength = Object.keys(rows).length;
 
     const headerContent = (
-      <TableRow key="heading">{headings.map(this.renderHeadingRow)}</TableRow>
+      <TableRow key="heading">
+        <TableCell
+          key={`actions-selectAll`}
+          align={'left'}
+          style={{ minWidth: '90px' }}
+        >
+          <Checkbox
+            onClick={this.handleToggleAllSongs}
+            checked={
+              this.state.selectedSongs.length === rowsLength && rowsLength !== 0
+            }
+            indeterminate={
+              this.state.selectedSongs.length !== rowsLength &&
+              this.state.selectedSongs.length !== 0 &&
+              this.state.multiSong
+            }
+            disabled={rowsLength === 0}
+            inputProps={{ 'aria-label': 'all items selected' }}
+          />
+        </TableCell>
+        {headings.map(this.renderHeadingRow)}
+      </TableRow>
     );
 
     const bodyContent = this.renderBody();
@@ -263,13 +390,18 @@ class DataTable extends React.Component {
         <CircularProgress />
       </div>
     );
+    const toolbar = this.renderToolbar();
+
     return (
       <>
         {loading}
-        <Table stickyHeader className="Table">
-          <TableHead>{headerContent}</TableHead>
-          <TableBody>{bodyContent}</TableBody>
-        </Table>
+        {toolbar}
+        <div className="table-container">
+          <Table stickyHeader className="Table">
+            <TableHead>{headerContent}</TableHead>
+            <TableBody>{bodyContent}</TableBody>
+          </Table>
+        </div>
         {popover}
       </>
     );
