@@ -46,7 +46,7 @@ class PlaylistCreator extends React.Component {
         addPlaylistsToPlaylist(newId['playlistId'], playlist_ids)
           .then(() => {
             this.props.setCurrentTab(newId['playlistId']);
-            this.props.fetchPlaylist(newId['playlistId']);
+            this.props.fetchPlaylist(newId['playlistId'], this.props.userId);
           })
           .catch(err => err);
       })
@@ -224,7 +224,7 @@ export default connect(
   }),
   {
     setCurrentTab,
-    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
-    fetchPlaylist: playlistId => fetchPlaylist(playlistId),
+    fetchAllPlaylists,
+    fetchPlaylist,
   }
 )(PlaylistCreator);

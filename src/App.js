@@ -9,7 +9,7 @@ import './App.css';
 import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
-import Video from './ui/Video';
+import Video from './ui/VideoDrawer';
 
 import * as CallApi from './utils/APICalls';
 import * as Constants from './utils/Constants';
@@ -35,7 +35,7 @@ class App extends Component {
       this.props.allPlaylists.length > 0
     ) {
       this.props.allPlaylists.forEach(({ playlist_id }) =>
-        this.props.fetchPlaylist(playlist_id)
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
       );
     } else if (prevProps.userId !== this.props.userId) {
       this.props.fetchAllPlaylists(this.props.userId);
@@ -59,7 +59,7 @@ class App extends Component {
   };
 
   onClickSearch = text => {
-    CallApi.search(text)
+    CallApi.search(text, this.props.userId)
       .then(res => {
         this.setState({ searchResponse: res });
       })
@@ -68,34 +68,23 @@ class App extends Component {
 
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
-      return (
-        <DataTable
-          headings={headings}
-          rows={this.state.searchResponse}
-          isSearch={true}
-        />
-      );
+      return <DataTable headings={headings} rows={this.state.searchResponse} />;
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
       return (
-        <DataTable
-          headings={headings}
-          rows={this.state.mostPopSongsResponse}
-          isSearch={false}
-        />
+        <DataTable headings={headings} rows={this.state.mostPopSongsResponse} />
       );
     } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
       return (
         <DataTable
           headings={topArtistsHeading}
           rows={this.state.mostPopArtistsResponse}
-          isSearch={false}
         />
       );
     } else {
       // Playlist tab selected
-      return <DataTable headings={headings} isSearch={false} />;
+      return <DataTable headings={headings} isPlaylist />;
     }
   };
 
@@ -124,11 +113,7 @@ class App extends Component {
                 {this.renderInnerContainer()}
               </div>
             </div>
-            <div className="video">
-              <Video
-                videoId={'-9fC6oDFl5k'} /* Time of our life: -9fC6oDFl5k */
-              />
-            </div>
+            <Video />
           </>
         )}
       </div>
@@ -142,7 +127,7 @@ export default connect(
     ...state.mainApp,
   }),
   {
-    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
-    fetchPlaylist: playlistId => fetchPlaylist(playlistId),
+    fetchAllPlaylists,
+    fetchPlaylist,
   }
 )(App);

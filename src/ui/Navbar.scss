@@ -5,14 +5,16 @@
 }
 
 .drawerOpen {
-  width: 200px;
+  width: 224px;
+  height: 100vh;
   .paper {
     background-color: #a997df;
-    width: 200px;
+    width: 224px;
   }
 }
 .drawerClosed {
   width: 56px;
+  height: 100vh;
   .paper {
     background-color: #a997df;
     width: 56px;
@@ -41,4 +43,16 @@
     display: flex;
     justify-content: space-evenly;
   }
+}
+
+.list {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.playlist-items-container {
+  background-color: #a997df;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100% - 376px);
 }

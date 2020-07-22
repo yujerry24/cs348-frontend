@@ -5,8 +5,8 @@ export const fetchAllPlaylists = async userId => {
   return fetch(`${API}/playlist/list/${userId}`).then(res => res.json());
 };
 
-export const search = async text => {
-  return fetch(`${API}/song/search/${text}`).then(res => res.json());
+export const search = async (text, userId) => {
+  return fetch(`${API}/song/search/${userId}/${text}`).then(res => res.json());
 };
 
 export const addSongs = async (songIds, playlistIds) => {
@@ -33,8 +33,8 @@ export const deleteSongs = async (songIds, playlistId) => {
   });
 };
 
-export const fetchPlaylist = async playlistId => {
-  return fetch(`${API}/playlist/${playlistId}`).then(res => res.json());
+export const fetchPlaylist = async (playlistId, userId) => {
+  return fetch(`${API}/playlist/${playlistId}/userId`).then(res => res.json());
 };
 
 export const fetchMostPopularSongs = async () => {
