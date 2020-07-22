@@ -248,13 +248,13 @@ class Navbar extends React.Component {
         className={this.state.drawerOpened ? 'drawerOpen' : 'drawerClosed'}
         classes={{ paper: 'paper' }}
       >
-        <div className="drawer-header">
-          <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
-            {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
+        <List className="list">
+          <div className="drawer-header">
+            <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
+              {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
+            </IconButton>
+          </div>
+          <Divider />
           {this.searchRow()}
           <Divider />
           {this.state.drawerOpened && (
@@ -263,10 +263,12 @@ class Navbar extends React.Component {
           {this.topSongs()}
           {this.topArtists()}
           <Divider />
-          {this.state.drawerOpened && (
-            <ListSubheader>{'Playlists'}</ListSubheader>
-          )}
-          {allPlaylists && allPlaylists.map(this.playlistRow)}
+          <div className="playlist-items-container">
+            {this.state.drawerOpened && (
+              <ListSubheader>{'Playlists'}</ListSubheader>
+            )}
+            {allPlaylists && allPlaylists.map(this.playlistRow)}
+          </div>
           <Divider />
           {this.state.drawerOpened && (
             <ListSubheader>{'Other Actions'}</ListSubheader>
