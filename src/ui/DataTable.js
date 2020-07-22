@@ -81,10 +81,10 @@ class DataTable extends React.Component {
   );
 
   renderActionButtons = id => {
-    const { isSearch } = this.props;
+    const { isPlaylist } = this.props;
     const actionButtons = [];
 
-    if (isSearch) {
+    if (!isPlaylist) {
       actionButtons.push(
         <IconButton
           key={`add-${id}`}
@@ -193,23 +193,9 @@ class DataTable extends React.Component {
     const { allPlaylists } = this.props;
     const open = Boolean(this.state.popoverAnchorEl);
     const id = open ? 'add-to-playlist-popover' : undefined;
-    return (
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={this.state.popoverAnchorEl}
-        onClose={() => {
-          this.setState({ popoverAnchorEl: null });
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
+
+    const popoverContent =
+      allPlaylists && allPlaylists.length > 0 ? (
         <FormGroup className="add-to-playlist-list">
           {allPlaylists &&
             allPlaylists.map(playlist => (
@@ -236,6 +222,29 @@ class DataTable extends React.Component {
             Add
           </Button>
         </FormGroup>
+      ) : (
+        <div style={{ padding: '24px', width: '200px' }}>
+          {'You must create a playlist first before you can add songs to one.'}
+        </div>
+      );
+    return (
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={this.state.popoverAnchorEl}
+        onClose={() => {
+          this.setState({ popoverAnchorEl: null });
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        {popoverContent}
       </Popover>
     );
   };

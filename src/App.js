@@ -68,34 +68,23 @@ class App extends Component {
 
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
-      return (
-        <DataTable
-          headings={headings}
-          rows={this.state.searchResponse}
-          isSearch={true}
-        />
-      );
+      return <DataTable headings={headings} rows={this.state.searchResponse} />;
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
       return (
-        <DataTable
-          headings={headings}
-          rows={this.state.mostPopSongsResponse}
-          isSearch={false}
-        />
+        <DataTable headings={headings} rows={this.state.mostPopSongsResponse} />
       );
     } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
       return (
         <DataTable
           headings={topArtistsHeading}
           rows={this.state.mostPopArtistsResponse}
-          isSearch={false}
         />
       );
     } else {
       // Playlist tab selected
-      return <DataTable headings={headings} isSearch={false} />;
+      return <DataTable headings={headings} isPlaylist />;
     }
   };
 

@@ -21,7 +21,7 @@
 
 .playlist-container {
   width: 80%;
-  margin-top: 30px;
+  margin: 30px 0px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -30,8 +30,8 @@
 }
 
 .search-results-container {
-  margin-top: 30px;
   width: 80%;
+  margin: 30px 0px;
   overflow-y: auto;
 }
 
@@ -67,8 +67,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.body {
-  height: 100%;
 }
