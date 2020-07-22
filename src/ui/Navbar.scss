@@ -53,5 +53,6 @@
 .playlist-items-container {
   background-color: #a997df;
   overflow-y: auto;
+  overflow-x: hidden;
   height: calc(100% - 376px);
 }
