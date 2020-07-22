@@ -35,6 +35,13 @@ export const setPlayingPlaylist = playlistId => {
   };
 };
 
+export const setSearchText = searchText => {
+  return {
+    type: actions.SET_SEARCH_TEXT,
+    searchText,
+  };
+};
+
 export const fetchAllPlaylistsPending = () => {
   return {
     type: actions.FETCH_ALL_PLAYLISTS_PENDING,
@@ -74,6 +81,88 @@ export const fetchPlaylistError = (playlistId, error) => {
   return {
     type: actions.FETCH_PLAYLIST_ERROR,
     playlistId,
+    error,
+  };
+};
+
+//////////////////
+
+export const fetchMiniSongSearchPending = () => {
+  return {
+    type: actions.FETCH_MINISONGSEARCH_PENDING,
+  };
+};
+
+export const fetchMiniSongSearchSuccess = (songs) => {
+  return {
+    type: actions.FETCH_MINISONGSEARCH_SUCCESS,
+    songs,
+  };
+};
+
+export const fetchMiniSongSearchError = (error) => {
+  return {
+    type: actions.FETCH_MINISONGSEARCH_ERROR,
+    error,
+  };
+};
+
+export const fetchMiniArtistSearchPending = () => {
+  return {
+    type: actions.FETCH_MINIARTISTSEARCH_PENDING,
+  };
+};
+
+export const fetchMiniArtistSearchSuccess = (artists) => {
+  return {
+    type: actions.FETCH_MINIARTISTSEARCH_SUCCESS,
+    artists,
+  };
+};
+
+export const fetchMiniArtistSearchError = (error) => {
+  return {
+    type: actions.FETCH_MINIARTISTSEARCH_ERROR,
+    error,
+  };
+};
+
+export const fetchMiniAlbumSearchPending = () => {
+  return {
+    type: actions.FETCH_MINIALBUMSEARCH_PENDING,
+  };
+};
+
+export const fetchMiniAlbumSearchSuccess = (albums) => {
+  return {
+    type: actions.FETCH_MINIALBUMSEARCH_SUCCESS,
+    albums,
+  };
+};
+
+export const fetchMiniAlbumSearchError = (error) => {
+  return {
+    type: actions.FETCH_MINIALBUMSEARCH_ERROR,
+    error,
+  };
+};
+
+export const fetchMiniPlaylistSearchPending = () => {
+  return {
+    type: actions.FETCH_MINIPLAYLISTSEARCH_PENDING,
+  };
+};
+
+export const fetchMiniPlaylistSearchSuccess = (playlists) => {
+  return {
+    type: actions.FETCH_MINIPLAYLISTSEARCH_SUCCESS,
+    playlists,
+  };
+};
+
+export const fetchMiniPlaylistSearchError = (error) => {
+  return {
+    type: actions.FETCH_MINIPLAYLISTSEARCH_ERROR,
     error,
   };
 };

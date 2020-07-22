@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import DataTable from './ui/DataTable';
 import PlaylistCreator from './ui/PlaylistCreator';
+import GeneralSearch from './ui/GeneralSearch';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
 import './App.css';
@@ -68,7 +69,14 @@ class App extends Component {
 
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
-      return <DataTable headings={headings} rows={this.state.searchResponse} />;
+      return (
+        <GeneralSearch />
+        // <DataTable
+        //   headings={headings}
+        //   rows={this.state.searchResponse}
+        //   isSearch={true}
+        // />
+      );
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
