@@ -5,6 +5,7 @@ const initAppState = {
   userId: '',
   currentTab: TabNames.SEARCH,
   validLogin: false,
+  searchText: "",
 };
 
 export const mainApp = (state = initAppState, action) => {
@@ -34,6 +35,11 @@ export const mainApp = (state = initAppState, action) => {
         ...state,
         playingPlaylist: action.playlistId,
       };
+    case types.SET_SEARCH_TEXT:
+      return {
+        ...state,
+        searchText: action.searchText,
+      }
     default:
       return state;
   }
@@ -85,6 +91,123 @@ export function playlistsById(state = {}, action) {
       return {
         ...state,
         [action.playlistId]: { pending: false, error: action.error },
+      };
+    default:
+      return state;
+  }
+}
+ 
+
+const initMiniSongSearchResults = {
+  pending: false,
+  songs: {},
+};
+
+const initMiniArtistSearchResults = {
+  pending: false,
+  playlists: {},
+};
+
+const initMiniAlbumSearchResults = {
+  pending: false,
+  albums: {},
+};
+
+const initMiniPlaylistSearchResults = {
+  pending: false,
+  artists: {},
+};
+
+export function miniSongSearch(state = initMiniSongSearchResults, action) {
+  switch (action.type) {
+    case types.FETCH_MINISONGSEARCH_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case types.FETCH_MINISONGSEARCH_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        songs: action.songs
+      };
+    case types.FETCH_MINISONGSEARCH_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error
+      };
+    default:
+      return state;
+  }
+}
+
+export function miniArtistSearch(state = initMiniArtistSearchResults, action) {
+  switch (action.type) {
+    case types.FETCH_MINIARTISTSEARCH_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case types.FETCH_MINIARTISTSEARCH_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        miniArtistResults: action.artists
+      };
+    case types.FETCH_MINIARTISTSEARCH_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error
+      };
+    default:
+      return state;
+  }
+}
+
+export function miniAlbumSearch(state = initMiniAlbumSearchResults, action) {
+  switch (action.type) {
+    case types.FETCH_MINIALBUMSEARCH_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case types.FETCH_MINIALBUMSEARCH_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        miniAlbumResults: action.albums
+      };
+    case types.FETCH_MINIALBUMSEARCH_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error
+      };
+    default:
+      return state;
+  }
+}
+
+export function miniPlaylistSearch(state = initMiniPlaylistSearchResults, action) {
+  switch (action.type) {
+    case types.FETCH_MINIPLAYLISTSEARCH_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case types.FETCH_MINIPLAYLISTSEARCH_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        miniPlaylistResults: action.playlists
+      };
+    case types.FETCH_MINIPLAYLISTSEARCH_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error
       };
     default:
       return state;
