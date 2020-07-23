@@ -247,6 +247,7 @@ class Navbar extends React.Component {
         variant="permanent"
         className={this.state.drawerOpened ? 'drawerOpen' : 'drawerClosed'}
         classes={{ paper: 'paper' }}
+        PaperProps = {{elevation: 16}}
       >
         <List className="list">
           <div className="drawer-header">
