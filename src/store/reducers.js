@@ -105,7 +105,7 @@ const initMiniSongSearchResults = {
 
 const initMiniArtistSearchResults = {
   pending: false,
-  playlists: {},
+  artists: {},
 };
 
 const initMiniAlbumSearchResults = {
@@ -115,7 +115,7 @@ const initMiniAlbumSearchResults = {
 
 const initMiniPlaylistSearchResults = {
   pending: false,
-  artists: {},
+  playlists: {},
 };
 
 export function miniSongSearch(state = initMiniSongSearchResults, action) {
@@ -153,7 +153,7 @@ export function miniArtistSearch(state = initMiniArtistSearchResults, action) {
       return {
         ...state,
         pending: false,
-        miniArtistResults: action.artists
+        artists: action.artists
       };
     case types.FETCH_MINIARTISTSEARCH_ERROR:
       return {
@@ -177,7 +177,7 @@ export function miniAlbumSearch(state = initMiniAlbumSearchResults, action) {
       return {
         ...state,
         pending: false,
-        miniAlbumResults: action.albums
+        albums: action.albums
       };
     case types.FETCH_MINIALBUMSEARCH_ERROR:
       return {
@@ -201,7 +201,7 @@ export function miniPlaylistSearch(state = initMiniPlaylistSearchResults, action
       return {
         ...state,
         pending: false,
-        miniPlaylistResults: action.playlists
+        playlists: action.playlists
       };
     case types.FETCH_MINIPLAYLISTSEARCH_ERROR:
       return {

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, TextField, Toolbar } from '@material-ui/core';
+import { AppBar, Toolbar, InputBase } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
 import './Searchbar.scss';
 import { connect } from 'react-redux';
 import { setSearchText } from '../store/actions'
@@ -7,13 +8,17 @@ import { fetchMiniSongSearch, fetchMiniArtistSearch, fetchMiniAlbumSearch, fetch
 
 class Searchbar extends React.Component {
   handleChange = e => {
-    // this.setState({ searchText: e.target.value });
     this.props.setSearchText(e.target.value);
+    if (this.props.searchText !== "") {
+      this.props.fetchMiniSongSearch(this.props.searchText);
+      this.props.fetchMiniArtistSearch(this.props.searchText);
+      this.props.fetchMiniAlbumSearch(this.props.searchText);
+      this.props.fetchMiniPlaylistSearch(this.props.searchText);
+    }
   };
 
   handleKeyDown = e => {
     if (e.keyCode === 13) {
-      // this.props.onSearch(this.state.searchText);
       this.props.setSearchText(e.target.value);
     }
   };
@@ -41,28 +46,31 @@ class Searchbar extends React.Component {
     }
     return (
       <div className="search-bar-container">
-        <Toolbar className="search-toolbar">
-          <div className="search-component">
-            <TextField
-              id="standard-basic"
-              label="Search"
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => this.onClick()}
-            >
-              Search
-            </Button>
-          </div>
-          {currentMusic
-            ? `Currently playing ${
-                playingPlaylist ? 'playlist' : 'song'
-              }: ${currentMusic}`
-            : `No music selected`}
-        </Toolbar>
+        <AppBar className="search-appbar" color='inherit' position="static">
+          <Toolbar boxShadow={1} className="search-toolbar">
+            <div className="search-component">
+              <div className="search-box">
+                <div className="search-icon">
+                  <Search />
+                </div>
+                <div className="search-input">
+                  <InputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={this.handleChange}
+                  />
+                </div>
+              </div>
+              <div className="controls">
+              {currentMusic
+                ? `Currently playing ${
+                    playingPlaylist ? 'playlist' : 'song'
+                  }: ${currentMusic}`
+                : `No music selected`}
+              </div>
+            </div>
+          </Toolbar>
+        </AppBar>
       </div>
     );
   }

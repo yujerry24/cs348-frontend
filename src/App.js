@@ -6,7 +6,7 @@ import PlaylistCreator from './ui/PlaylistCreator';
 import GeneralSearch from './ui/GeneralSearch';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
-import './App.css';
+import './App.scss';
 import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
