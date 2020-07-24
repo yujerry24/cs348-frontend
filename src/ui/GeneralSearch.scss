@@ -1,68 +1,76 @@
-@import "constants";
+@import 'constants';
 
-.gsearch {  
+.gsearch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  background-color: $page-colour;
+
+  .gsearch-blank {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     height: 100%;
+  }
+
+  .gsearch-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
     background-color: $page-colour;
+    margin-bottom: 15px;
 
-    .gsearch-blank {  
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content : center;
-        height: 100%;
-    }
+    .list {
+      background-color: $page-colour;
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      min-height: 200px;
 
-    .gsearch-row {  
+      .list-title {
         width: 100%;
         display: flex;
         flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-around;
-        background-color: $page-colour;
-        margin-bottom: 15px;
-        
-        .list {
-            background-color: $page-colour;
-            display: flex;
-            flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 12px;
 
-            .list-title {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-
-                .show-more {
-                    margin: 0 15% 0 auto
-                }
-            }
+        .show-more {
+          height: 48px;
         }
-
-        .card {
-            width: 40%;
-            background-color: $card-colour;
-            margin: 10px
-        }
-
-        .gsearch-song {  
-            width: 100%;
-            margin: 10px;
-        }
-        .gsearch-artist {  
-            width: 100%;
-            margin: 10px;
-        }
-        .gsearch-album {  
-            width: 100%;
-            margin: 10px;
-        }
-        .gsearch-playlist {  
-            width: 100%;
-            margin: 10px;
-        }
+      }
     }
+
+    .card {
+      width: 40%;
+      background-color: $card-colour;
+      margin: 10px;
+      box-sizing: border-box;
+    }
+
+    .gsearch-song {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+    .gsearch-artist {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+    .gsearch-album {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+    .gsearch-playlist {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+  }
 }
-  

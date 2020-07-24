@@ -28,7 +28,7 @@ import {
 } from '@material-ui/icons';
 import './DataTable.scss';
 
-import * as Constants from '../utils/Constants';
+import { TabNames } from '../utils/Constants';
 import * as CallApi from '../utils/APICalls';
 import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
@@ -43,19 +43,14 @@ class DataTable extends React.Component {
       multiSong: false,
     };
     this.isSongData =
-      !!props.isPlaylist ||
-      props.currentTab === Constants.TabNames.SEARCH ||
-      props.currentTab === Constants.TabNames.TOPSONGS;
+      !!props.isPlaylist || props.currentTab === TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
     const { currentTab, isPlaylist } = this.props;
     if (prevProps.currentTab !== currentTab) {
       this.setState({ selectedSongs: [] });
-      this.isSongData =
-        !!isPlaylist ||
-        currentTab === Constants.TabNames.SEARCH ||
-        currentTab === Constants.TabNames.TOPSONGS;
+      this.isSongData = !!isPlaylist || currentTab === TabNames.TOPSONGS;
     }
   };
 

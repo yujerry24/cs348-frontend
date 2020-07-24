@@ -1,4 +1,4 @@
-@import "./ui/constants";
+@import './ui/constants';
 
 .master-screen {
   position: relative;
@@ -35,9 +35,9 @@
 $search_result_margin: 30px;
 
 .search-results-container {
-  width: 80%;
+  width: calc(100vw - 400px);
   margin: $search_result_margin 0px;
-  overflow-y: auto;
+  overflow-y: overlay;
   height: calc(100vh - #{$search_bar_height} - #{$search_result_margin});
 }
 
