@@ -10,6 +10,8 @@ import {
   fetchMiniAlbumSearch,
   fetchMiniPlaylistSearch,
 } from '../store/fetchCalls';
+import { TabNames } from '../utils/Constants';
+import { setCurrentTab } from '../store/actions';
 
 class Searchbar extends React.Component {
   handleChange = e => {
@@ -26,6 +28,10 @@ class Searchbar extends React.Component {
     if (e.keyCode === 13) {
       this.props.setSearchText(e.target.value);
     }
+  };
+
+  onClick = () => {
+    this.props.setCurrentTab(TabNames.SEARCH);
   };
 
   render() {
@@ -54,6 +60,7 @@ class Searchbar extends React.Component {
                     placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
                     onChange={this.handleChange}
+                    onClick={this.onClick}
                   />
                 </div>
               </div>
@@ -80,6 +87,7 @@ export default connect(
     searchText: state.mainApp.searchText,
   }),
   {
+    setCurrentTab,
     setSearchText,
     fetchMiniSongSearch,
     fetchMiniArtistSearch,
