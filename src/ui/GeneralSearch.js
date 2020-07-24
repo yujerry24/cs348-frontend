@@ -2,15 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Paper,
   Grid,
-  GridList,
-  GridListTile,
-  ListSubheader,
   Card,
   CardContent,
   Typography,
   CircularProgress,
+  Button,
 } from '@material-ui/core';
 
 import {
@@ -42,15 +39,15 @@ class GeneralSearch extends React.Component {
     let artists = data['artist_name']
     let album = data['album_name']
     return (
-      <Card>
+      <Card raised={true} className="card">
         <CardContent>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" noWrap={true}>
             {name}
           </Typography>
-          <Typography color="textSecondary">
+          <Typography color="textSecondary" noWrap={true}>
             {this.joinStrings(artists)}
           </Typography>
-          <Typography color="textSecondary">
+          <Typography color="textSecondary" noWrap={true}>
             {album}
           </Typography>
         </CardContent>
@@ -61,9 +58,9 @@ class GeneralSearch extends React.Component {
   artistItem = (data) => {
     let artist = data['name'];
     return (
-      <Card>
+      <Card raised={true} className="card">
         <CardContent>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" noWrap={true}>
             {artist}
           </Typography>
         </CardContent>
@@ -74,9 +71,9 @@ class GeneralSearch extends React.Component {
   albumItem = (data) => {
     let album = data['name']
     return (
-      <Card>
+      <Card raised={true} className="card">
         <CardContent>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" noWrap={true}>
             {album}
           </Typography>
         </CardContent>
@@ -87,9 +84,9 @@ class GeneralSearch extends React.Component {
   playlistItem = (data) => {
     let playlist = data['name']
     return (
-      <Card>
+      <Card raised={true} className="card">
         <CardContent>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" noWrap={true}>
             {playlist}
           </Typography>
         </CardContent>
@@ -99,31 +96,33 @@ class GeneralSearch extends React.Component {
 
   miniResults = (header, pending, data, item) => {
     return (
-      <Paper variant="outlined">
         <Grid container spacing={1}>
           {pending === true ?
             <CircularProgress />
             :
-              <React.Fragment>
-                {/* <GridList cellHeight={180} className={classes.gridList}> */}
-                <GridList cellHeight={180}>
-                  <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-                    <ListSubheader component="div">{header}</ListSubheader>
-                  </GridListTile>
+              <div className="list">
+                  <div className="list-title">
+                    <Typography variant="h2" noWrap={true} >
+                      {header}
+                    </Typography>
+                    <Button 
+                      className="show-more"
+                    >
+                      Show more
+                    </Button>
+                  </div>
 
                   {!data || data.length === 0 ?
-                  <div>"No results found"</div>
+                    <Typography variant="h5" noWrap={true}>
+                      No results found.
+                    </Typography>
                   :
                   data.map((data, index) => (
-                    <GridListTile key={index}>
-                      {item(data)}
-                    </GridListTile>
+                      item(data)
                   ))}
-                </GridList>
-              </React.Fragment>
+              </div>
           }
         </Grid>
-      </Paper>
     )
   }
 

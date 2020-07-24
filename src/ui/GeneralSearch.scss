@@ -1,9 +1,11 @@
+@import "constants";
+
 .gsearch {  
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     align-items: flex-start;
     height: 100%;
+    background-color: $page-colour;
 
     .gsearch-blank {  
         width: 100%;
@@ -20,18 +22,46 @@
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: space-around;
+        background-color: $page-colour;
+        margin-bottom: 15px;
+        
+        .list {
+            background-color: $page-colour;
+            display: flex;
+            flex-wrap: wrap;
+
+            .list-title {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+
+                .show-more {
+                    margin: 0 15% 0 auto
+                }
+            }
+        }
+
+        .card {
+            width: 40%;
+            background-color: $card-colour;
+            margin: 10px
+        }
 
         .gsearch-song {  
             width: 100%;
+            margin: 10px;
         }
         .gsearch-artist {  
             width: 100%;
+            margin: 10px;
         }
         .gsearch-album {  
             width: 100%;
+            margin: 10px;
         }
         .gsearch-playlist {  
             width: 100%;
+            margin: 10px;
         }
     }
 }
