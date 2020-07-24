@@ -359,7 +359,7 @@ class DataTable extends React.Component {
 
   render() {
     const { currentTab, headings, rows } = this.props;
-    const rowsLength = Object.keys(rows).length;
+    const rowsLength = rows ? Object.keys(rows).length : 0;
 
     const headerContent = (
       <TableRow key="heading">
