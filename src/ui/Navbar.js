@@ -249,7 +249,7 @@ class Navbar extends React.Component {
         classes={{ paper: 'paper' }}
         PaperProps = {{elevation: 16}}
       >
-        <List className="list">
+        <List className="list" style={{"padding-top" : "0px"}}>
           <div className="drawer-header">
             <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
               {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
