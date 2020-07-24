@@ -34,7 +34,7 @@ import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
 class DataTable extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       popoverAnchorEl: null,
@@ -42,11 +42,20 @@ class DataTable extends React.Component {
       addToPlaylists: [],
       multiSong: false,
     };
+    this.isSongData =
+      !!props.isPlaylist ||
+      props.currentTab === Constants.TabNames.SEARCH ||
+      props.currentTab === Constants.TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
-    if (prevProps.currentTab !== this.props.currentTab) {
+    const { currentTab, isPlaylist } = this.props;
+    if (prevProps.currentTab !== currentTab) {
       this.setState({ selectedSongs: [] });
+      this.isSongData =
+        !!isPlaylist ||
+        currentTab === Constants.TabNames.SEARCH ||
+        currentTab === Constants.TabNames.TOPSONGS;
     }
   };
 
@@ -202,7 +211,7 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        {this.props.currentTab !== Constants.TabNames.TOPARTISTS && (
+        {this.isSongData && (
           <TableCell>
             <Checkbox
               key={`song-checkbox-${id}`}
@@ -358,12 +367,12 @@ class DataTable extends React.Component {
   };
 
   render() {
-    const { currentTab, headings, rows } = this.props;
+    const { headings, rows } = this.props;
     const rowsLength = rows ? Object.keys(rows).length : 0;
 
     const headerContent = (
       <TableRow key="heading">
-        {currentTab !== Constants.TabNames.TOPARTISTS && (
+        {this.isSongData && (
           <TableCell
             key={`actions-selectAll`}
             align={'left'}
