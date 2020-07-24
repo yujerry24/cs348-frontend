@@ -45,10 +45,6 @@ class VideoDrawer extends React.Component {
     }
   };
 
-  setSongPlaying = () => {
-    
-  }
-
   render() {
     return (
       <Drawer
