@@ -28,6 +28,7 @@ import {
 } from '@material-ui/icons';
 import './DataTable.scss';
 
+import * as Constants from '../utils/Constants';
 import * as CallApi from '../utils/APICalls';
 import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
@@ -201,13 +202,15 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        <TableCell>
-          <Checkbox
-            key={`song-checkbox-${id}`}
-            checked={this.state.selectedSongs.includes(id)}
-            onChange={() => this.handleSongsCheck(id)}
-          />
-        </TableCell>
+        {this.props.currentTab !== Constants.TabNames.TOPARTISTS && (
+          <TableCell>
+            <Checkbox
+              key={`song-checkbox-${id}`}
+              checked={this.state.selectedSongs.includes(id)}
+              onChange={() => this.handleSongsCheck(id)}
+            />
+          </TableCell>
+        )}
         {dataCells}
         {this.props.headings.indexOf('Actions') !== -1 && (
           <TableCell
@@ -355,30 +358,33 @@ class DataTable extends React.Component {
   };
 
   render() {
-    const { headings, rows } = this.props;
+    const { currentTab, headings, rows } = this.props;
     const rowsLength = Object.keys(rows).length;
 
     const headerContent = (
       <TableRow key="heading">
-        <TableCell
-          key={`actions-selectAll`}
-          align={'left'}
-          style={{ minWidth: '90px' }}
-        >
-          <Checkbox
-            onClick={this.handleToggleAllSongs}
-            checked={
-              this.state.selectedSongs.length === rowsLength && rowsLength !== 0
-            }
-            indeterminate={
-              this.state.selectedSongs.length !== rowsLength &&
-              this.state.selectedSongs.length !== 0 &&
-              this.state.multiSong
-            }
-            disabled={rowsLength === 0}
-            inputProps={{ 'aria-label': 'all items selected' }}
-          />
-        </TableCell>
+        {currentTab !== Constants.TabNames.TOPARTISTS && (
+          <TableCell
+            key={`actions-selectAll`}
+            align={'left'}
+            style={{ minWidth: '90px' }}
+          >
+            <Checkbox
+              onClick={this.handleToggleAllSongs}
+              checked={
+                this.state.selectedSongs.length === rowsLength &&
+                rowsLength !== 0
+              }
+              indeterminate={
+                this.state.selectedSongs.length !== rowsLength &&
+                this.state.selectedSongs.length !== 0 &&
+                this.state.multiSong
+              }
+              disabled={rowsLength === 0}
+              inputProps={{ 'aria-label': 'all items selected' }}
+            />
+          </TableCell>
+        )}
         {headings.map(this.renderHeadingRow)}
       </TableRow>
     );
