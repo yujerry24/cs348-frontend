@@ -113,7 +113,9 @@ class App extends Component {
                 {this.renderInnerContainer()}
               </div>
             </div>
-            <Video />
+            <Video 
+              topSongs={this.state.mostPopSongsResponse}
+            />
           </>
         )}
       </div>
