@@ -20,3 +20,42 @@
   top: 20vh;
   left: 50%;
 }
+
+.table-toolbar {
+  display: flex;
+  height: 52px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafafa;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.table-toolbar-selected {
+  display: flex;
+  height: 52px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #dccfec;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.table-toolbar-title {
+  font-size: larger;
+}
+
+.table-toolbar-multi-actions {
+  display: flex;
+  align-items: center;
+}
+
+.table-toolbar-button {
+  margin-left: 12px;
+  height: 36px;
+}
+
+.table-container {
+  height: calc(100% - 76px);
+  overflow-y: auto;
+}
