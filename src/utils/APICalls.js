@@ -6,7 +6,7 @@ export const fetchAllPlaylists = async userId => {
 };
 
 export const search = async (text, userId) => {
-  return fetch(`${API}/song/search/${userId}/${text}`).then(res => res.json());
+  return fetch(`${API}/song/searchMore/${userId}/${text}`).then(res => res.json());
 };
 
 export const addSongs = async (songIds, playlistIds) => {
@@ -95,17 +95,41 @@ export const createUser = async name => {
 };
 
 export const miniSearchSongs = async searchText => {
-  return fetch(`${API}/song/minisearch/${searchText}`).then(res => res.json());
+  return fetch(`${API}/song/search/${searchText}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({ limit: "5" })
+  }).then(res => res.json());
 };
 
 export const miniSearchArtists = async searchText => {
-  return fetch(`${API}/artist/minisearch/${searchText}`).then(res => res.json());
+  return fetch(`${API}/artist/search/${searchText}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({ limit: "5" })
+  }).then(res => res.json());
 };
 
 export const miniSearchAlbums = async searchText => {
-  return fetch(`${API}/album/minisearch/${searchText}`).then(res => res.json());
+  return fetch(`${API}/album/search/${searchText}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({ limit: "5" })
+  }).then(res => res.json());
 };
 
 export const miniSearchPlaylists = async searchText => {
-  return fetch(`${API}/playlist/minisearch/${searchText}`).then(res => res.json());
+  return fetch(`${API}/playlist/search/${searchText}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({ limit: "5" })
+  }).then(res => res.json());
 };
