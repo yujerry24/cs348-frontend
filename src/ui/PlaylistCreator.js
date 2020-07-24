@@ -187,7 +187,9 @@ class PlaylistCreator extends React.Component {
   render() {
     return (
       <div className="playlist-creator-container">
-        <div className="creator-title">Create Playlist</div>
+        <div className="creator-title">
+          {`Create ${this.state.checked.length > 0 ? 'Merged' : ''} Playlist`}
+        </div>
         <div className="creator-textfield-container">
           <div className="creator-nameInput">
             <div className="creator-text">
