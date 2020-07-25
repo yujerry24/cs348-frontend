@@ -49,7 +49,7 @@ class Searchbar extends React.Component {
     return (
       <div className="search-bar-container">
         <AppBar className="search-appbar" color="inherit" position="static">
-          <Toolbar boxShadow={1} className="search-toolbar">
+          <Toolbar className="search-toolbar">
             <div className="search-component">
               <div className="search-box">
                 <div className="search-icon">
