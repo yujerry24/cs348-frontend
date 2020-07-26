@@ -14,6 +14,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Typography
 } from '@material-ui/core';
 // import TableContainer from '@material-ui/core/TableContainer';
 // import TablePagination from '@material-ui/core/TablePagination';
@@ -67,7 +68,7 @@ class DataTable extends React.Component {
   onDelete = ids => {
     // I don't think we need to call requery when we know what got deleted
     CallApi.deleteSongs(ids, this.props.currentTab).then(() => {
-      this.props.fetchPlaylist(this.props.currentTab);
+      this.props.fetchPlaylist(this.props.currentTab, this.props.userId);
     });
   };
 
@@ -124,26 +125,21 @@ class DataTable extends React.Component {
     console.log(e.target.checked);
     let playlist_id = this.props.userId+'-liked-songs'
     if(e.target.checked) {
-      let response = CallApi.addSongs([id], [playlist_id]).then(
+      CallApi.addSongs([id], [playlist_id]).then(
         res => {
-          console.log(res)
         }).then(
         () => {
-          this.props.fetchPlaylist(playlist_id);
+          this.props.fetchPlaylist(playlist_id, this.props.userId);
         })
-      console.log(response);
       this.props.updateLikedPlaylist(id, true);
     } else {
-      let response = CallApi.deleteSongs([id], playlist_id).then(
+      CallApi.deleteSongs([id], playlist_id).then(
         res => {
-          console.log(res)
         }).then(
         () => {
-          this.props.fetchPlaylist(playlist_id);
+          this.props.fetchPlaylist(playlist_id, this.props.userId);
         })
-      console.log(response);
       this.props.updateLikedPlaylist(id, false);
-
     }
   }
 
@@ -364,9 +360,11 @@ class DataTable extends React.Component {
           >
             <ArrowBack />
           </IconButton>)}
-          {this.props.isPlaylist && currPlaylist
-            ? currPlaylist.name
-            : this.props.currentTab}
+          <Typography variant="h5" noWrap={true}>
+            {this.props.isPlaylist && currPlaylist
+              ? currPlaylist.name
+              : this.props.currentTab}
+          </Typography>
         </div>
         {this.state.multiSong && (
           <div className="table-toolbar-multi-actions">

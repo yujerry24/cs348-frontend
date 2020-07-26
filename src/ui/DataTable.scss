@@ -43,6 +43,8 @@
 
 .table-toolbar-title {
   font-size: larger;
+  display: flex;
+  flex-direction: row;
 }
 
 .table-toolbar-multi-actions {
