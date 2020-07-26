@@ -114,6 +114,13 @@ class DataTable extends React.Component {
     }
   };
 
+  handleLiked = (id, e) => {
+    console.log("WTF");
+    console.log(id);
+    console.log(e.target.checked);
+    console.log(e.target);
+  };
+
   renderHeadingRow = _cell => (
     <TableCell key={`heading-${_cell}`} align={'left'}>
       {_cell}
@@ -171,6 +178,7 @@ class DataTable extends React.Component {
         icon={<FavoriteBorder />}
         checkedIcon={<Favorite />}
         name="favorite"
+        onChange={(e) => this.handleLiked(id,e)}
       />
     );
     return actionButtons;
