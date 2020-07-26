@@ -205,6 +205,8 @@ class GeneralSearch extends React.Component {
       <DataTable
         headings={this.tableHeadersMap[type]}
         isPlaylist={type === 'Songs'} // will show multi song select options when isPlaylist is true
+        isSearch
+        backToSearch={()=>{this.setState({type: 'Search'})}}
         rows={this.props[type.toLowerCase()][type.toLowerCase()]}
       />
     );

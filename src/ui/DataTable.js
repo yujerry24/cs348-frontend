@@ -21,6 +21,7 @@ import {
 
 import {
   Add,
+  ArrowBack,
   Favorite,
   FavoriteBorder,
   Delete,
@@ -321,6 +322,17 @@ class DataTable extends React.Component {
         }
       >
         <div className="table-toolbar-title">
+          {this.props.isSearch && (<IconButton
+            key={`back-to-search`}
+            color="primary"
+            size="small"
+            aria-label="back"
+            onClick={e => {
+              this.props.backToSearch();
+            }}
+          >
+            <ArrowBack />
+          </IconButton>)}
           {this.props.isPlaylist && currPlaylist
             ? currPlaylist.name
             : this.props.currentTab}
