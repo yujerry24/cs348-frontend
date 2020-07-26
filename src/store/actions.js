@@ -85,11 +85,11 @@ export const fetchPlaylistError = (playlistId, error) => {
   };
 };
 
-export const updateLikedPlaylist = (playlistId, data) => {
+export const updateLikedPlaylist = (songId, isFavourite) => {
   return {
     type: actions.UPDATE_LIKED_IN_PLAYLIST,
-    playlistId,
-    data,
+    songId,
+    isFavourite,
   };
 };
 
@@ -101,14 +101,14 @@ export const fetchMiniSongSearchPending = () => {
   };
 };
 
-export const fetchMiniSongSearchSuccess = (songs) => {
+export const fetchMiniSongSearchSuccess = songs => {
   return {
     type: actions.FETCH_MINISONGSEARCH_SUCCESS,
     songs,
   };
 };
 
-export const fetchMiniSongSearchError = (error) => {
+export const fetchMiniSongSearchError = error => {
   return {
     type: actions.FETCH_MINISONGSEARCH_ERROR,
     error,
@@ -121,14 +121,14 @@ export const fetchMiniArtistSearchPending = () => {
   };
 };
 
-export const fetchMiniArtistSearchSuccess = (artists) => {
+export const fetchMiniArtistSearchSuccess = artists => {
   return {
     type: actions.FETCH_MINIARTISTSEARCH_SUCCESS,
     artists,
   };
 };
 
-export const fetchMiniArtistSearchError = (error) => {
+export const fetchMiniArtistSearchError = error => {
   return {
     type: actions.FETCH_MINIARTISTSEARCH_ERROR,
     error,
@@ -141,14 +141,14 @@ export const fetchMiniAlbumSearchPending = () => {
   };
 };
 
-export const fetchMiniAlbumSearchSuccess = (albums) => {
+export const fetchMiniAlbumSearchSuccess = albums => {
   return {
     type: actions.FETCH_MINIALBUMSEARCH_SUCCESS,
     albums,
   };
 };
 
-export const fetchMiniAlbumSearchError = (error) => {
+export const fetchMiniAlbumSearchError = error => {
   return {
     type: actions.FETCH_MINIALBUMSEARCH_ERROR,
     error,
@@ -161,14 +161,14 @@ export const fetchMiniPlaylistSearchPending = () => {
   };
 };
 
-export const fetchMiniPlaylistSearchSuccess = (playlists) => {
+export const fetchMiniPlaylistSearchSuccess = playlists => {
   return {
     type: actions.FETCH_MINIPLAYLISTSEARCH_SUCCESS,
     playlists,
   };
 };
 
-export const fetchMiniPlaylistSearchError = (error) => {
+export const fetchMiniPlaylistSearchError = error => {
   return {
     type: actions.FETCH_MINIPLAYLISTSEARCH_ERROR,
     error,
