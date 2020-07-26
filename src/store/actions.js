@@ -85,9 +85,10 @@ export const fetchPlaylistError = (playlistId, error) => {
   };
 };
 
-export const updateLikedPlaylist = (songId, isFavourite) => {
+export const updateLikedPlaylist = (playlistId, songId, isFavourite) => {
   return {
     type: actions.UPDATE_LIKED_IN_PLAYLIST,
+    playlistId,
     songId,
     isFavourite,
   };

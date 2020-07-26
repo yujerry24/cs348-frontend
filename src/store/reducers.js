@@ -94,11 +94,8 @@ export function playlistsById(state = {}, action) {
       };
     case types.UPDATE_LIKED_IN_PLAYLIST:
       const newState = { ...state };
-      Object.values(state).forEach(playlistObj => {
-        if (playlistObj.songsById[action.songId]) {
-          playlistObj.songsById[action.songId].isfavourite = action.isFavourite;
-        }
-      });
+      newState[action.playlistId].songsById[action.songId].isfavourite =
+        action.isFavourite;
       return newState;
     default:
       return state;
