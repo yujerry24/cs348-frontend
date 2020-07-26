@@ -14,7 +14,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
 } from '@material-ui/core';
 // import TableContainer from '@material-ui/core/TableContainer';
 // import TablePagination from '@material-ui/core/TablePagination';
@@ -32,7 +32,11 @@ import './DataTable.scss';
 
 import { TabNames } from '../utils/Constants';
 import * as CallApi from '../utils/APICalls';
-import { setPlayingPlaylist, setPlayingSong, updateLikedPlaylist } from '../store/actions';
+import {
+  setPlayingPlaylist,
+  setPlayingSong,
+  updateLikedPlaylist,
+} from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
 class DataTable extends React.Component {
@@ -120,28 +124,28 @@ class DataTable extends React.Component {
     }
   };
 
-  handleClicked = (id, e) => {
-    console.log(id);
-    console.log(e.target.checked);
-    let playlist_id = this.props.userId+'-liked-songs'
-    if(e.target.checked) {
-      CallApi.addSongs([id], [playlist_id]).then(
-        res => {
-        }).then(
-        () => {
-          this.props.fetchPlaylist(playlist_id, this.props.userId);
-        })
-      this.props.updateLikedPlaylist(id, true);
+  handleFavourite = (id, isFav) => {
+    let playlist_id = this.props.userId + '-liked-songs';
+    if (!isFav) {
+      CallApi.addSongs([id], [playlist_id]).then(() =>
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
+      );
+      this.updateLiked(id, true);
     } else {
-      CallApi.deleteSongs([id], playlist_id).then(
-        res => {
-        }).then(
-        () => {
-          this.props.fetchPlaylist(playlist_id, this.props.userId);
-        })
-      this.props.updateLikedPlaylist(id, false);
+      CallApi.deleteSongs([id], playlist_id).then(() =>
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
+      );
+      this.updateLiked(id, false);
     }
-  }
+  };
+
+  updateLiked = (id, newVal) => {
+    Object.entries(this.props.playlistsById).forEach(([key, val]) => {
+      if (val.songsById && val.songsById[id]) {
+        this.props.updateLikedPlaylist(key, id, newVal);
+      }
+    });
+  };
 
   renderHeadingRow = _cell => (
     <TableCell key={`heading-${_cell}`} align={'left'}>
@@ -195,20 +199,18 @@ class DataTable extends React.Component {
       </IconButton>
     );
     actionButtons.push(
-      <Checkbox
+      <IconButton
         key={`favorite-${id}`}
-        icon={<FavoriteBorder />}
-        checkedIcon={<Favorite />}
         name="favorite"
-        checked={isfave}
-        onChange={(e) => this.handleClicked(id, e)}
-      />
+        onClick={() => this.handleFavourite(id, isfave)}
+      >
+        {isfave ? <Favorite color="secondary" /> : <FavoriteBorder />}
+      </IconButton>
     );
     return actionButtons;
   };
 
   renderRow = ([id, _row]) => {
-    console.log(_row)
     const dataCells = [];
     Object.entries(_row).forEach(([key, _cell]) => {
       let data = _cell;
@@ -349,17 +351,19 @@ class DataTable extends React.Component {
         }
       >
         <div className="table-toolbar-title">
-          {this.props.isSearch && (<IconButton
-            key={`back-to-search`}
-            color="primary"
-            size="small"
-            aria-label="back"
-            onClick={e => {
-              this.props.backToSearch();
-            }}
-          >
-            <ArrowBack />
-          </IconButton>)}
+          {this.props.isSearch && (
+            <IconButton
+              key={`back-to-search`}
+              color="primary"
+              size="small"
+              aria-label="back"
+              onClick={() => {
+                this.props.backToSearch();
+              }}
+            >
+              <ArrowBack />
+            </IconButton>
+          )}
           <Typography variant="h5" noWrap={true}>
             {this.props.isPlaylist && currPlaylist
               ? currPlaylist.name
@@ -471,6 +475,7 @@ export default connect(
     pending:
       state.playlistsById[state.mainApp.currentTab] &&
       state.playlistsById[state.mainApp.currentTab].pending,
+    playlistsById: state.playlistsById,
   }),
   { setPlayingPlaylist, setPlayingSong, fetchPlaylist, updateLikedPlaylist }
 )(DataTable);
