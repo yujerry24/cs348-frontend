@@ -28,9 +28,7 @@ export const fetchAllPlaylists = userId => {
 export const fetchPlaylist = (playlistId, userId) => {
   return dispatch => {
     dispatch(actions.fetchPlaylistPending);
-    CallApi.fetchPlaylist(playlistId)
-    // fetch(`${API}/playlist/${playlistId}`)
-    //   .then(res => res.json())
+    CallApi.fetchPlaylist(playlistId, userId)
       .then(res => {
         dispatch(actions.fetchPlaylistSuccess(playlistId, res));
         return res;
