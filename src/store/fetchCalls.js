@@ -7,8 +7,6 @@ import * as CallApi from './../utils/APICalls';
 export const fetchAllPlaylists = userId => {
   return dispatch => {
     dispatch(actions.fetchAllPlaylistsPending());
-    // fetch(`${API}/playlist/list/${userId}`)
-    //   .then(res => res.json())
     CallApi.fetchAllPlaylists(userId)
       .then(res => {
         if (res.error) {

@@ -31,7 +31,7 @@ import './DataTable.scss';
 
 import { TabNames } from '../utils/Constants';
 import * as CallApi from '../utils/APICalls';
-import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
+import { setPlayingPlaylist, setPlayingSong, updateLikedPlaylist } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
 class DataTable extends React.Component {
@@ -449,5 +449,5 @@ export default connect(
       state.playlistsById[state.mainApp.currentTab] &&
       state.playlistsById[state.mainApp.currentTab].pending,
   }),
-  { setPlayingPlaylist, setPlayingSong, fetchPlaylist }
+  { setPlayingPlaylist, setPlayingSong, fetchPlaylist, updateLikedPlaylist }
 )(DataTable);

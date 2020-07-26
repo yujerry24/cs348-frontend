@@ -85,6 +85,14 @@ export const fetchPlaylistError = (playlistId, error) => {
   };
 };
 
+export const updateLikedPlaylist = (playlistId, data) => {
+  return {
+    type: actions.UPDATE_LIKED_IN_PLAYLIST,
+    playlistId,
+    data,
+  };
+};
+
 //////////////////
 
 export const fetchMiniSongSearchPending = () => {

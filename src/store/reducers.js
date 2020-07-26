@@ -92,6 +92,11 @@ export function playlistsById(state = {}, action) {
         ...state,
         [action.playlistId]: { pending: false, error: action.error },
       };
+    case types.UPDATE_LIKED_IN_PLAYLIST:
+      return {
+        ...state,
+        [action.playlistId]: action.data,
+      }
     default:
       return state;
   }
