@@ -122,6 +122,29 @@ class DataTable extends React.Component {
   handleClicked = (id, e) => {
     console.log(id);
     console.log(e.target.checked);
+    let playlist_id = this.props.userId+'-liked-songs'
+    if(e.target.checked) {
+      let response = CallApi.addSongs([id], [playlist_id]).then(
+        res => {
+          console.log(res)
+        }).then(
+        () => {
+          this.props.fetchPlaylist(playlist_id);
+        })
+      console.log(response);
+      this.props.updateLikedPlaylist(id, true);
+    } else {
+      let response = CallApi.deleteSongs([id], playlist_id).then(
+        res => {
+          console.log(res)
+        }).then(
+        () => {
+          this.props.fetchPlaylist(playlist_id);
+        })
+      console.log(response);
+      this.props.updateLikedPlaylist(id, false);
+
+    }
   }
 
   renderHeadingRow = _cell => (
@@ -130,7 +153,7 @@ class DataTable extends React.Component {
     </TableCell>
   );
 
-  renderActionButtons = id => {
+  renderActionButtons = (id, isfave) => {
     const { isPlaylist } = this.props;
     const actionButtons = [];
 
@@ -181,6 +204,7 @@ class DataTable extends React.Component {
         icon={<FavoriteBorder />}
         checkedIcon={<Favorite />}
         name="favorite"
+        checked={isfave}
         onChange={(e) => this.handleClicked(id, e)}
       />
     );
@@ -188,6 +212,7 @@ class DataTable extends React.Component {
   };
 
   renderRow = ([id, _row]) => {
+    console.log(_row)
     const dataCells = [];
     Object.entries(_row).forEach(([key, _cell]) => {
       let data = _cell;
@@ -229,7 +254,7 @@ class DataTable extends React.Component {
             align={'left'}
             style={{ padding: 0, minWidth: '110px' }}
           >
-            {this.renderActionButtons(id)}
+            {this.renderActionButtons(id, _row.isfavourite)}
           </TableCell>
         )}
       </TableRow>
