@@ -22,10 +22,10 @@ import {
 } from '../store/fetchCalls';
 
 const SEARCH = 'Search';
-const ARTISTS = "Artists";
-const ALBUMS = "Albums";
-const PLAYLISTS = "Playlists";
-const SONGS = "Songs";
+const ARTISTS = 'Artists';
+const ALBUMS = 'Albums';
+const PLAYLISTS = 'Playlists';
+const SONGS = 'Songs';
 
 class GeneralSearch extends React.Component {
   constructor() {
@@ -35,10 +35,10 @@ class GeneralSearch extends React.Component {
     };
 
     this.tableHeadersMap = {
-      Songs: ['Name', 'Artists', 'Album', 'Actions'],
+      Songs: ['Name', 'Artists', 'Album', 'Duration', 'Actions'],
       Artists: ['Name'],
       Albums: ['Name'],
-      Playlists: ['Name'],
+      Playlists: ['Name', 'Username'],
     };
   }
 
@@ -125,19 +125,20 @@ class GeneralSearch extends React.Component {
     );
   };
 
-  moreResults = (header) => {
+  moreResults = header => {
+    const { searchText, userId } = this.props;
     if (this.props[header]['count']) {
       if (header === ARTISTS) {
-        this.props.fetchArtistSearch(this.props.searchText)
+        this.props.fetchArtistSearch(searchText);
       } else if (header === ALBUMS) {
-        this.props.fetchAlbumSearch(this.props.searchText)
+        this.props.fetchAlbumSearch(searchText);
       } else if (header === PLAYLISTS) {
-        this.props.fetchPlaylistSearch(this.props.searchText)
+        this.props.fetchPlaylistSearch(searchText);
       } else if (header === SONGS) {
-        this.props.fetchSongSearch(this.props.searchText)
+        this.props.fetchSongSearch(userId, searchText);
       }
     }
-  }
+  };
 
   miniResults = (header, pending, data, item) => {
     return (
@@ -167,7 +168,7 @@ class GeneralSearch extends React.Component {
               No results found.
             </Typography>
           ) : (
-            data.slice(0,5).map(data => item(data))
+            data.slice(0, 5).map(data => item(data))
           )}
         </div>
       </Grid>
@@ -229,16 +230,20 @@ class GeneralSearch extends React.Component {
         )}
       </div>
     ) : (
-      this.props[this.state.type]['pending'] ?
-        <CircularProgress />
-        :
+      <>
+        {this.props[this.state.type]['pending'] && (
+          <CircularProgress className="progress" />
+        )}
         <DataTable
           headings={this.tableHeadersMap[type]}
           isPlaylist={type === SONGS} // will show multi song select options when isPlaylist is true
           isSearch
-          backToSearch={()=>{this.setState({type: SEARCH})}}
+          backToSearch={() => {
+            this.setState({ type: SEARCH });
+          }}
           rows={this.props[this.state.type][type.toLowerCase()]}
         />
+      </>
     );
   }
 }
@@ -250,6 +255,7 @@ export default connect(
     [ARTISTS]: { ...state.artistSearch },
     [ALBUMS]: { ...state.albumSearch },
     [PLAYLISTS]: { ...state.playlistSearch },
+    userId: state.mainApp.userId,
   }),
   {
     fetchSongSearch,

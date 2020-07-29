@@ -5,10 +5,6 @@ export const fetchAllPlaylists = async userId => {
   return fetch(`${API}/playlist/list/${userId}`).then(res => res.json());
 };
 
-export const search = async (text, userId) => {
-  return fetch(`${API}/song/searchMore/${userId}/${text}`).then(res => res.json());
-};
-
 export const addSongs = async (songIds, playlistIds) => {
   return fetch(`${API}/playlist/add`, {
     method: 'POST',
@@ -34,7 +30,9 @@ export const deleteSongs = async (songIds, playlistId) => {
 };
 
 export const fetchPlaylist = async (playlistId, userId) => {
-  return fetch(`${API}/playlist/getUserPlaylists/${playlistId}/${userId}`).then(res => res.json());
+  return fetch(
+    `${API}/playlist/getUserPlaylists/${playlistId}/${userId}`
+  ).then(res => res.json());
 };
 
 export const fetchMostPopularSongs = async () => {
@@ -94,18 +92,20 @@ export const createUser = async name => {
   }).then(res => res.json());
 };
 
-export const searchSongs = async (searchText, count) => {
+export const searchSongs = async (userId, searchText, count) => {
   let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    }
+    },
   };
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/song/search/${searchText}`, options)
-  .then(res => res.json());
+  return fetch(
+    `${API}/song/search/${userId}/${searchText}`,
+    options
+  ).then(res => res.json());
 };
 
 export const searchArtists = async (searchText, count) => {
@@ -113,13 +113,14 @@ export const searchArtists = async (searchText, count) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    }
+    },
   };
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/artist/search/${searchText}`, options)
-  .then(res => res.json());
+  return fetch(`${API}/artist/search/${searchText}`, options).then(res =>
+    res.json()
+  );
 };
 
 export const searchAlbums = async (searchText, count) => {
@@ -127,13 +128,14 @@ export const searchAlbums = async (searchText, count) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    }
+    },
   };
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/album/search/${searchText}`, options)
-  .then(res => res.json());
+  return fetch(`${API}/album/search/${searchText}`, options).then(res =>
+    res.json()
+  );
 };
 
 export const searchPlaylists = async (searchText, count) => {
@@ -141,11 +143,12 @@ export const searchPlaylists = async (searchText, count) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    }
+    },
   };
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/playlist/search/${searchText}`, options)
-  .then(res => res.json());
+  return fetch(`${API}/playlist/search/${searchText}`, options).then(res =>
+    res.json()
+  );
 };

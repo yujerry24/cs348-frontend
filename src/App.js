@@ -22,9 +22,7 @@ const topArtistsHeading = ['Artist Name', 'In Number Of Playlists'];
 class App extends Component {
   constructor() {
     super();
-    // Consider caching search responses?
     this.state = {
-      searchResponse: [],
       mostPopSongsResponse: [],
       mostPopArtistsResponse: [],
     };
@@ -55,14 +53,6 @@ class App extends Component {
     CallApi.fetchMostPopularArtists()
       .then(res => {
         this.setState({ mostPopArtistsResponse: res });
-      })
-      .catch(err => err);
-  };
-
-  onClickSearch = text => {
-    CallApi.search(text, this.props.userId)
-      .then(res => {
-        this.setState({ searchResponse: res });
       })
       .catch(err => err);
   };
@@ -108,15 +98,7 @@ class App extends Component {
               fetchMostPopularArtists={this.fetchMostPopularArtists}
             />
             <div className="song-container">
-              <Searchbar
-                onSearch={
-                  this.props.currentTab === Constants.TabNames.SEARCH
-                    ? this.onClickSearch
-                    : () => {
-                        alert('filter playlist contents maybe?');
-                      }
-                }
-              />
+              <Searchbar />
               <div className="search-results-container">
                 {this.renderInnerContainer()}
               </div>

@@ -17,7 +17,7 @@ class Searchbar extends React.Component {
   handleChange = e => {
     this.props.setSearchText(e.target.value);
     if (e.target.value !== '') {
-      this.props.fetchSongSearch(e.target.value, 4);
+      this.props.fetchSongSearch(this.props.userId, e.target.value, 4);
       this.props.fetchArtistSearch(e.target.value, 4);
       this.props.fetchAlbumSearch(e.target.value, 4);
       this.props.fetchPlaylistSearch(e.target.value, 4);
@@ -85,6 +85,7 @@ export default connect(
     playingPlaylist: state.mainApp.playingPlaylist,
     playingSong: state.mainApp.playingSong,
     searchText: state.mainApp.searchText,
+    userId: state.mainApp.userId,
   }),
   {
     setCurrentTab,
