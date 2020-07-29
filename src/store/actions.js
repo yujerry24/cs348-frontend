@@ -96,82 +96,82 @@ export const updateLikedPlaylist = (playlistId, songId, isFavourite) => {
 
 //////////////////
 
-export const fetchMiniSongSearchPending = () => {
+export const fetchSongSearchPending = () => {
   return {
-    type: actions.FETCH_MINISONGSEARCH_PENDING,
+    type: actions.FETCH_SONGSEARCH_PENDING,
   };
 };
 
-export const fetchMiniSongSearchSuccess = songs => {
+export const fetchSongSearchSuccess = songs => {
   return {
-    type: actions.FETCH_MINISONGSEARCH_SUCCESS,
+    type: actions.FETCH_SONGSEARCH_SUCCESS,
     songs,
   };
 };
 
-export const fetchMiniSongSearchError = error => {
+export const fetchSongSearchError = error => {
   return {
-    type: actions.FETCH_MINISONGSEARCH_ERROR,
+    type: actions.FETCH_SONGSEARCH_ERROR,
     error,
   };
 };
 
-export const fetchMiniArtistSearchPending = () => {
+export const fetchArtistSearchPending = () => {
   return {
-    type: actions.FETCH_MINIARTISTSEARCH_PENDING,
+    type: actions.FETCH_ARTISTSEARCH_PENDING,
   };
 };
 
-export const fetchMiniArtistSearchSuccess = artists => {
+export const fetchArtistSearchSuccess = artists => {
   return {
-    type: actions.FETCH_MINIARTISTSEARCH_SUCCESS,
+    type: actions.FETCH_ARTISTSEARCH_SUCCESS,
     artists,
   };
 };
 
-export const fetchMiniArtistSearchError = error => {
+export const fetchArtistSearchError = error => {
   return {
-    type: actions.FETCH_MINIARTISTSEARCH_ERROR,
+    type: actions.FETCH_ARTISTSEARCH_ERROR,
     error,
   };
 };
 
-export const fetchMiniAlbumSearchPending = () => {
+export const fetchAlbumSearchPending = () => {
   return {
-    type: actions.FETCH_MINIALBUMSEARCH_PENDING,
+    type: actions.FETCH_ALBUMSEARCH_PENDING,
   };
 };
 
-export const fetchMiniAlbumSearchSuccess = albums => {
+export const fetchAlbumSearchSuccess = albums => {
   return {
-    type: actions.FETCH_MINIALBUMSEARCH_SUCCESS,
+    type: actions.FETCH_ALBUMSEARCH_SUCCESS,
     albums,
   };
 };
 
-export const fetchMiniAlbumSearchError = error => {
+export const fetchAlbumSearchError = error => {
   return {
-    type: actions.FETCH_MINIALBUMSEARCH_ERROR,
+    type: actions.FETCH_ALBUMSEARCH_ERROR,
     error,
   };
 };
 
-export const fetchMiniPlaylistSearchPending = () => {
+export const fetchPlaylistSearchPending = () => {
   return {
-    type: actions.FETCH_MINIPLAYLISTSEARCH_PENDING,
+    type: actions.FETCH_PLAYLISTSEARCH_PENDING,
   };
 };
 
-export const fetchMiniPlaylistSearchSuccess = playlists => {
+export const fetchPlaylistSearchSuccess = playlists => {
   return {
-    type: actions.FETCH_MINIPLAYLISTSEARCH_SUCCESS,
+    type: actions.FETCH_PLAYLISTSEARCH_SUCCESS,
     playlists,
   };
 };
 
-export const fetchMiniPlaylistSearchError = error => {
+export const fetchPlaylistSearchError = error => {
   return {
-    type: actions.FETCH_MINIPLAYLISTSEARCH_ERROR,
+    type: actions.FETCH_PLAYLISTSEARCH_ERROR,
     error,
   };
 };

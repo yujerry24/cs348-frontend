@@ -14,12 +14,24 @@ import { Search } from '@material-ui/icons';
 
 import './GeneralSearch.scss';
 import DataTable from './DataTable';
+import {
+  fetchSongSearch,
+  fetchArtistSearch,
+  fetchAlbumSearch,
+  fetchPlaylistSearch,
+} from '../store/fetchCalls';
+
+const SEARCH = 'Search';
+const ARTISTS = "Artists";
+const ALBUMS = "Albums";
+const PLAYLISTS = "Playlists";
+const SONGS = "Songs";
 
 class GeneralSearch extends React.Component {
   constructor() {
     super();
     this.state = {
-      type: 'Search',
+      type: SEARCH,
     };
 
     this.tableHeadersMap = {
@@ -33,7 +45,7 @@ class GeneralSearch extends React.Component {
   componentDidUpdate = prevProps => {
     const { searchText } = this.props;
     if (prevProps.searchText !== searchText) {
-      this.setState({ type: 'Search' });
+      this.setState({ type: SEARCH });
     }
   };
 
@@ -113,6 +125,18 @@ class GeneralSearch extends React.Component {
     );
   };
 
+  moreResults = (header) => {
+    if (header === ARTISTS) {
+      this.props.fetchArtistSearch(this.props.searchText)
+    } else if (header === ALBUMS) {
+      this.props.fetchAlbumSearch(this.props.searchText)
+    } else if (header === PLAYLISTS) {
+      this.props.fetchPlaylistSearch(this.props.searchText)
+    } else if (header === SONGS) {
+      this.props.fetchSongSearch(this.props.searchText)
+    }
+  }
+
   miniResults = (header, pending, data, item) => {
     return (
       <Grid ket={header} container spacing={1}>
@@ -127,6 +151,7 @@ class GeneralSearch extends React.Component {
               variant="contained"
               disabled={pending || !data || data.length === 0}
               onClick={() => {
+                this.moreResults(header);
                 this.setState({ type: header });
               }}
             >
@@ -157,17 +182,17 @@ class GeneralSearch extends React.Component {
             <div className="gsearch-row">
               <div className="gsearch-song">
                 {this.miniResults(
-                  'Songs',
-                  this.props.songs['pending'],
-                  Object.values(this.props.songs['songs']),
+                  SONGS,
+                  this.props[SONGS]['pending'],
+                  Object.values(this.props[SONGS]['songs']),
                   this.songItem
                 )}
               </div>
               <div className="gsearch-artist">
                 {this.miniResults(
-                  'Artists',
-                  this.props.artists['pending'],
-                  Object.values(this.props.artists['artists']),
+                  ARTISTS,
+                  this.props[ARTISTS]['pending'],
+                  Object.values(this.props[ARTISTS]['artists']),
                   this.artistItem
                 )}
               </div>
@@ -175,17 +200,17 @@ class GeneralSearch extends React.Component {
             <div className="gsearch-row">
               <div className="gsearch-album">
                 {this.miniResults(
-                  'Albums',
-                  this.props.albums['pending'],
-                  Object.values(this.props.albums['albums']),
+                  ALBUMS,
+                  this.props[ALBUMS]['pending'],
+                  Object.values(this.props[ALBUMS]['albums']),
                   this.albumItem
                 )}
               </div>
               <div className="gsearch-playlist">
                 {this.miniResults(
-                  'Playlists',
-                  this.props.playlists['pending'],
-                  Object.values(this.props.playlists['playlists']),
+                  PLAYLISTS,
+                  this.props[PLAYLISTS]['pending'],
+                  Object.values(this.props[PLAYLISTS]['playlists']),
                   this.playlistItem
                 )}
               </div>
@@ -202,13 +227,16 @@ class GeneralSearch extends React.Component {
         )}
       </div>
     ) : (
-      <DataTable
-        headings={this.tableHeadersMap[type]}
-        isPlaylist={type === 'Songs'} // will show multi song select options when isPlaylist is true
-        isSearch
-        backToSearch={()=>{this.setState({type: 'Search'})}}
-        rows={this.props[type.toLowerCase()][type.toLowerCase()]}
-      />
+      this.props[this.state.type]['pending'] ?
+        <CircularProgress />
+        :
+        <DataTable
+          headings={this.tableHeadersMap[type]}
+          isPlaylist={type === SONGS} // will show multi song select options when isPlaylist is true
+          isSearch
+          backToSearch={()=>{this.setState({type: SEARCH})}}
+          rows={this.props[this.state.type][type.toLowerCase()]}
+        />
     );
   }
 }
@@ -216,10 +244,15 @@ class GeneralSearch extends React.Component {
 export default connect(
   state => ({
     searchText: state.mainApp.searchText,
-    songs: { ...state.miniSongSearch },
-    artists: { ...state.miniArtistSearch },
-    albums: { ...state.miniAlbumSearch },
-    playlists: { ...state.miniPlaylistSearch },
+    [SONGS]: { ...state.songSearch },
+    [ARTISTS]: { ...state.artistSearch },
+    [ALBUMS]: { ...state.albumSearch },
+    [PLAYLISTS]: { ...state.playlistSearch },
   }),
-  null
+  {
+    fetchSongSearch,
+    fetchArtistSearch,
+    fetchAlbumSearch,
+    fetchPlaylistSearch,
+  }
 )(GeneralSearch);

@@ -37,54 +37,54 @@ export const fetchPlaylist = (playlistId, userId) => {
   };
 };
 
-export const fetchMiniSongSearch = searchText => {
+export const fetchSongSearch = (searchText, count) => {
   return dispatch => {
-    dispatch(actions.fetchMiniSongSearchPending());
-    CallApi.miniSearchSongs(searchText)
+    dispatch(actions.fetchSongSearchPending());
+    CallApi.searchSongs(searchText, count)
       .then(res => {
-        dispatch(actions.fetchMiniSongSearchSuccess(res));
+        dispatch(actions.fetchSongSearchSuccess(res));
       })
       .catch(error => {
-        dispatch(actions.fetchMiniSongSearchError(error));
+        dispatch(actions.fetchSongSearchError(error));
       });
   };
 }
 
-export const fetchMiniArtistSearch = searchText => {
+export const fetchArtistSearch = (searchText, count) => {
   return dispatch => {
-    dispatch(actions.fetchMiniArtistSearchPending());
-    CallApi.miniSearchArtists(searchText)
+    dispatch(actions.fetchArtistSearchPending());
+    CallApi.searchArtists(searchText, count)
       .then(res => {
-        dispatch(actions.fetchMiniArtistSearchSuccess(res));
+        dispatch(actions.fetchArtistSearchSuccess(res));
       })
       .catch(error => {
-        dispatch(actions.fetchMiniArtistSearchError(error));
+        dispatch(actions.fetchArtistSearchError(error));
       });
   };
 }
 
-export const fetchMiniAlbumSearch = searchText => {
+export const fetchAlbumSearch = (searchText, count) => {
   return dispatch => {
-    dispatch(actions.fetchMiniAlbumSearchPending());
-    CallApi.miniSearchAlbums(searchText)
+    dispatch(actions.fetchAlbumSearchPending());
+    CallApi.searchAlbums(searchText, count)
       .then(res => {
-        dispatch(actions.fetchMiniAlbumSearchSuccess(res));
+        dispatch(actions.fetchAlbumSearchSuccess(res));
       })
       .catch(error => {
-        dispatch(actions.fetchMiniAlbumSearchError(error));
+        dispatch(actions.fetchAlbumSearchError(error));
       });
   };
 }
 
-export const fetchMiniPlaylistSearch = searchText => {
+export const fetchPlaylistSearch = (searchText, count) => {
   return dispatch => {
-    dispatch(actions.fetchMiniPlaylistSearchPending());
-    CallApi.miniSearchPlaylists(searchText)
+    dispatch(actions.fetchPlaylistSearchPending());
+    CallApi.searchPlaylists(searchText, count)
       .then(res => {
-        dispatch(actions.fetchMiniPlaylistSearchSuccess(res));
+        dispatch(actions.fetchPlaylistSearchSuccess(res));
       })
       .catch(error => {
-        dispatch(actions.fetchMiniPlaylistSearchError(error));
+        dispatch(actions.fetchPlaylistSearchError(error));
       });
   };
 }

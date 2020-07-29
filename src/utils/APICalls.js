@@ -94,42 +94,58 @@ export const createUser = async name => {
   }).then(res => res.json());
 };
 
-export const miniSearchSongs = async searchText => {
-  return fetch(`${API}/song/search/${searchText}`, {
+export const searchSongs = async (searchText, count) => {
+  let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({ limit: "5" })
-  }).then(res => res.json());
+    }
+  };
+  if (count) {
+    options.body = JSON.stringify({ limit: count.toString() });
+  }
+  return fetch(`${API}/song/search/${searchText}`, options)
+  .then(res => res.json());
 };
 
-export const miniSearchArtists = async searchText => {
-  return fetch(`${API}/artist/search/${searchText}`, {
+export const searchArtists = async (searchText, count) => {
+  let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({ limit: "5" })
-  }).then(res => res.json());
+    }
+  };
+  if (count) {
+    options.body = JSON.stringify({ limit: count.toString() });
+  }
+  return fetch(`${API}/artist/search/${searchText}`, options)
+  .then(res => res.json());
 };
 
-export const miniSearchAlbums = async searchText => {
-  return fetch(`${API}/album/search/${searchText}`, {
+export const searchAlbums = async (searchText, count) => {
+  let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({ limit: "5" })
-  }).then(res => res.json());
+    }
+  };
+  if (count) {
+    options.body = JSON.stringify({ limit: count.toString() });
+  }
+  return fetch(`${API}/album/search/${searchText}`, options)
+  .then(res => res.json());
 };
 
-export const miniSearchPlaylists = async searchText => {
-  return fetch(`${API}/playlist/search/${searchText}`, {
+export const searchPlaylists = async (searchText, count) => {
+  let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({ limit: "5" })
-  }).then(res => res.json());
+    }
+  };
+  if (count) {
+    options.body = JSON.stringify({ limit: count.toString() });
+  }
+  return fetch(`${API}/playlist/search/${searchText}`, options)
+  .then(res => res.json());
 };

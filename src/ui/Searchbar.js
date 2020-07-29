@@ -5,10 +5,10 @@ import './Searchbar.scss';
 import { connect } from 'react-redux';
 import { setSearchText } from '../store/actions';
 import {
-  fetchMiniSongSearch,
-  fetchMiniArtistSearch,
-  fetchMiniAlbumSearch,
-  fetchMiniPlaylistSearch,
+  fetchSongSearch,
+  fetchArtistSearch,
+  fetchAlbumSearch,
+  fetchPlaylistSearch,
 } from '../store/fetchCalls';
 import { TabNames } from '../utils/Constants';
 import { setCurrentTab } from '../store/actions';
@@ -17,10 +17,10 @@ class Searchbar extends React.Component {
   handleChange = e => {
     this.props.setSearchText(e.target.value);
     if (e.target.value !== '') {
-      this.props.fetchMiniSongSearch(e.target.value);
-      this.props.fetchMiniArtistSearch(e.target.value);
-      this.props.fetchMiniAlbumSearch(e.target.value);
-      this.props.fetchMiniPlaylistSearch(e.target.value);
+      this.props.fetchSongSearch(e.target.value, 4);
+      this.props.fetchArtistSearch(e.target.value, 4);
+      this.props.fetchAlbumSearch(e.target.value, 4);
+      this.props.fetchPlaylistSearch(e.target.value, 4);
     }
   };
 
@@ -89,9 +89,9 @@ export default connect(
   {
     setCurrentTab,
     setSearchText,
-    fetchMiniSongSearch,
-    fetchMiniArtistSearch,
-    fetchMiniAlbumSearch,
-    fetchMiniPlaylistSearch,
+    fetchSongSearch,
+    fetchArtistSearch,
+    fetchAlbumSearch,
+    fetchPlaylistSearch,
   }
 )(Searchbar);
