@@ -25,9 +25,16 @@ class VideoDrawer extends React.Component {
   };
 
   getVideoIds = () => {
-    const { playingPlaylist, playingSong, playlistsById, topSongs } = this.props;;
+    const { playingPlaylist, playingSong, playlistsById, topSongs, searchResults } = this.props;
     if (playingPlaylist && playingSong) {
-      let songs = playingPlaylist === Constants.TabNames.TOPSONGS ? topSongs : playlistsById[playingPlaylist].songsById;
+      let songs;
+      if (playingPlaylist === Constants.TabNames.SEARCH) {
+        songs = searchResults;
+      } else if (playingPlaylist === Constants.TabNames.TOPSONGS) {
+        songs = topSongs;
+      } else {
+        songs = playlistsById[playingPlaylist].songsById;
+      }
       let vidIds = Object.values(songs).map(song => song.video_id);
       let startSong = songs[playingSong].video_id;
 

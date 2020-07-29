@@ -32,6 +32,8 @@ class Searchbar extends React.Component {
       currentMusic = playlist.name;
     } else if (playingPlaylist === Constants.TabNames.TOPSONGS){
       currentMusic = 'Top 20 Songs';
+    } else if (playingPlaylist === Constants.TabNames.SEARCH) {
+      currentMusic = 'Search Results';
     } else if (playingSong) {
       currentMusic = playingSong;
     }

@@ -115,6 +115,7 @@ class App extends Component {
             </div>
             <Video 
               topSongs={this.state.mostPopSongsResponse}
+              searchResults={this.state.searchResponse}
             />
           </>
         )}
