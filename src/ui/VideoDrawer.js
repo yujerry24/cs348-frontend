@@ -46,7 +46,7 @@ class VideoDrawer extends React.Component {
     } else {
       // if playingSong exists
       // call api for video id using song id)
-      return ['0', '0'];
+      return ['0'];
       // return ['-9fC6oDFl5k', 'WehhSc1knYY'];
       /* Time of our life: -9fC6oDFl5k,  Zombie: WehhSc1knYY*/
     }
