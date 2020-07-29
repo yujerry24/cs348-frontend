@@ -105,21 +105,25 @@ export function playlistsById(state = {}, action) {
 const initSongSearchResults = {
   pending: false,
   songs: {},
+  count: 0,
 };
 
 const initArtistSearchResults = {
   pending: false,
   artists: {},
+  count: 0,
 };
 
 const initAlbumSearchResults = {
   pending: false,
   albums: {},
+  count: 0,
 };
 
 const initPlaylistSearchResults = {
   pending: false,
   playlists: {},
+  count: 0,
 };
 
 export function songSearch(state = initSongSearchResults, action) {
@@ -134,6 +138,7 @@ export function songSearch(state = initSongSearchResults, action) {
         ...state,
         pending: false,
         songs: action.songs,
+        count: action.count,
       };
     case types.FETCH_SONGSEARCH_ERROR:
       return {
@@ -158,6 +163,7 @@ export function artistSearch(state = initArtistSearchResults, action) {
         ...state,
         pending: false,
         artists: action.artists,
+        count: action.count,
       };
     case types.FETCH_ARTISTSEARCH_ERROR:
       return {
@@ -182,6 +188,7 @@ export function albumSearch(state = initAlbumSearchResults, action) {
         ...state,
         pending: false,
         albums: action.albums,
+        count: action.count,
       };
     case types.FETCH_ALBUMSEARCH_ERROR:
       return {
@@ -194,10 +201,7 @@ export function albumSearch(state = initAlbumSearchResults, action) {
   }
 }
 
-export function playlistSearch(
-  state = initPlaylistSearchResults,
-  action
-) {
+export function playlistSearch(state = initPlaylistSearchResults, action) {
   switch (action.type) {
     case types.FETCH_PLAYLISTSEARCH_PENDING:
       return {
@@ -209,6 +213,7 @@ export function playlistSearch(
         ...state,
         pending: false,
         playlists: action.playlists,
+        count: action.count,
       };
     case types.FETCH_PLAYLISTSEARCH_ERROR:
       return {

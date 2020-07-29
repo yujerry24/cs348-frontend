@@ -42,7 +42,7 @@ export const fetchSongSearch = (searchText, count) => {
     dispatch(actions.fetchSongSearchPending());
     CallApi.searchSongs(searchText, count)
       .then(res => {
-        dispatch(actions.fetchSongSearchSuccess(res));
+        dispatch(actions.fetchSongSearchSuccess(res, count));
       })
       .catch(error => {
         dispatch(actions.fetchSongSearchError(error));
@@ -55,7 +55,7 @@ export const fetchArtistSearch = (searchText, count) => {
     dispatch(actions.fetchArtistSearchPending());
     CallApi.searchArtists(searchText, count)
       .then(res => {
-        dispatch(actions.fetchArtistSearchSuccess(res));
+        dispatch(actions.fetchArtistSearchSuccess(res, count));
       })
       .catch(error => {
         dispatch(actions.fetchArtistSearchError(error));
@@ -68,7 +68,7 @@ export const fetchAlbumSearch = (searchText, count) => {
     dispatch(actions.fetchAlbumSearchPending());
     CallApi.searchAlbums(searchText, count)
       .then(res => {
-        dispatch(actions.fetchAlbumSearchSuccess(res));
+        dispatch(actions.fetchAlbumSearchSuccess(res, count));
       })
       .catch(error => {
         dispatch(actions.fetchAlbumSearchError(error));
@@ -81,7 +81,7 @@ export const fetchPlaylistSearch = (searchText, count) => {
     dispatch(actions.fetchPlaylistSearchPending());
     CallApi.searchPlaylists(searchText, count)
       .then(res => {
-        dispatch(actions.fetchPlaylistSearchSuccess(res));
+        dispatch(actions.fetchPlaylistSearchSuccess(res, count));
       })
       .catch(error => {
         dispatch(actions.fetchPlaylistSearchError(error));

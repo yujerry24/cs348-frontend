@@ -102,10 +102,11 @@ export const fetchSongSearchPending = () => {
   };
 };
 
-export const fetchSongSearchSuccess = songs => {
+export const fetchSongSearchSuccess = (songs, count) => {
   return {
     type: actions.FETCH_SONGSEARCH_SUCCESS,
     songs,
+    count,
   };
 };
 
@@ -122,10 +123,11 @@ export const fetchArtistSearchPending = () => {
   };
 };
 
-export const fetchArtistSearchSuccess = artists => {
+export const fetchArtistSearchSuccess = (artists, count) => {
   return {
     type: actions.FETCH_ARTISTSEARCH_SUCCESS,
     artists,
+    count,
   };
 };
 
@@ -142,10 +144,11 @@ export const fetchAlbumSearchPending = () => {
   };
 };
 
-export const fetchAlbumSearchSuccess = albums => {
+export const fetchAlbumSearchSuccess = (albums, count) => {
   return {
     type: actions.FETCH_ALBUMSEARCH_SUCCESS,
     albums,
+    count,
   };
 };
 
@@ -162,10 +165,11 @@ export const fetchPlaylistSearchPending = () => {
   };
 };
 
-export const fetchPlaylistSearchSuccess = playlists => {
+export const fetchPlaylistSearchSuccess = (playlists, count) => {
   return {
     type: actions.FETCH_PLAYLISTSEARCH_SUCCESS,
     playlists,
+    count,
   };
 };
 

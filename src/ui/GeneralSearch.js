@@ -126,14 +126,16 @@ class GeneralSearch extends React.Component {
   };
 
   moreResults = (header) => {
-    if (header === ARTISTS) {
-      this.props.fetchArtistSearch(this.props.searchText)
-    } else if (header === ALBUMS) {
-      this.props.fetchAlbumSearch(this.props.searchText)
-    } else if (header === PLAYLISTS) {
-      this.props.fetchPlaylistSearch(this.props.searchText)
-    } else if (header === SONGS) {
-      this.props.fetchSongSearch(this.props.searchText)
+    if (this.props[header]['count']) {
+      if (header === ARTISTS) {
+        this.props.fetchArtistSearch(this.props.searchText)
+      } else if (header === ALBUMS) {
+        this.props.fetchAlbumSearch(this.props.searchText)
+      } else if (header === PLAYLISTS) {
+        this.props.fetchPlaylistSearch(this.props.searchText)
+      } else if (header === SONGS) {
+        this.props.fetchSongSearch(this.props.searchText)
+      }
     }
   }
 
@@ -165,7 +167,7 @@ class GeneralSearch extends React.Component {
               No results found.
             </Typography>
           ) : (
-            data.map(data => item(data))
+            data.slice(0,5).map(data => item(data))
           )}
         </div>
       </Grid>
