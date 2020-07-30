@@ -42,7 +42,7 @@ class App extends Component {
   };
 
   fetchMostPopularSongs = () => {
-    CallApi.fetchMostPopularSongs()
+    CallApi.fetchMostPopularSongs(this.props.userId)
       .then(res => {
         this.setState({ mostPopSongsResponse: res });
       })
@@ -71,7 +71,11 @@ class App extends Component {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
       return (
-        <DataTable headings={headings} rows={this.state.mostPopSongsResponse} />
+        <DataTable
+          headings={headings}
+          rows={this.state.mostPopSongsResponse}
+          fetchMostPopularSongs={this.fetchMostPopularSongs}
+        />
       );
     } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
       return (

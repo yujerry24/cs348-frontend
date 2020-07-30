@@ -35,8 +35,8 @@ export const fetchPlaylist = async (playlistId, userId) => {
   ).then(res => res.json());
 };
 
-export const fetchMostPopularSongs = async () => {
-  return fetch(`${API}/song/popularSongs`).then(res => res.json());
+export const fetchMostPopularSongs = async userId => {
+  return fetch(`${API}/song/popularSongs/${userId}`).then(res => res.json());
 };
 
 export const fetchMostPopularArtists = async () => {
