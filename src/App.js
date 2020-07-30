@@ -59,14 +59,7 @@ class App extends Component {
 
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
-      return (
-        <GeneralSearch />
-        // <DataTable
-        //   headings={headings}
-        //   rows={this.state.searchResponse}
-        //   isSearch={true}
-        // />
-      );
+      return <GeneralSearch />;
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
@@ -107,10 +100,7 @@ class App extends Component {
                 {this.renderInnerContainer()}
               </div>
             </div>
-            <Video 
-              topSongs={this.state.mostPopSongsResponse}
-              searchResults={this.state.searchResponse}
-            />
+            <Video topSongs={this.state.mostPopSongsResponse} />
           </>
         )}
       </div>

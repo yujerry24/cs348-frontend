@@ -13,8 +13,6 @@ import {
 import { TabNames } from '../utils/Constants';
 import { setCurrentTab } from '../store/actions';
 
-import * as Constants from '../utils/Constants';
-
 class Searchbar extends React.Component {
   handleChange = e => {
     this.props.setSearchText(e.target.value);
@@ -45,9 +43,9 @@ class Searchbar extends React.Component {
 
     if (playingPlaylist && playlist) {
       currentMusic = playlist.name;
-    } else if (playingPlaylist === Constants.TabNames.TOPSONGS){
+    } else if (playingPlaylist === TabNames.TOPSONGS) {
       currentMusic = 'Top 20 Songs';
-    } else if (playingPlaylist === Constants.TabNames.SEARCH) {
+    } else if (playingPlaylist === TabNames.SEARCH) {
       currentMusic = 'Search Results';
     } else if (playingSong) {
       currentMusic = playingSong;
