@@ -5,6 +5,8 @@ import { Drawer, IconButton } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 
+import * as Constants from '../utils/Constants'
+
 import Video from './Video';
 import './VideoDrawer.scss';
 
@@ -12,18 +14,27 @@ class VideoDrawer extends React.Component {
   constructor() {
     super();
     this.state = {
-      opened: true,
+      opened: false,
     };
   }
 
   toggleDrawer = () => {
-    this.setState({ opened: !this.state.opened });
+    this.setState({ 
+      opened: !this.state.opened,
+     });
   };
 
   getVideoIds = () => {
-    const { playingPlaylist, playingSong, playlistsById } = this.props;
+    const { playingPlaylist, playingSong, playlistsById, topSongs, searchResults } = this.props;
     if (playingPlaylist && playingSong) {
-      let songs = playlistsById[playingPlaylist].songsById;
+      let songs;
+      if (playingPlaylist === Constants.TabNames.SEARCH) {
+        songs = searchResults;
+      } else if (playingPlaylist === Constants.TabNames.TOPSONGS) {
+        songs = topSongs;
+      } else {
+        songs = playlistsById[playingPlaylist].songsById;
+      }
       let vidIds = Object.values(songs).map(song => song.video_id);
       let startSong = songs[playingSong].video_id;
 
@@ -34,8 +45,9 @@ class VideoDrawer extends React.Component {
       return vidIds;
     } else {
       // if playingSong exists
-      // call api for video id using song id
-      return ['-9fC6oDFl5k', 'WehhSc1knYY'];
+      // call api for video id using song id)
+      return ['0'];
+      // return ['-9fC6oDFl5k', 'WehhSc1knYY'];
       /* Time of our life: -9fC6oDFl5k,  Zombie: WehhSc1knYY*/
     }
   };
