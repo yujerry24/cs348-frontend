@@ -3,6 +3,8 @@ import { Button, TextField, Toolbar } from '@material-ui/core';
 import './Searchbar.scss';
 import { connect } from 'react-redux';
 
+import * as Constants from '../utils/Constants';
+
 class Searchbar extends React.Component {
   constructor() {
     super();
@@ -28,6 +30,10 @@ class Searchbar extends React.Component {
 
     if (playingPlaylist && playlist) {
       currentMusic = playlist.name;
+    } else if (playingPlaylist === Constants.TabNames.TOPSONGS){
+      currentMusic = 'Top 20 Songs';
+    } else if (playingPlaylist === Constants.TabNames.SEARCH) {
+      currentMusic = 'Search Results';
     } else if (playingSong) {
       currentMusic = playingSong;
     }
