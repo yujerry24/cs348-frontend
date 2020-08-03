@@ -17,11 +17,15 @@
 
 .videoDrawerClosed {
   position: absolute;
-  bottom: 24px;
+  bottom: 109px;
   right: 12px;
-  height: 225px;
-  width: 64px;
+  height: 50px;
+  width: 50px;
   overflow-x: hidden;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .paper {
     position: relative;

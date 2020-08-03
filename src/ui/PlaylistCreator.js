@@ -11,6 +11,8 @@ import {
   TextField,
 } from '@material-ui/core';
 
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+
 import { createPlaylist, addPlaylistsToPlaylist } from '../utils/APICalls';
 
 import { setCurrentTab } from '../store/actions';
@@ -60,7 +62,7 @@ class PlaylistCreator extends React.Component {
 
   handleKeyDown = e => {
     if (e.keyCode === 13) {
-      this.props.onSearch(this.state.searchText);
+      this.handleOnClick();
     }
   };
 
@@ -184,6 +186,48 @@ class PlaylistCreator extends React.Component {
     );
   };
 
+  renderEmptyPlaylistDiv = () => {
+    return(
+      <div className='no-playlist-container'>
+        <div className='no-playlist-icon-container'>
+          <PlaylistAddIcon
+            fontSize='large'
+          />
+        </div>
+        <div className='no-playlist-title'>
+          Create your first playlist
+        </div>
+        {this.renderCreatePlaylistTextfield()}
+      </div>
+    );
+  };
+
+  renderCreatePlaylistTextfield = () => {
+    return(
+      <div className="creator-nameInput">
+        <div className="creator-text">
+          <TextField
+            id="standard-basic"
+            label="Playlist name"
+            fullWidth
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
+            value={this.state.playlistText}
+          />
+        </div>
+        <div className="creator-button">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.handleOnClick}
+          >
+            Add
+          </Button>
+        </div>
+      </div>
+    )
+  };
+
   render() {
     return (
       <div className="playlist-creator-container">
@@ -191,28 +235,8 @@ class PlaylistCreator extends React.Component {
           {`Create ${this.state.checked.length > 0 ? 'Merged' : ''} Playlist`}
         </div>
         <div className="creator-textfield-container">
-          <div className="creator-nameInput">
-            <div className="creator-text">
-              <TextField
-                id="standard-basic"
-                label="Playlist name"
-                fullWidth
-                onChange={this.handleChange}
-                onKeyDown={this.handleKeyDown}
-                value={this.state.playlistText}
-              />
-            </div>
-            <div className="creator-button">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleOnClick}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-          <div className="creator-playlists">{this.renderPlaylistTable()}</div>
+          {this.props.playlists.length > 0 &&  this.renderCreatePlaylistTextfield()}
+          {this.props.playlists.length > 0 ? <div className="creator-playlists">{this.renderPlaylistTable()}</div> : this.renderEmptyPlaylistDiv()}
         </div>
       </div>
     );
