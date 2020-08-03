@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   ListSubheader,
+  ListItemText,
   Popover,
 } from '@material-ui/core';
 import {
@@ -98,7 +99,12 @@ class Navbar extends React.Component {
         }
       >
         <ListItemIcon>{<PlaylistPlay />}</ListItemIcon>
-        {name}
+        <ListItemText
+          primary={name}
+          primaryTypographyProps={{
+            noWrap: true
+          }}
+        />
         {currentTab === playlist_id && this.state.drawerOpened && (
           <ListItemSecondaryAction>
             <IconButton

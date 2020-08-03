@@ -45,12 +45,22 @@ class Login extends Component {
   };
 
   handleCreate = () => {
-    createUser(this.state.username).then(res => {
-      console.log(res);
-      this.setState({
-        error: false,
-        helperText: 'Successfully created user!',
-      });
+    findUser(this.state.username).then(searchRes => {
+      if (searchRes.length === 0){
+        createUser(this.state.username).then(res => {
+          console.log(res);
+          this.setState({
+            error: false,
+            helperText: 'Successfully created user!',
+          });
+        });
+      } else {
+        this.setState({
+          error: true,
+          helperText: 'Another user with that username already exists',
+        });
+        this.props.setValidLogin(false);
+      }
     });
   };
 

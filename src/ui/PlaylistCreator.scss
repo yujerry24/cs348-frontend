@@ -29,3 +29,27 @@
 .creator-playlists{
     margin-top: 20px;
 }
+
+.no-playlist-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px 0px;
+    height: 100%;
+
+    .no-playlist-icon-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80px;
+        width: 80px;
+        background-color:#dbdbdb;
+        border-radius: 50%;
+    }
+
+    .no-playlist-title{
+        font-size: 26px;
+        margin: 35px 0px;
+    }
+}
