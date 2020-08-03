@@ -5,7 +5,7 @@ import { Drawer, IconButton } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 
-import * as Constants from '../utils/Constants'
+import { TabNames } from '../utils/Constants';
 
 import Video from './Video';
 import './VideoDrawer.scss';
@@ -19,18 +19,24 @@ class VideoDrawer extends React.Component {
   }
 
   toggleDrawer = () => {
-    this.setState({ 
+    this.setState({
       opened: !this.state.opened,
-     });
+    });
   };
 
   getVideoIds = () => {
-    const { playingPlaylist, playingSong, playlistsById, topSongs, searchResults } = this.props;
+    const {
+      playingPlaylist,
+      playingSong,
+      playlistsById,
+      searchSongs,
+      topSongs,
+    } = this.props;
     if (playingPlaylist && playingSong) {
       let songs;
-      if (playingPlaylist === Constants.TabNames.SEARCH) {
-        songs = searchResults;
-      } else if (playingPlaylist === Constants.TabNames.TOPSONGS) {
+      if (playingPlaylist === TabNames.SEARCH) {
+        songs = searchSongs;
+      } else if (playingPlaylist === TabNames.TOPSONGS) {
         songs = topSongs;
       } else {
         songs = playlistsById[playingPlaylist].songsById;
@@ -76,4 +82,5 @@ export default connect(state => ({
   playingPlaylist: state.mainApp.playingPlaylist,
   playingSong: state.mainApp.playingSong,
   playlistsById: state.playlistsById,
+  searchSongs: state.songSearch.songs,
 }))(VideoDrawer);

@@ -253,8 +253,9 @@ class Navbar extends React.Component {
         variant="permanent"
         className={this.state.drawerOpened ? 'drawerOpen' : 'drawerClosed'}
         classes={{ paper: 'paper' }}
+        PaperProps = {{elevation: 16}}
       >
-        <List className="list">
+        <List className="list" style={{paddingTop : '0px'}}>
           <div className="drawer-header">
             <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
               {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}

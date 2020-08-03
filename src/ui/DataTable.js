@@ -14,6 +14,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Typography,
 } from '@material-ui/core';
 // import TableContainer from '@material-ui/core/TableContainer';
 // import TablePagination from '@material-ui/core/TablePagination';
@@ -21,6 +22,7 @@ import {
 
 import {
   Add,
+  ArrowBack,
   Favorite,
   FavoriteBorder,
   Delete,
@@ -28,13 +30,17 @@ import {
 } from '@material-ui/icons';
 import './DataTable.scss';
 
-import * as Constants from '../utils/Constants';
+import { TabNames } from '../utils/Constants';
 import * as CallApi from '../utils/APICalls';
-import { setPlayingPlaylist, setPlayingSong } from '../store/actions';
+import {
+  setPlayingPlaylist,
+  setPlayingSong,
+  updateLikedPlaylist,
+} from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
 class DataTable extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       popoverAnchorEl: null,
@@ -42,11 +48,15 @@ class DataTable extends React.Component {
       addToPlaylists: [],
       multiSong: false,
     };
+    this.isSongData =
+      !!props.isPlaylist || props.currentTab === TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
-    if (prevProps.currentTab !== this.props.currentTab) {
+    const { currentTab, isPlaylist } = this.props;
+    if (prevProps.currentTab !== currentTab) {
       this.setState({ selectedSongs: [] });
+      this.isSongData = !!isPlaylist || currentTab === TabNames.TOPSONGS;
     }
   };
 
@@ -62,7 +72,7 @@ class DataTable extends React.Component {
   onDelete = ids => {
     // I don't think we need to call requery when we know what got deleted
     CallApi.deleteSongs(ids, this.props.currentTab).then(() => {
-      this.props.fetchPlaylist(this.props.currentTab);
+      this.props.fetchPlaylist(this.props.currentTab, this.props.userId);
     });
   };
 
@@ -114,13 +124,36 @@ class DataTable extends React.Component {
     }
   };
 
+  handleFavourite = (id, isFav) => {
+    let playlist_id = this.props.userId + '-liked-songs';
+    if (!isFav) {
+      CallApi.addSongs([id], [playlist_id]).then(() =>
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
+      );
+      this.updateLiked(id, true);
+    } else {
+      CallApi.deleteSongs([id], playlist_id).then(() =>
+        this.props.fetchPlaylist(playlist_id, this.props.userId)
+      );
+      this.updateLiked(id, false);
+    }
+  };
+
+  updateLiked = (id, newVal) => {
+    Object.entries(this.props.playlistsById).forEach(([key, val]) => {
+      if (val.songsById && val.songsById[id]) {
+        this.props.updateLikedPlaylist(key, id, newVal);
+      }
+    });
+  };
+
   renderHeadingRow = _cell => (
     <TableCell key={`heading-${_cell}`} align={'left'}>
       {_cell}
     </TableCell>
   );
 
-  renderActionButtons = id => {
+  renderActionButtons = (id, isfave) => {
     const { isPlaylist } = this.props;
     const actionButtons = [];
 
@@ -166,12 +199,13 @@ class DataTable extends React.Component {
       </IconButton>
     );
     actionButtons.push(
-      <Checkbox
+      <IconButton
         key={`favorite-${id}`}
-        icon={<FavoriteBorder />}
-        checkedIcon={<Favorite />}
         name="favorite"
-      />
+        onClick={() => this.handleFavourite(id, isfave)}
+      >
+        {isfave ? <Favorite color="secondary" /> : <FavoriteBorder />}
+      </IconButton>
     );
     return actionButtons;
   };
@@ -202,7 +236,7 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        {this.props.currentTab !== Constants.TabNames.TOPARTISTS && (
+        {this.isSongData && (
           <TableCell>
             <Checkbox
               key={`song-checkbox-${id}`}
@@ -218,7 +252,7 @@ class DataTable extends React.Component {
             align={'left'}
             style={{ padding: 0, minWidth: '110px' }}
           >
-            {this.renderActionButtons(id)}
+            {this.renderActionButtons(id, _row.isfavourite)}
           </TableCell>
         )}
       </TableRow>
@@ -317,9 +351,24 @@ class DataTable extends React.Component {
         }
       >
         <div className="table-toolbar-title">
-          {this.props.isPlaylist && currPlaylist
-            ? currPlaylist.name
-            : this.props.currentTab}
+          {this.props.isSearch && (
+            <IconButton
+              key={`back-to-search`}
+              color="primary"
+              size="small"
+              aria-label="back"
+              onClick={() => {
+                this.props.backToSearch();
+              }}
+            >
+              <ArrowBack />
+            </IconButton>
+          )}
+          <Typography variant="h5" noWrap={true}>
+            {this.props.isPlaylist && currPlaylist
+              ? currPlaylist.name
+              : this.props.currentTab}
+          </Typography>
         </div>
         {this.state.multiSong && (
           <div className="table-toolbar-multi-actions">
@@ -358,12 +407,12 @@ class DataTable extends React.Component {
   };
 
   render() {
-    const { currentTab, headings, rows } = this.props;
+    const { headings, rows } = this.props;
     const rowsLength = rows ? Object.keys(rows).length : 0;
 
     const headerContent = (
       <TableRow key="heading">
-        {currentTab !== Constants.TabNames.TOPARTISTS && (
+        {this.isSongData && (
           <TableCell
             key={`actions-selectAll`}
             align={'left'}
@@ -426,6 +475,7 @@ export default connect(
     pending:
       state.playlistsById[state.mainApp.currentTab] &&
       state.playlistsById[state.mainApp.currentTab].pending,
+    playlistsById: state.playlistsById,
   }),
-  { setPlayingPlaylist, setPlayingSong, fetchPlaylist }
+  { setPlayingPlaylist, setPlayingSong, fetchPlaylist, updateLikedPlaylist }
 )(DataTable);

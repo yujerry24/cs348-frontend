@@ -1,24 +1,37 @@
 import React from 'react';
-import { Button, TextField, Toolbar } from '@material-ui/core';
+import { AppBar, Toolbar, InputBase } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
 import './Searchbar.scss';
 import { connect } from 'react-redux';
-
-import * as Constants from '../utils/Constants';
+import { setSearchText } from '../store/actions';
+import {
+  fetchSongSearch,
+  fetchArtistSearch,
+  fetchAlbumSearch,
+  fetchPlaylistSearch,
+} from '../store/fetchCalls';
+import { TabNames } from '../utils/Constants';
+import { setCurrentTab } from '../store/actions';
 
 class Searchbar extends React.Component {
-  constructor() {
-    super();
-    this.state = { searchText: '' };
-  }
-
   handleChange = e => {
-    this.setState({ searchText: e.target.value });
+    this.props.setSearchText(e.target.value);
+    if (e.target.value !== '') {
+      this.props.fetchSongSearch(this.props.userId, e.target.value, 4);
+      this.props.fetchArtistSearch(e.target.value, 4);
+      this.props.fetchAlbumSearch(e.target.value, 4);
+      this.props.fetchPlaylistSearch(e.target.value, 4);
+    }
   };
 
   handleKeyDown = e => {
     if (e.keyCode === 13) {
-      this.props.onSearch(this.state.searchText);
+      this.props.setSearchText(e.target.value);
     }
+  };
+
+  onClick = () => {
+    this.props.setCurrentTab(TabNames.SEARCH);
   };
 
   render() {
@@ -30,44 +43,60 @@ class Searchbar extends React.Component {
 
     if (playingPlaylist && playlist) {
       currentMusic = playlist.name;
-    } else if (playingPlaylist === Constants.TabNames.TOPSONGS){
+    } else if (playingPlaylist === TabNames.TOPSONGS) {
       currentMusic = 'Top 20 Songs';
-    } else if (playingPlaylist === Constants.TabNames.SEARCH) {
+    } else if (playingPlaylist === TabNames.SEARCH) {
       currentMusic = 'Search Results';
     } else if (playingSong) {
       currentMusic = playingSong;
     }
     return (
       <div className="search-bar-container">
-        <Toolbar className="search-toolbar">
-          <div className="search-component">
-            <TextField
-              id="standard-basic"
-              label="Search"
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => this.props.onSearch(this.state.searchText)}
-            >
-              Search
-            </Button>
-          </div>
-          {currentMusic
-            ? `Currently playing ${
-                playingPlaylist ? 'playlist' : 'song'
-              }: ${currentMusic}`
-            : `No music selected`}
-        </Toolbar>
+        <AppBar className="search-appbar" color="inherit" position="static">
+          <Toolbar className="search-toolbar">
+            <div className="search-component">
+              <div className="search-box">
+                <div className="search-icon">
+                  <Search />
+                </div>
+                <div className="search-input">
+                  <InputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={this.handleChange}
+                    onClick={this.onClick}
+                  />
+                </div>
+              </div>
+              <div className="controls">
+                {currentMusic
+                  ? `Currently playing ${
+                      playingPlaylist ? 'playlist' : 'song'
+                    }: ${currentMusic}`
+                  : `No music selected`}
+              </div>
+            </div>
+          </Toolbar>
+        </AppBar>
       </div>
     );
   }
 }
 
-export default connect(state => ({
-  availablePlaylists: state.allPlaylists.playlists,
-  playingPlaylist: state.mainApp.playingPlaylist,
-  playingSong: state.mainApp.playingSong,
-}))(Searchbar);
+export default connect(
+  state => ({
+    availablePlaylists: state.allPlaylists.playlists,
+    playingPlaylist: state.mainApp.playingPlaylist,
+    playingSong: state.mainApp.playingSong,
+    searchText: state.mainApp.searchText,
+    userId: state.mainApp.userId,
+  }),
+  {
+    setCurrentTab,
+    setSearchText,
+    fetchSongSearch,
+    fetchArtistSearch,
+    fetchAlbumSearch,
+    fetchPlaylistSearch,
+  }
+)(Searchbar);

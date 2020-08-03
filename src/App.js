@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 
 import DataTable from './ui/DataTable';
 import PlaylistCreator from './ui/PlaylistCreator';
+import GeneralSearch from './ui/GeneralSearch';
 // import Input from './ui/Input';
 // import Button from './ui/SubmitButton';
-import './App.css';
+import './App.scss';
 import Login from './ui/Login';
 import Navbar from './ui/Navbar';
 import Searchbar from './ui/Searchbar';
@@ -21,9 +22,7 @@ const topArtistsHeading = ['Artist Name', 'In Number Of Playlists'];
 class App extends Component {
   constructor() {
     super();
-    // Consider caching search responses?
     this.state = {
-      searchResponse: [],
       mostPopSongsResponse: [],
       mostPopArtistsResponse: [],
     };
@@ -43,7 +42,7 @@ class App extends Component {
   };
 
   fetchMostPopularSongs = () => {
-    CallApi.fetchMostPopularSongs()
+    CallApi.fetchMostPopularSongs(this.props.userId)
       .then(res => {
         this.setState({ mostPopSongsResponse: res });
       })
@@ -58,22 +57,18 @@ class App extends Component {
       .catch(err => err);
   };
 
-  onClickSearch = text => {
-    CallApi.search(text, this.props.userId)
-      .then(res => {
-        this.setState({ searchResponse: res });
-      })
-      .catch(err => err);
-  };
-
   renderInnerContainer = () => {
     if (this.props.currentTab === Constants.TabNames.SEARCH) {
-      return <DataTable headings={headings} rows={this.state.searchResponse} />;
+      return <GeneralSearch />;
     } else if (this.props.currentTab === Constants.TabNames.CREATEPL) {
       return <PlaylistCreator />;
     } else if (this.props.currentTab === Constants.TabNames.TOPSONGS) {
       return (
-        <DataTable headings={headings} rows={this.state.mostPopSongsResponse} />
+        <DataTable
+          headings={headings}
+          rows={this.state.mostPopSongsResponse}
+          fetchMostPopularSongs={this.fetchMostPopularSongs}
+        />
       );
     } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
       return (
@@ -100,23 +95,12 @@ class App extends Component {
               fetchMostPopularArtists={this.fetchMostPopularArtists}
             />
             <div className="song-container">
-              <Searchbar
-                onSearch={
-                  this.props.currentTab === Constants.TabNames.SEARCH
-                    ? this.onClickSearch
-                    : () => {
-                        alert('filter playlist contents maybe?');
-                      }
-                }
-              />
+              <Searchbar />
               <div className="search-results-container">
                 {this.renderInnerContainer()}
               </div>
             </div>
-            <Video 
-              topSongs={this.state.mostPopSongsResponse}
-              searchResults={this.state.searchResponse}
-            />
+            <Video topSongs={this.state.mostPopSongsResponse} />
           </>
         )}
       </div>

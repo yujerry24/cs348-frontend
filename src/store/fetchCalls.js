@@ -1,12 +1,13 @@
 import * as actions from './actions';
-// process.env.REACT_APP_ENDPOINT = https://ancient-ceiling-278919.ue.r.appspot.com
-const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
+import * as CallApi from './../utils/APICalls';
+// const API = process.env.REACT_APP_ENDPOINT = "https://ancient-ceiling-278919.ue.r.appspot.com";
+// // process.env.REACT_APP_ENDPOINT = "https://ancient-ceiling-278919.ue.r.appspot.com"
+// // const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 export const fetchAllPlaylists = userId => {
   return dispatch => {
     dispatch(actions.fetchAllPlaylistsPending());
-    fetch(`${API}/playlist/list/${userId}`)
-      .then(res => res.json())
+    CallApi.fetchAllPlaylists(userId)
       .then(res => {
         if (res.error) {
           throw res.error;
@@ -24,15 +25,66 @@ export const fetchAllPlaylists = userId => {
 
 export const fetchPlaylist = (playlistId, userId) => {
   return dispatch => {
-    dispatch(actions.fetchPlaylistPending(playlistId));
-    fetch(`${API}/playlist/getUserPlaylists/${playlistId}/${userId}`)
-      .then(res => res.json())
+    dispatch(actions.fetchPlaylistPending);
+    CallApi.fetchPlaylist(playlistId, userId)
       .then(res => {
         dispatch(actions.fetchPlaylistSuccess(playlistId, res));
         return res;
       })
       .catch(error => {
         dispatch(actions.fetchPlaylistError(error));
+      });
+  };
+};
+
+export const fetchSongSearch = (userId, searchText, count) => {
+  return dispatch => {
+    dispatch(actions.fetchSongSearchPending());
+    CallApi.searchSongs(userId, searchText, count)
+      .then(res => {
+        dispatch(actions.fetchSongSearchSuccess(res, count));
+      })
+      .catch(error => {
+        dispatch(actions.fetchSongSearchError(error));
+      });
+  };
+};
+
+export const fetchArtistSearch = (searchText, count) => {
+  return dispatch => {
+    dispatch(actions.fetchArtistSearchPending());
+    CallApi.searchArtists(searchText, count)
+      .then(res => {
+        dispatch(actions.fetchArtistSearchSuccess(res, count));
+      })
+      .catch(error => {
+        dispatch(actions.fetchArtistSearchError(error));
+      });
+  };
+};
+
+export const fetchAlbumSearch = (searchText, count) => {
+  return dispatch => {
+    dispatch(actions.fetchAlbumSearchPending());
+    CallApi.searchAlbums(searchText, count)
+      .then(res => {
+        dispatch(actions.fetchAlbumSearchSuccess(res, count));
+      })
+      .catch(error => {
+        dispatch(actions.fetchAlbumSearchError(error));
+      });
+  };
+};
+
+export const fetchPlaylistSearch = (searchText, count) => {
+  return dispatch => {
+    dispatch(actions.fetchPlaylistSearchPending());
+    CallApi.searchPlaylists(searchText, count)
+      .then(res => {
+        dispatch(actions.fetchPlaylistSearchSuccess(res, count));
+      })
+      .catch(error => {
+        dispatch(actions.fetchPlaylistSearchError(error));
       });
   };
 };
