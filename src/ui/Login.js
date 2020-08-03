@@ -12,7 +12,7 @@ import {
 import { findUser, createUser } from '../utils/APICalls';
 import { setUser, setValidLogin } from '../store/actions';
 
-import './Login.css';
+import './Login.scss';
 
 class Login extends Component {
   constructor() {
@@ -46,7 +46,7 @@ class Login extends Component {
 
   handleCreate = () => {
     findUser(this.state.username).then(searchRes => {
-      if (searchRes.length === 0){
+      if (searchRes.length === 0) {
         createUser(this.state.username).then(res => {
           console.log(res);
           this.setState({
@@ -79,7 +79,7 @@ class Login extends Component {
     return (
       <form className="login-container" noValidate autoComplete="off">
         <Card>
-          <CardHeader title="Database Login" />
+          <CardHeader title="Kpopify Login" />
           <CardContent>
             <div>
               <TextField
