@@ -9,6 +9,8 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as reducers from './store/reducers';
 
+//app icon made by https://www.flaticon.com/authors/freepik
+
 const middlewares = [thunk];
 
 const store = createStore(

@@ -49,15 +49,12 @@ class DataTable extends React.Component {
       addToPlaylists: [],
       multiSong: false,
     };
-    this.isSongData =
-      !!props.isPlaylist || props.currentTab === TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
-    const { currentTab, isPlaylist } = this.props;
+    const { currentTab } = this.props;
     if (prevProps.currentTab !== currentTab) {
       this.setState({ selectedSongs: [] });
-      this.isSongData = !!isPlaylist || currentTab === TabNames.TOPSONGS;
     }
   };
 
@@ -252,7 +249,7 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        {this.isSongData && (
+        {(this.props.isPlaylist || this.props.isSongSearch) && (
           <TableCell>
             <Checkbox
               key={`song-checkbox-${id}`}
@@ -423,12 +420,12 @@ class DataTable extends React.Component {
   };
 
   render() {
-    const { headings, rows } = this.props;
+    const { headings, rows, isPlaylist, isSongSearch } = this.props;
     const rowsLength = rows ? Object.keys(rows).length : 0;
 
     const headerContent = (
       <TableRow key="heading">
-        {this.isSongData && (
+        {(isPlaylist || isSongSearch) && (
           <TableCell
             key={`actions-selectAll`}
             align={'left'}
