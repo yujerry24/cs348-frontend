@@ -130,29 +130,32 @@ class DataTable extends React.Component {
     if (!isFav) {
       CallApi.addSongs([id], [playlist_id]).then(() => {
         this.props.fetchPlaylist(playlist_id, this.props.userId);
-        if (this.props.currentTab === TabNames.TOPSONGS) {
-          this.props.fetchMostPopularSongs();
-        }
       });
 
       this.updateLiked(id, true);
     } else {
       CallApi.deleteSongs([id], playlist_id).then(() => {
         this.props.fetchPlaylist(playlist_id, this.props.userId);
-        if (this.props.currentTab === TabNames.TOPSONGS) {
-          this.props.fetchMostPopularSongs();
-        }
       });
       this.updateLiked(id, false);
     }
   };
 
   updateLiked = (id, newVal) => {
+    if (this.props.currentTab === TabNames.TOPSONGS) {
+      //update isfavourite status of top songs results
+      //only needs to be done when on the topsongs tab
+      this.props.updateLikedPopSong(id, newVal);
+    }
+
+    //update local state for playlists
     Object.entries(this.props.playlistsById).forEach(([key, val]) => {
       if (val.songsById && val.songsById[id]) {
         this.props.updateLikedInPlaylist(key, id, newVal);
       }
     });
+
+    //update local state for search results
     Object.keys(this.props.searchSongs).forEach(key => {
       if (key === id) {
         this.props.updateLikedInSearch(key, newVal);

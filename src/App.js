@@ -49,6 +49,14 @@ class App extends Component {
       .catch(err => err);
   };
 
+  updateLikedPopSong = (id, isFav) => {
+    const newState = { ...this.state.mostPopSongsResponse };
+    if (newState[id]) {
+      newState[id].isfavourite = isFav;
+      this.setState({ mostPopSongsResponse: newState });
+    }
+  };
+
   fetchMostPopularArtists = () => {
     CallApi.fetchMostPopularArtists()
       .then(res => {
@@ -67,7 +75,7 @@ class App extends Component {
         <DataTable
           headings={headings}
           rows={this.state.mostPopSongsResponse}
-          fetchMostPopularSongs={this.fetchMostPopularSongs}
+          updateLikedPopSong={this.updateLikedPopSong}
         />
       );
     } else if (this.props.currentTab === Constants.TabNames.TOPARTISTS) {
