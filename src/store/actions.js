@@ -146,6 +146,26 @@ export const fetchArtistSearchError = error => {
   };
 };
 
+export const fetchArtistSongsPending = () => {
+  return {
+    type: actions.FETCH_ARTIST_SONGS_PENDING,
+  };
+};
+
+export const fetchArtistSongsSuccess = artistSongs => {
+  return {
+    type: actions.FETCH_ARTIST_SONGS_SUCCESS,
+    artistSongs,
+  };
+};
+
+export const fetchArtistSongsError = error => {
+  return {
+    type: actions.FETCH_ARTIST_SONGS_ERROR,
+    error,
+  };
+};
+
 export const fetchAlbumSearchPending = () => {
   return {
     type: actions.FETCH_ALBUMSEARCH_PENDING,
@@ -167,6 +187,26 @@ export const fetchAlbumSearchError = error => {
   };
 };
 
+export const fetchAlbumSongsPending = () => {
+  return {
+    type: actions.FETCH_ALBUM_SONGS_PENDING,
+  };
+};
+
+export const fetchAlbumSongsSuccess = albumSongs => {
+  return {
+    type: actions.FETCH_ALBUM_SONGS_SUCCESS,
+    albumSongs,
+  };
+};
+
+export const fetchAlbumSongsError = error => {
+  return {
+    type: actions.FETCH_ALBUM_SONGS_ERROR,
+    error,
+  };
+};
+
 export const fetchPlaylistSearchPending = () => {
   return {
     type: actions.FETCH_PLAYLISTSEARCH_PENDING,
@@ -184,6 +224,26 @@ export const fetchPlaylistSearchSuccess = (playlists, count) => {
 export const fetchPlaylistSearchError = error => {
   return {
     type: actions.FETCH_PLAYLISTSEARCH_ERROR,
+    error,
+  };
+};
+
+export const fetchPlaylistSongsPending = () => {
+  return {
+    type: actions.FETCH_PLAYLIST_SONGS_PENDING,
+  };
+};
+
+export const fetchPlaylistSongsSuccess = playlistSongs => {
+  return {
+    type: actions.FETCH_PLAYLIST_SONGS_SUCCESS,
+    playlistSongs,
+  };
+};
+
+export const fetchPlaylistSongsError = error => {
+  return {
+    type: actions.FETCH_PLAYLIST_SONGS_ERROR,
     error,
   };
 };

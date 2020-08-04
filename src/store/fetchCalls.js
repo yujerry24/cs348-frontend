@@ -60,6 +60,19 @@ export const fetchArtistSearch = (searchText, count) => {
   };
 };
 
+export const fetchArtistSongs = (artistId, userId) => {
+  return dispatch => {
+    dispatch(actions.fetchArtistSongsPending());
+    CallApi.getArtistSongs(artistId, userId)
+      .then(res => {
+        dispatch(actions.fetchArtistSongsSuccess(res));
+      })
+      .catch(error => {
+        dispatch(actions.fetchArtistSongsError(error));
+      });
+  };
+};
+
 export const fetchAlbumSearch = (searchText, count) => {
   return dispatch => {
     dispatch(actions.fetchAlbumSearchPending());
@@ -73,6 +86,19 @@ export const fetchAlbumSearch = (searchText, count) => {
   };
 };
 
+export const fetchAlbumSongs = (albumId, userId) => {
+  return dispatch => {
+    dispatch(actions.fetchAlbumSongsPending());
+    CallApi.getAlbumSongs(albumId, userId)
+      .then(res => {
+        dispatch(actions.fetchAlbumSongsSuccess(res));
+      })
+      .catch(error => {
+        dispatch(actions.fetchAlbumSongsError(error));
+      });
+  };
+};
+
 export const fetchPlaylistSearch = (searchText, count) => {
   return dispatch => {
     dispatch(actions.fetchPlaylistSearchPending());
@@ -82,6 +108,21 @@ export const fetchPlaylistSearch = (searchText, count) => {
       })
       .catch(error => {
         dispatch(actions.fetchPlaylistSearchError(error));
+      });
+  };
+};
+
+export const fetchPlaylistSongs = (playlistId, userId) => {
+  return dispatch => {
+    dispatch(actions.fetchPlaylistSongsPending());
+    CallApi.fetchPlaylist(playlistId, userId)
+      .then(res => {
+        console.log(res);
+        dispatch(actions.fetchPlaylistSongsSuccess(res));
+        return res;
+      })
+      .catch(error => {
+        dispatch(actions.fetchPlaylistSongsError(error));
       });
   };
 };
