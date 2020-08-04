@@ -283,7 +283,7 @@ class DataTable extends React.Component {
             {this.renderActionButtons(id, _row.isfavourite)}
           </TableCell>
         )}
-        {this.props.handleGetSongs && (
+        {this.props.handleGetSongs && !this.props.isSongSearch && (
           <TableCell
             key={`see-songs-${id}`}
             align={'center'}
