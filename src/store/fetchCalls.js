@@ -1,8 +1,5 @@
 import * as actions from './actions';
 import * as CallApi from './../utils/APICalls';
-// const API = process.env.REACT_APP_ENDPOINT = "https://ancient-ceiling-278919.ue.r.appspot.com";
-// // process.env.REACT_APP_ENDPOINT = "https://ancient-ceiling-278919.ue.r.appspot.com"
-// // const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 export const fetchAllPlaylists = userId => {
   return dispatch => {
@@ -25,7 +22,7 @@ export const fetchAllPlaylists = userId => {
 
 export const fetchPlaylist = (playlistId, userId) => {
   return dispatch => {
-    dispatch(actions.fetchPlaylistPending);
+    dispatch(actions.fetchPlaylistPending());
     CallApi.fetchPlaylist(playlistId, userId)
       .then(res => {
         dispatch(actions.fetchPlaylistSuccess(playlistId, res));

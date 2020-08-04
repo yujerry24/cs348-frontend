@@ -83,6 +83,7 @@ class Login extends Component {
           <CardContent>
             <div>
               <TextField
+                autoFocus
                 error={this.state.error}
                 helperText={this.state.helperText}
                 fullWidth
