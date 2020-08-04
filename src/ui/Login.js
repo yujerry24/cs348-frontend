@@ -81,7 +81,7 @@ class Login extends Component {
         <Card>
           <CardHeader title="Kpopify Login" />
           <CardContent>
-            <div>
+            <div className="textfield-wrapper">
               <TextField
                 autoFocus
                 error={this.state.error}
