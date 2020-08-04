@@ -108,24 +108,6 @@ const initSongSearchResults = {
   count: 0,
 };
 
-const initArtistSearchResults = {
-  pending: false,
-  artists: {},
-  count: 0,
-};
-
-const initAlbumSearchResults = {
-  pending: false,
-  albums: {},
-  count: 0,
-};
-
-const initPlaylistSearchResults = {
-  pending: false,
-  playlists: {},
-  count: 0,
-};
-
 export function songSearch(state = initSongSearchResults, action) {
   switch (action.type) {
     case types.FETCH_SONGSEARCH_PENDING:
@@ -155,6 +137,16 @@ export function songSearch(state = initSongSearchResults, action) {
   }
 }
 
+const initArtistSearchResults = {
+  pending: false,
+  artists: {},
+  songs: {
+    pending: false,
+    songsById: {},
+  },
+  count: 0,
+};
+
 export function artistSearch(state = initArtistSearchResults, action) {
   switch (action.type) {
     case types.FETCH_ARTISTSEARCH_PENDING:
@@ -175,10 +167,45 @@ export function artistSearch(state = initArtistSearchResults, action) {
         pending: false,
         error: action.error,
       };
+    case types.FETCH_ARTIST_SONGS_PENDING:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: true,
+        },
+      };
+    case types.FETCH_ARTIST_SONGS_SUCCESS:
+      return {
+        ...state,
+        songs: {
+          pending: false,
+          songsById: action.artistSongs,
+        },
+      };
+    case types.FETCH_ARTIST_SONGS_ERROR:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: false,
+          error: action.error,
+        },
+      };
     default:
       return state;
   }
 }
+
+const initAlbumSearchResults = {
+  pending: false,
+  albums: {},
+  songs: {
+    pending: false,
+    songsById: {},
+  },
+  count: 0,
+};
 
 export function albumSearch(state = initAlbumSearchResults, action) {
   switch (action.type) {
@@ -200,10 +227,45 @@ export function albumSearch(state = initAlbumSearchResults, action) {
         pending: false,
         error: action.error,
       };
+    case types.FETCH_ALBUM_SONGS_PENDING:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: true,
+        },
+      };
+    case types.FETCH_ALBUM_SONGS_SUCCESS:
+      return {
+        ...state,
+        songs: {
+          pending: false,
+          songsById: action.albumSongs,
+        },
+      };
+    case types.FETCH_ALBUM_SONGS_ERROR:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: false,
+          error: action.error,
+        },
+      };
     default:
       return state;
   }
 }
+
+const initPlaylistSearchResults = {
+  pending: false,
+  playlists: {},
+  songs: {
+    pending: false,
+    songsById: {},
+  },
+  count: 0,
+};
 
 export function playlistSearch(state = initPlaylistSearchResults, action) {
   switch (action.type) {
@@ -224,6 +286,31 @@ export function playlistSearch(state = initPlaylistSearchResults, action) {
         ...state,
         pending: false,
         error: action.error,
+      };
+    case types.FETCH_PLAYLIST_SONGS_PENDING:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: true,
+        },
+      };
+    case types.FETCH_PLAYLIST_SONGS_SUCCESS:
+      return {
+        ...state,
+        songs: {
+          pending: false,
+          songsById: action.playlistSongs,
+        },
+      };
+    case types.FETCH_PLAYLIST_SONGS_ERROR:
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          pending: false,
+          error: action.error,
+        },
       };
     default:
       return state;

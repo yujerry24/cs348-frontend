@@ -2,7 +2,9 @@
 const API = process.env.REACT_APP_ENDPOINT || 'http://localhost:8080';
 
 export const fetchAllPlaylists = async userId => {
-  return fetch(`${API}/playlist/list/${userId}`).then(res => res.json());
+  return fetch(`${API}/playlist/list/${userId}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const addSongs = async (songIds, playlistIds) => {
@@ -12,9 +14,9 @@ export const addSongs = async (songIds, playlistIds) => {
       'Content-Type': 'application/json;charset=utf-8',
     },
     body: JSON.stringify({ songIds, playlistIds }),
-  }).then(() => {
-    console.log('Add Success');
-  });
+  })
+    .then(() => 'Add Success')
+    .catch(err => err);
 };
 
 export const deleteSongs = async (songIds, playlistId) => {
@@ -24,23 +26,27 @@ export const deleteSongs = async (songIds, playlistId) => {
       'Content-Type': 'application/json;charset=utf-8',
     },
     body: JSON.stringify({ songIds: songIds }),
-  }).then(() => {
-    console.log('Delete Success');
-  });
+  })
+    .then(() => 'Delete Success')
+    .catch(err => err);
 };
 
 export const fetchPlaylist = async (playlistId, userId) => {
-  return fetch(
-    `${API}/playlist/getUserPlaylists/${playlistId}/${userId}`
-  ).then(res => res.json());
+  return fetch(`${API}/playlist/getUserPlaylists/${playlistId}/${userId}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const fetchMostPopularSongs = async userId => {
-  return fetch(`${API}/song/popularSongs/${userId}`).then(res => res.json());
+  return fetch(`${API}/song/popularSongs/${userId}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const fetchMostPopularArtists = async () => {
-  return fetch(`${API}/song/popularArtists`).then(res => res.json());
+  return fetch(`${API}/song/popularArtists`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const createPlaylist = async (name, userId) => {
@@ -53,7 +59,9 @@ export const createPlaylist = async (name, userId) => {
       playlistName: name,
       userId: userId,
     }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const addPlaylistsToPlaylist = async (finalId, playlistIds) => {
@@ -66,7 +74,9 @@ export const addPlaylistsToPlaylist = async (finalId, playlistIds) => {
       newPlaylistId: finalId,
       existingPlaylistIds: playlistIds,
     }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const deletePlaylist = async playlistId => {
@@ -75,11 +85,15 @@ export const deletePlaylist = async playlistId => {
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
     },
-  }).then(res => res);
+  })
+    .then(res => res)
+    .catch(err => err);
 };
 
 export const findUser = async name => {
-  return fetch(`${API}/user/${name}`).then(res => res.json());
+  return fetch(`${API}/user/${name}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const createUser = async name => {
@@ -89,7 +103,9 @@ export const createUser = async name => {
       'Content-Type': 'application/json;charset=utf-8',
     },
     body: JSON.stringify({ userId: name }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const searchSongs = async (userId, searchText, count) => {
@@ -102,10 +118,9 @@ export const searchSongs = async (userId, searchText, count) => {
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(
-    `${API}/song/search/${userId}/${searchText}`,
-    options
-  ).then(res => res.json());
+  return fetch(`${API}/song/search/${userId}/${searchText}`, options)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const searchArtists = async (searchText, count) => {
@@ -118,9 +133,15 @@ export const searchArtists = async (searchText, count) => {
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/artist/search/${searchText}`, options).then(res =>
-    res.json()
-  );
+  return fetch(`${API}/artist/search/${searchText}`, options)
+    .then(res => res.json())
+    .catch(err => err);
+};
+
+export const getArtistSongs = async (artistId, userId) => {
+  return fetch(`${API}/artist/songs/${artistId}/${userId}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const searchAlbums = async (searchText, count) => {
@@ -133,9 +154,15 @@ export const searchAlbums = async (searchText, count) => {
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/album/search/${searchText}`, options).then(res =>
-    res.json()
-  );
+  return fetch(`${API}/album/search/${searchText}`, options)
+    .then(res => res.json())
+    .catch(err => err);
+};
+
+export const getAlbumSongs = async (albumId, userId) => {
+  return fetch(`${API}/album/songs/${albumId}/${userId}`)
+    .then(res => res.json())
+    .catch(err => err);
 };
 
 export const searchPlaylists = async (searchText, count) => {
@@ -148,7 +175,7 @@ export const searchPlaylists = async (searchText, count) => {
   if (count) {
     options.body = JSON.stringify({ limit: count.toString() });
   }
-  return fetch(`${API}/playlist/search/${searchText}`, options).then(res =>
-    res.json()
-  );
+  return fetch(`${API}/playlist/search/${searchText}`, options)
+    .then(res => res.json())
+    .catch(err => err);
 };

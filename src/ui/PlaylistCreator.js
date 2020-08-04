@@ -229,12 +229,13 @@ class PlaylistCreator extends React.Component {
           {`Create ${this.state.checked.length > 0 ? 'Merged' : ''} Playlist`}
         </div>
         <div className="creator-textfield-container">
-          {this.props.playlists.length > 0 &&
-            this.renderCreatePlaylistTextfield()}
-          {this.props.playlists.length > 0 ? (
-            <div className="creator-playlists">
-              {this.renderPlaylistTable()}
-            </div>
+          {this.props.playlists.length > 1 ? (
+            <>
+              {this.renderCreatePlaylistTextfield()}
+              <div className="creator-playlists">
+                {this.renderPlaylistTable()}
+              </div>
+            </>
           ) : (
             this.renderEmptyPlaylistDiv()
           )}

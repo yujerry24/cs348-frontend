@@ -17,8 +17,11 @@ import DataTable from './DataTable';
 import {
   fetchSongSearch,
   fetchArtistSearch,
+  fetchArtistSongs,
   fetchAlbumSearch,
+  fetchAlbumSongs,
   fetchPlaylistSearch,
+  fetchPlaylistSongs,
 } from '../store/fetchCalls';
 
 const SEARCH = 'Search';
@@ -28,24 +31,38 @@ const PLAYLISTS = 'Playlists';
 const SONGS = 'Songs';
 
 class GeneralSearch extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       type: SEARCH,
+      level: 1,
+      selected: '',
     };
 
     this.tableHeadersMap = {
       Songs: ['Name', 'Artists', 'Album', 'Duration', 'Actions'],
-      Artists: ['Name'],
-      Albums: ['Name'],
-      Playlists: ['Name', 'Username'],
+      Artists: ['Name', 'List Songs'],
+      Albums: ['Name', 'List Songs'],
+      Playlists: ['Name', 'Username', 'List Songs'],
+    };
+
+    this.subTableHeadersMap = {
+      Artists: ['Name', 'Duration', 'Actions'],
+      Albums: ['Song Number', 'Name', 'Duration', 'Disc Number', 'Actions'],
+      Playlists: ['Name', 'Artists', 'Album', 'Duration', 'Actions'],
+    };
+
+    this.fetchSongsMap = {
+      Artists: props.fetchArtistSongs,
+      Albums: props.fetchAlbumSongs,
+      Playlists: props.fetchPlaylistSongs,
     };
   }
 
   componentDidUpdate = prevProps => {
     const { searchText } = this.props;
     if (prevProps.searchText !== searchText) {
-      this.setState({ type: SEARCH });
+      this.setState({ type: SEARCH, level: 1 });
     }
   };
 
@@ -175,6 +192,49 @@ class GeneralSearch extends React.Component {
     );
   };
 
+  handleGetSongs = (id, name) => {
+    this.setState({ level: 2, selected: name });
+    this.fetchSongsMap[this.state.type](id, this.props.userId);
+  };
+
+  renderDataTable = () => {
+    const { type, level } = this.state;
+    return level === 1 ? (
+      <>
+        {this.props[this.state.type]['pending'] && (
+          <CircularProgress className="progress" />
+        )}
+        <DataTable
+          headings={this.tableHeadersMap[type]}
+          isSongSearch={type === SONGS} // will show multi song select options when showing songs
+          isSearch
+          backToSearch={() => {
+            this.setState({ type: SEARCH });
+          }}
+          rows={this.props[type][type.toLowerCase()]}
+          handleGetSongs={this.handleGetSongs}
+        />
+      </>
+    ) : (
+      <>
+        {this.props[type].songs['pending'] && (
+          <CircularProgress className="progress" />
+        )}
+        <DataTable
+          headings={this.subTableHeadersMap[type]}
+          isSongSearch
+          isSearch
+          backToSearch={() => {
+            this.setState({ level: 1 });
+            this.fetchSongsMap[this.state.type]();
+          }}
+          rows={this.props[type].songs.songsById}
+          title={this.state.selected}
+        />
+      </>
+    );
+  };
+
   render() {
     const { type } = this.state;
 
@@ -230,20 +290,7 @@ class GeneralSearch extends React.Component {
         )}
       </div>
     ) : (
-      <>
-        {this.props[this.state.type]['pending'] && (
-          <CircularProgress className="progress" />
-        )}
-        <DataTable
-          headings={this.tableHeadersMap[type]}
-          isSongSearch={type === SONGS} // will show multi song select options when showing songs
-          isSearch
-          backToSearch={() => {
-            this.setState({ type: SEARCH });
-          }}
-          rows={this.props[this.state.type][type.toLowerCase()]}
-        />
-      </>
+      this.renderDataTable()
     );
   }
 }
@@ -260,7 +307,10 @@ export default connect(
   {
     fetchSongSearch,
     fetchArtistSearch,
+    fetchArtistSongs,
     fetchAlbumSearch,
+    fetchAlbumSongs,
     fetchPlaylistSearch,
+    fetchPlaylistSongs,
   }
 )(GeneralSearch);

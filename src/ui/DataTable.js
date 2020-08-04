@@ -26,6 +26,7 @@ import {
   Favorite,
   FavoriteBorder,
   Delete,
+  LibraryMusic,
   PlayArrow,
 } from '@material-ui/icons';
 import './DataTable.scss';
@@ -48,20 +49,28 @@ class DataTable extends React.Component {
       selectedSongs: [],
       addToPlaylists: [],
       multiSong: false,
+      enableMultiSelect:
+        props.isPlaylist ||
+        props.isSongSearch ||
+        props.currentTab === TabNames.TOPSONGS,
     };
-    this.enableMultiSelect =
-      props.isPlaylist ||
-      props.isSongSearch ||
-      props.currentTab === TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
     const { currentTab, isPlaylist, isSongSearch } = this.props;
     if (prevProps.currentTab !== currentTab) {
-      this.setState({ selectedSongs: [] });
+      this.setState({ selectedSongs: [], multiSong: false });
     }
-    this.enableMultiSelect =
-      isPlaylist || isSongSearch || currentTab === TabNames.TOPSONGS;
+    if (
+      prevProps.isPlaylist !== isPlaylist ||
+      prevProps.isSongSearch !== isSongSearch ||
+      prevProps.currentTab !== currentTab
+    ) {
+      this.setState({
+        enableMultiSelect:
+          isPlaylist || isSongSearch || currentTab === TabNames.TOPSONGS,
+      });
+    }
   };
 
   onAdd = (ids, playlistIds) => {
@@ -219,7 +228,8 @@ class DataTable extends React.Component {
     actionButtons.push(
       <IconButton
         key={`favorite-${id}`}
-        name="favorite"
+        size="small"
+        aria-label="favorite"
         onClick={() => this.handleFavourite(id, isfave)}
       >
         {isfave ? <Favorite color="secondary" /> : <FavoriteBorder />}
@@ -254,7 +264,7 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        {this.enableMultiSelect && (
+        {this.state.enableMultiSelect && (
           <TableCell>
             <Checkbox
               key={`song-checkbox-${id}`}
@@ -268,9 +278,28 @@ class DataTable extends React.Component {
           <TableCell
             key={`actions-${id}`}
             align={'left'}
-            style={{ padding: 0, minWidth: '140px' }}
+            style={{ padding: 0, minWidth: '130px' }}
           >
             {this.renderActionButtons(id, _row.isfavourite)}
+          </TableCell>
+        )}
+        {this.props.handleGetSongs && !this.props.isSongSearch && (
+          <TableCell
+            key={`see-songs-${id}`}
+            align={'center'}
+            style={{ padding: 0, width: '120px' }}
+          >
+            <IconButton
+              key={`see-songs-${id}`}
+              color="primary"
+              size="small"
+              aria-label="see-songs"
+              onClick={() => {
+                this.props.handleGetSongs(id, _row.name);
+              }}
+            >
+              <LibraryMusic />
+            </IconButton>
           </TableCell>
         )}
       </TableRow>
@@ -279,11 +308,14 @@ class DataTable extends React.Component {
 
   renderBody = () => {
     const { headings, rows } = this.props;
+    const numColumns = this.state.enableMultiSelect
+      ? headings.length + 1
+      : headings.length;
     return rows && Object.keys(rows).length > 0 ? (
       Object.entries(rows).map(this.renderRow)
     ) : (
       <TableRow>
-        <TableCell colSpan={headings.length} style={{ textAlign: 'center' }}>
+        <TableCell colSpan={numColumns} style={{ textAlign: 'center' }}>
           {'No Songs Found'}
         </TableCell>
       </TableRow>
@@ -367,6 +399,13 @@ class DataTable extends React.Component {
     let currPlaylist = this.props.allPlaylists.find(
       p => p.playlist_id === this.props.currentTab
     );
+    let title = this.props.title;
+    if (!title) {
+      title =
+        this.props.isPlaylist && currPlaylist
+          ? currPlaylist.name
+          : this.props.currentTab;
+    }
     return (
       <div
         className={
@@ -387,11 +426,7 @@ class DataTable extends React.Component {
               <ArrowBack />
             </IconButton>
           )}
-          <Typography variant="h5" noWrap={true}>
-            {this.props.isPlaylist && currPlaylist
-              ? currPlaylist.name
-              : this.props.currentTab}
-          </Typography>
+          <Typography variant="h5">{title}</Typography>
         </div>
         {this.state.multiSong && (
           <div className="table-toolbar-multi-actions">
@@ -436,7 +471,7 @@ class DataTable extends React.Component {
 
     const headerContent = (
       <TableRow key="heading">
-        {this.enableMultiSelect && (
+        {this.state.enableMultiSelect && (
           <TableCell
             key={`actions-selectAll`}
             align={'left'}

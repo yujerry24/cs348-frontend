@@ -12,6 +12,7 @@ import {
   ListSubheader,
   ListItemText,
   Popover,
+  Typography,
 } from '@material-ui/core';
 import {
   AccountCircle,
@@ -28,6 +29,8 @@ import { deletePlaylist } from '../utils/APICalls';
 
 import { fetchAllPlaylists } from '../store/fetchCalls';
 import { setUser, setCurrentTab, setValidLogin } from '../store/actions';
+
+import Logo from './Logo';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -247,6 +250,17 @@ class Navbar extends React.Component {
     );
   };
 
+  logoRow = () => {
+    return (
+      <React.Fragment>
+        <div className="logo">
+          <Logo width="2em" height="2em"/>
+        </div>
+        <Typography variant="h5" noWrap={true}>Kpopify</Typography>
+      </React.Fragment>
+    );
+  };
+
   render() {
     const { allPlaylists } = this.props;
 
@@ -259,6 +273,7 @@ class Navbar extends React.Component {
       >
         <List className="list" style={{ paddingTop: '0px' }}>
           <div className="drawer-header">
+            {this.state.drawerOpened && this.logoRow()}
             <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
               {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
             </IconButton>

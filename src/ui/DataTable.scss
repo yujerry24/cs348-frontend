@@ -19,7 +19,7 @@
 
 .table-toolbar {
   display: flex;
-  height: 52px;
+  min-height: 52px;
   justify-content: space-between;
   align-items: center;
   background-color: #fafafa;
@@ -29,7 +29,7 @@
 
 .table-toolbar-selected {
   display: flex;
-  height: 52px;
+  min-height: 52px;
   justify-content: space-between;
   align-items: center;
   background-color: $search-bar-colour;
@@ -42,6 +42,7 @@
   flex-direction: row;
   font-size: 26px;
   font-weight: bold;
+  align-items: center;
 }
 
 .table-toolbar-multi-actions {
