@@ -48,7 +48,6 @@ class Login extends Component {
     findUser(this.state.username).then(searchRes => {
       if (searchRes.length === 0) {
         createUser(this.state.username).then(res => {
-          console.log(res);
           this.setState({
             error: false,
             helperText: 'Successfully created user!',

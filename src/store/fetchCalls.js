@@ -117,7 +117,6 @@ export const fetchPlaylistSongs = (playlistId, userId) => {
     dispatch(actions.fetchPlaylistSongsPending());
     CallApi.fetchPlaylist(playlistId, userId)
       .then(res => {
-        console.log(res);
         dispatch(actions.fetchPlaylistSongsSuccess(res));
         return res;
       })
