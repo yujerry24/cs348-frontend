@@ -49,13 +49,19 @@ class DataTable extends React.Component {
       addToPlaylists: [],
       multiSong: false,
     };
+    this.enableMultiSelect =
+      props.isPlaylist ||
+      props.isSongSearch ||
+      props.currentTab === TabNames.TOPSONGS;
   }
 
   componentDidUpdate = prevProps => {
-    const { currentTab } = this.props;
+    const { currentTab, isPlaylist, isSongSearch } = this.props;
     if (prevProps.currentTab !== currentTab) {
       this.setState({ selectedSongs: [] });
     }
+    this.enableMultiSelect =
+      isPlaylist || isSongSearch || currentTab === TabNames.TOPSONGS;
   };
 
   onAdd = (ids, playlistIds) => {
@@ -170,24 +176,23 @@ class DataTable extends React.Component {
     const { isPlaylist } = this.props;
     const actionButtons = [];
 
-    if (!isPlaylist) {
-      actionButtons.push(
-        <IconButton
-          key={`add-${id}`}
-          color="primary"
-          size="small"
-          aria-label="add"
-          onClick={e => {
-            this.setState({
-              popoverAnchorEl: e.currentTarget,
-              selectedSongs: this.state.selectedSongs.concat(id),
-            });
-          }}
-        >
-          <Add />
-        </IconButton>
-      );
-    } else {
+    actionButtons.push(
+      <IconButton
+        key={`add-${id}`}
+        color="primary"
+        size="small"
+        aria-label="add"
+        onClick={e => {
+          this.setState({
+            popoverAnchorEl: e.currentTarget,
+            selectedSongs: this.state.selectedSongs.concat(id),
+          });
+        }}
+      >
+        <Add />
+      </IconButton>
+    );
+    if (isPlaylist && !this.props.currentTab.includes('liked-songs')) {
       actionButtons.push(
         <IconButton
           key={`delete-${id}`}
@@ -249,7 +254,7 @@ class DataTable extends React.Component {
 
     return (
       <TableRow key={`row-${id}`}>
-        {(this.props.isPlaylist || this.props.isSongSearch) && (
+        {this.enableMultiSelect && (
           <TableCell>
             <Checkbox
               key={`song-checkbox-${id}`}
@@ -263,7 +268,7 @@ class DataTable extends React.Component {
           <TableCell
             key={`actions-${id}`}
             align={'left'}
-            style={{ padding: 0, minWidth: '110px' }}
+            style={{ padding: 0, minWidth: '140px' }}
           >
             {this.renderActionButtons(id, _row.isfavourite)}
           </TableCell>
@@ -286,27 +291,32 @@ class DataTable extends React.Component {
   };
 
   renderPopover = () => {
-    const { allPlaylists } = this.props;
+    const { allPlaylists, currentTab } = this.props;
     const open = Boolean(this.state.popoverAnchorEl);
     const id = open ? 'add-to-playlist-popover' : undefined;
 
+    const userPlaylists = allPlaylists.filter(
+      playlist =>
+        !playlist.playlist_id.includes('liked-songs') &&
+        playlist.playlist_id !== currentTab
+    );
+
     const popoverContent =
-      allPlaylists && allPlaylists.length > 0 ? (
+      userPlaylists && userPlaylists.length > 0 ? (
         <FormGroup className="add-to-playlist-list">
-          {allPlaylists &&
-            allPlaylists.map(playlist => (
-              <FormControlLabel
-                key={`add-to-playlist-${playlist.name}`}
-                control={
-                  <Checkbox
-                    onChange={() =>
-                      this.handlePlaylistsCheck(playlist.playlist_id)
-                    }
-                  />
-                }
-                label={playlist.name}
-              />
-            ))}
+          {userPlaylists.map(playlist => (
+            <FormControlLabel
+              key={`add-to-playlist-${playlist.name}`}
+              control={
+                <Checkbox
+                  onChange={() =>
+                    this.handlePlaylistsCheck(playlist.playlist_id)
+                  }
+                />
+              }
+              label={playlist.name}
+            />
+          ))}
           <Button
             onClick={() => {
               this.onAdd(this.state.selectedSongs, this.state.addToPlaylists);
@@ -399,20 +409,21 @@ class DataTable extends React.Component {
                 Add to Playlists
               </Button>
             </div>
-            {this.props.isPlaylist && (
-              <div className="table-toolbar-button">
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => {
-                    this.onDelete(this.state.selectedSongs);
-                    this.setState({ selectedSongs: [], multiSong: false });
-                  }}
-                >
-                  Delete from playlist
-                </Button>
-              </div>
-            )}
+            {this.props.isPlaylist &&
+              !this.props.currentTab.includes('liked-songs') && (
+                <div className="table-toolbar-button">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => {
+                      this.onDelete(this.state.selectedSongs);
+                      this.setState({ selectedSongs: [], multiSong: false });
+                    }}
+                  >
+                    Delete from playlist
+                  </Button>
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -420,12 +431,12 @@ class DataTable extends React.Component {
   };
 
   render() {
-    const { headings, rows, isPlaylist, isSongSearch } = this.props;
+    const { headings, rows } = this.props;
     const rowsLength = rows ? Object.keys(rows).length : 0;
 
     const headerContent = (
       <TableRow key="heading">
-        {(isPlaylist || isSongSearch) && (
+        {this.enableMultiSelect && (
           <TableCell
             key={`actions-selectAll`}
             align={'left'}
