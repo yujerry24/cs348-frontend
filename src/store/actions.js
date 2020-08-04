@@ -99,8 +99,8 @@ export const updateLikedInSearch = (songId, isFavourite) => {
     type: actions.UPDATE_LIKED_IN_SEARCH,
     songId,
     isFavourite,
-  }
-}
+  };
+};
 
 //////////////////
 

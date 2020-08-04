@@ -147,7 +147,7 @@ export function songSearch(state = initSongSearchResults, action) {
         error: action.error,
       };
     case types.UPDATE_LIKED_IN_SEARCH:
-      const newState = {...state};
+      const newState = { ...state };
       newState.songs[action.songId].isfavourite = action.isFavourite;
       return newState;
     default:

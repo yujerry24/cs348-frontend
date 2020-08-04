@@ -36,7 +36,7 @@ import {
   setPlayingPlaylist,
   setPlayingSong,
   updateLikedInPlaylist,
-  updateLikedInSearch
+  updateLikedInSearch,
 } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
@@ -129,18 +129,18 @@ class DataTable extends React.Component {
     let playlist_id = this.props.userId + '-liked-songs';
     if (!isFav) {
       CallApi.addSongs([id], [playlist_id]).then(() => {
-        this.props.fetchPlaylist(playlist_id, this.props.userId)
+        this.props.fetchPlaylist(playlist_id, this.props.userId);
         if (this.props.currentTab === TabNames.TOPSONGS) {
-          this.props.fetchMostPopularSongs()
+          this.props.fetchMostPopularSongs();
         }
       });
 
       this.updateLiked(id, true);
     } else {
       CallApi.deleteSongs([id], playlist_id).then(() => {
-        this.props.fetchPlaylist(playlist_id, this.props.userId)
+        this.props.fetchPlaylist(playlist_id, this.props.userId);
         if (this.props.currentTab === TabNames.TOPSONGS) {
-          this.props.fetchMostPopularSongs()
+          this.props.fetchMostPopularSongs();
         }
       });
       this.updateLiked(id, false);
@@ -153,7 +153,7 @@ class DataTable extends React.Component {
         this.props.updateLikedInPlaylist(key, id, newVal);
       }
     });
-    Object.keys(this.props.searchSongs).forEach(key => { 
+    Object.keys(this.props.searchSongs).forEach(key => {
       if (key === id) {
         this.props.updateLikedInSearch(key, newVal);
       }
@@ -489,8 +489,13 @@ export default connect(
       state.playlistsById[state.mainApp.currentTab] &&
       state.playlistsById[state.mainApp.currentTab].pending,
     playlistsById: state.playlistsById,
-    searchSongs: state.songSearch.songs
+    searchSongs: state.songSearch.songs,
   }),
-  { setPlayingPlaylist, setPlayingSong, fetchPlaylist, updateLikedInPlaylist, updateLikedInSearch }
+  {
+    setPlayingPlaylist,
+    setPlayingSong,
+    fetchPlaylist,
+    updateLikedInPlaylist,
+    updateLikedInSearch,
+  }
 )(DataTable);
-

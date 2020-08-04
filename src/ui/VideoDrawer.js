@@ -41,8 +41,9 @@ class VideoDrawer extends React.Component {
       } else {
         songs = playlistsById[playingPlaylist].songsById;
       }
-      let vidIds = Object.values(songs).map(song => song.video_id);
-      let startSong = songs[playingSong].video_id;
+      let vidIds = songs && Object.values(songs).map(song => song.video_id);
+      let startSong =
+        songs && songs[playingSong] && songs[playingSong].video_id;
 
       while (vidIds[0] !== startSong) {
         let front = vidIds.shift(1);
