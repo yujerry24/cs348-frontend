@@ -82,6 +82,8 @@ class Navbar extends React.Component {
     // alert('logout current user');
     this.props.setValidLogin(false);
     this.props.setUser('');
+    this.props.setCurrentTab(Constants.TabNames.SEARCH);
+    this.props.fetchAllPlaylists();
   };
 
   playlistRow = ({ playlist_id, name }) => {
@@ -102,7 +104,7 @@ class Navbar extends React.Component {
         <ListItemText
           primary={name}
           primaryTypographyProps={{
-            noWrap: true
+            noWrap: true,
           }}
         />
         {currentTab === playlist_id && this.state.drawerOpened && (
@@ -253,9 +255,9 @@ class Navbar extends React.Component {
         variant="permanent"
         className={this.state.drawerOpened ? 'drawerOpen' : 'drawerClosed'}
         classes={{ paper: 'paper' }}
-        PaperProps = {{elevation: 16}}
+        PaperProps={{ elevation: 16 }}
       >
-        <List className="list" style={{paddingTop : '0px'}}>
+        <List className="list" style={{ paddingTop: '0px' }}>
           <div className="drawer-header">
             <IconButton className="drawer-toggle" onClick={this.toggleDrawer}>
               {this.state.drawerOpened ? <ChevronLeft /> : <ChevronRight />}
@@ -309,6 +311,6 @@ export default connect(
     setUser,
     setCurrentTab,
     setValidLogin,
-    fetchAllPlaylists: userId => fetchAllPlaylists(userId),
+    fetchAllPlaylists,
   }
 )(Navbar);
