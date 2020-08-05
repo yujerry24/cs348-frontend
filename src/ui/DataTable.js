@@ -36,6 +36,7 @@ import * as CallApi from '../utils/APICalls';
 import {
   setPlayingPlaylist,
   setPlayingSong,
+  setSubSongs,
   updateLikedInPlaylist,
   updateLikedInSearch,
 } from '../store/actions';
@@ -90,7 +91,10 @@ class DataTable extends React.Component {
   };
 
   onPlay = songId => {
-    this.props.setPlayingPlaylist(this.props.currentTab);
+    if (this.props.title) {
+      this.props.setSubSongs(this.props.rows);
+    }
+    this.props.setPlayingPlaylist(this.props.title || this.props.currentTab);
     this.props.setPlayingSong(songId);
   };
 
@@ -532,14 +536,16 @@ export default connect(
       (state.playlistsById[state.mainApp.currentTab] &&
         state.playlistsById[state.mainApp.currentTab].songsById),
     pending:
-      state.playlistsById[state.mainApp.currentTab] &&
-      state.playlistsById[state.mainApp.currentTab].pending,
+      ownProps.pending ||
+      (state.playlistsById[state.mainApp.currentTab] &&
+        state.playlistsById[state.mainApp.currentTab].pending),
     playlistsById: state.playlistsById,
     searchSongs: state.songSearch.songs,
   }),
   {
     setPlayingPlaylist,
     setPlayingSong,
+    setSubSongs,
     fetchPlaylist,
     updateLikedInPlaylist,
     updateLikedInSearch,
