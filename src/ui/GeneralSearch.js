@@ -219,8 +219,8 @@ class GeneralSearch extends React.Component {
         backToSearch={() => {
           this.setState({ level: 1 });
         }}
-        pending={this.props[type].songs.pending}
-        rows={this.props[type].songs.songsById}
+        pending={this.props.subSongSearch.pending}
+        rows={this.props.subSongSearch.songsById}
         title={this.state.selected}
       />
     );
@@ -293,6 +293,7 @@ export default connect(
     [ARTISTS]: { ...state.artistSearch },
     [ALBUMS]: { ...state.albumSearch },
     [PLAYLISTS]: { ...state.playlistSearch },
+    subSongSearch: state.subSongSearch,
     userId: state.mainApp.userId,
   }),
   {

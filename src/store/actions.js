@@ -109,6 +109,14 @@ export const updateLikedInSearch = (songId, isFavourite) => {
   };
 };
 
+export const updateLikedInSubSearch = (songId, isFavourite) => {
+  return {
+    type: actions.UPDATE_LIKED_IN_SUB_SEARCH,
+    songId,
+    isFavourite,
+  };
+};
+
 //////////////////
 
 export const fetchSongSearchPending = () => {

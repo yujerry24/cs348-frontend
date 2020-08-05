@@ -39,6 +39,7 @@ import {
   setSubSongs,
   updateLikedInPlaylist,
   updateLikedInSearch,
+  updateLikedInSubSearch,
 } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
@@ -175,6 +176,13 @@ class DataTable extends React.Component {
     Object.keys(this.props.searchSongs).forEach(key => {
       if (key === id) {
         this.props.updateLikedInSearch(key, newVal);
+      }
+    });
+
+    //update local state for search results
+    Object.keys(this.props.subSongSearch).forEach(key => {
+      if (key === id) {
+        this.props.updateLikedInSubSearch(key, newVal);
       }
     });
   };
@@ -541,6 +549,7 @@ export default connect(
         state.playlistsById[state.mainApp.currentTab].pending),
     playlistsById: state.playlistsById,
     searchSongs: state.songSearch.songs,
+    subSongSearch: state.subSongSearch.songsById,
   }),
   {
     setPlayingPlaylist,
@@ -549,5 +558,6 @@ export default connect(
     fetchPlaylist,
     updateLikedInPlaylist,
     updateLikedInSearch,
+    updateLikedInSubSearch,
   }
 )(DataTable);
