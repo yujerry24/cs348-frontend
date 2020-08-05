@@ -6,6 +6,7 @@ const initAppState = {
   currentTab: TabNames.SEARCH,
   validLogin: false,
   searchText: '',
+  subSongs: {},
 };
 
 export const mainApp = (state = initAppState, action) => {
@@ -39,6 +40,11 @@ export const mainApp = (state = initAppState, action) => {
       return {
         ...state,
         searchText: action.searchText,
+      };
+    case types.SET_SUB_SONGS:
+      return {
+        ...state,
+        subSongs: action.songs,
       };
     default:
       return state;
@@ -171,7 +177,6 @@ export function artistSearch(state = initArtistSearchResults, action) {
       return {
         ...state,
         songs: {
-          ...state.songs,
           pending: true,
         },
       };
@@ -231,7 +236,6 @@ export function albumSearch(state = initAlbumSearchResults, action) {
       return {
         ...state,
         songs: {
-          ...state.songs,
           pending: true,
         },
       };
@@ -291,7 +295,6 @@ export function playlistSearch(state = initPlaylistSearchResults, action) {
       return {
         ...state,
         songs: {
-          ...state.songs,
           pending: true,
         },
       };
