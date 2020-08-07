@@ -35,7 +35,7 @@ class Searchbar extends React.Component {
   };
 
   render() {
-    const { availablePlaylists, playingPlaylist, playingSong } = this.props;
+    const { availablePlaylists, playingPlaylist } = this.props;
     let currentMusic;
     let playlist = availablePlaylists.find(
       p => p.playlist_id === playingPlaylist
@@ -47,8 +47,8 @@ class Searchbar extends React.Component {
       currentMusic = 'Top 20 Songs';
     } else if (playingPlaylist === TabNames.SEARCH) {
       currentMusic = 'Search Results';
-    } else if (playingSong) {
-      currentMusic = playingSong;
+    } else if (playingPlaylist) {
+      currentMusic = playingPlaylist;
     }
     return (
       <div className="search-bar-container">
@@ -70,9 +70,7 @@ class Searchbar extends React.Component {
               </div>
               <div className="controls">
                 {currentMusic
-                  ? `Currently playing ${
-                      playingPlaylist ? 'playlist' : 'song'
-                    }: ${currentMusic}`
+                  ? `Currently playing: ${currentMusic}`
                   : `No music selected`}
               </div>
             </div>

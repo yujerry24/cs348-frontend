@@ -36,8 +36,10 @@ import * as CallApi from '../utils/APICalls';
 import {
   setPlayingPlaylist,
   setPlayingSong,
+  setSubSongs,
   updateLikedInPlaylist,
   updateLikedInSearch,
+  updateLikedInSubSearch,
 } from '../store/actions';
 import { fetchPlaylist } from '../store/fetchCalls';
 
@@ -90,7 +92,10 @@ class DataTable extends React.Component {
   };
 
   onPlay = songId => {
-    this.props.setPlayingPlaylist(this.props.currentTab);
+    if (this.props.title) {
+      this.props.setSubSongs(this.props.rows);
+    }
+    this.props.setPlayingPlaylist(this.props.title || this.props.currentTab);
     this.props.setPlayingSong(songId);
   };
 
@@ -171,6 +176,13 @@ class DataTable extends React.Component {
     Object.keys(this.props.searchSongs).forEach(key => {
       if (key === id) {
         this.props.updateLikedInSearch(key, newVal);
+      }
+    });
+
+    //update local state for search results
+    Object.keys(this.props.subSongSearch).forEach(key => {
+      if (key === id) {
+        this.props.updateLikedInSubSearch(key, newVal);
       }
     });
   };
@@ -532,16 +544,20 @@ export default connect(
       (state.playlistsById[state.mainApp.currentTab] &&
         state.playlistsById[state.mainApp.currentTab].songsById),
     pending:
-      state.playlistsById[state.mainApp.currentTab] &&
-      state.playlistsById[state.mainApp.currentTab].pending,
+      ownProps.pending ||
+      (state.playlistsById[state.mainApp.currentTab] &&
+        state.playlistsById[state.mainApp.currentTab].pending),
     playlistsById: state.playlistsById,
     searchSongs: state.songSearch.songs,
+    subSongSearch: state.subSongSearch.songsById,
   }),
   {
     setPlayingPlaylist,
     setPlayingSong,
+    setSubSongs,
     fetchPlaylist,
     updateLikedInPlaylist,
     updateLikedInSearch,
+    updateLikedInSubSearch,
   }
 )(DataTable);

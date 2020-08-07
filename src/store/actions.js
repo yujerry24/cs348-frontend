@@ -42,6 +42,13 @@ export const setSearchText = searchText => {
   };
 };
 
+export const setSubSongs = songs => {
+  return {
+    type: actions.SET_SUB_SONGS,
+    songs,
+  };
+};
+
 export const fetchAllPlaylistsPending = () => {
   return {
     type: actions.FETCH_ALL_PLAYLISTS_PENDING,
@@ -97,6 +104,14 @@ export const updateLikedInPlaylist = (playlistId, songId, isFavourite) => {
 export const updateLikedInSearch = (songId, isFavourite) => {
   return {
     type: actions.UPDATE_LIKED_IN_SEARCH,
+    songId,
+    isFavourite,
+  };
+};
+
+export const updateLikedInSubSearch = (songId, isFavourite) => {
+  return {
+    type: actions.UPDATE_LIKED_IN_SUB_SEARCH,
     songId,
     isFavourite,
   };

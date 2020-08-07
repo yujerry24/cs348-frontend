@@ -200,38 +200,29 @@ class GeneralSearch extends React.Component {
   renderDataTable = () => {
     const { type, level } = this.state;
     return level === 1 ? (
-      <>
-        {this.props[this.state.type]['pending'] && (
-          <CircularProgress className="progress" />
-        )}
-        <DataTable
-          headings={this.tableHeadersMap[type]}
-          isSongSearch={type === SONGS} // will show multi song select options when showing songs
-          isSearch
-          backToSearch={() => {
-            this.setState({ type: SEARCH });
-          }}
-          rows={this.props[type][type.toLowerCase()]}
-          handleGetSongs={this.handleGetSongs}
-        />
-      </>
+      <DataTable
+        headings={this.tableHeadersMap[type]}
+        isSongSearch={type === SONGS} // will show multi song select options when showing songs
+        isSearch
+        backToSearch={() => {
+          this.setState({ type: SEARCH });
+        }}
+        rows={this.props[type][type.toLowerCase()]}
+        handleGetSongs={this.handleGetSongs}
+        pending={this.props[type]['pending']}
+      />
     ) : (
-      <>
-        {this.props[type].songs['pending'] && (
-          <CircularProgress className="progress" />
-        )}
-        <DataTable
-          headings={this.subTableHeadersMap[type]}
-          isSongSearch
-          isSearch
-          backToSearch={() => {
-            this.setState({ level: 1 });
-            this.fetchSongsMap[this.state.type]();
-          }}
-          rows={this.props[type].songs.songsById}
-          title={this.state.selected}
-        />
-      </>
+      <DataTable
+        headings={this.subTableHeadersMap[type]}
+        isSongSearch
+        isSearch
+        backToSearch={() => {
+          this.setState({ level: 1 });
+        }}
+        pending={this.props.subSongSearch.pending}
+        rows={this.props.subSongSearch.songsById}
+        title={this.state.selected}
+      />
     );
   };
 
@@ -302,6 +293,7 @@ export default connect(
     [ARTISTS]: { ...state.artistSearch },
     [ALBUMS]: { ...state.albumSearch },
     [PLAYLISTS]: { ...state.playlistSearch },
+    subSongSearch: state.subSongSearch,
     userId: state.mainApp.userId,
   }),
   {

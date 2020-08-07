@@ -30,6 +30,7 @@ class VideoDrawer extends React.Component {
       playingSong,
       playlistsById,
       searchSongs,
+      subSongs,
       topSongs,
     } = this.props;
     if (playingPlaylist && playingSong) {
@@ -38,14 +39,18 @@ class VideoDrawer extends React.Component {
         songs = searchSongs;
       } else if (playingPlaylist === TabNames.TOPSONGS) {
         songs = topSongs;
-      } else {
+      } else if (playlistsById[playingPlaylist]) {
         songs = playlistsById[playingPlaylist].songsById;
+      } else {
+        songs = subSongs;
       }
-      let vidIds = songs && Object.values(songs).map(song => song.video_id);
+      let vidIds = songs
+        ? Object.values(songs).map(song => song.video_id)
+        : ['0'];
       let startSong =
-        songs && songs[playingSong] && songs[playingSong].video_id;
+        songs && songs[playingSong] ? songs[playingSong].video_id : '0';
 
-      while (vidIds[0] !== startSong) {
+      while (vidIds.includes(startSong) && vidIds[0] !== startSong) {
         let front = vidIds.shift(1);
         vidIds.push(front);
       }
@@ -84,4 +89,5 @@ export default connect(state => ({
   playingSong: state.mainApp.playingSong,
   playlistsById: state.playlistsById,
   searchSongs: state.songSearch.songs,
+  subSongs: state.mainApp.subSongs,
 }))(VideoDrawer);
