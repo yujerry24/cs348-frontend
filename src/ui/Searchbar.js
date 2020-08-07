@@ -14,6 +14,12 @@ import { TabNames } from '../utils/Constants';
 import { setCurrentTab } from '../store/actions';
 
 class Searchbar extends React.Component {
+  componentDidUpdate = prevProps => {
+    if (prevProps.userId !== this.props.userId) {
+      this.props.setSearchText('');
+    }
+  };
+
   handleChange = e => {
     this.props.setSearchText(e.target.value);
     if (e.target.value !== '') {

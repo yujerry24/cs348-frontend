@@ -65,9 +65,6 @@ class Navbar extends React.Component {
   };
 
   onCreatePlaylistClick = () => {
-    // TODO:
-    // open a creation modal to prompt user for a playlist name
-    // this.setState({ currentTab: Constants.TabNames.CREATEPL });
     this.props.setCurrentTab(Constants.TabNames.CREATEPL);
   };
 
@@ -79,10 +76,6 @@ class Navbar extends React.Component {
   };
 
   onLogout = () => {
-    // TODO:
-    // open a creation modal??
-    // call api
-    // alert('logout current user');
     this.props.setValidLogin(false);
     this.props.setUser('');
     this.props.setCurrentTab(Constants.TabNames.SEARCH);
@@ -254,9 +247,11 @@ class Navbar extends React.Component {
     return (
       <React.Fragment>
         <div className="logo">
-          <Logo width="2em" height="2em"/>
+          <Logo width="2em" height="2em" />
         </div>
-        <Typography variant="h5" noWrap={true}>Kpopify</Typography>
+        <Typography variant="h5" noWrap={true}>
+          Kpopify
+        </Typography>
       </React.Fragment>
     );
   };
