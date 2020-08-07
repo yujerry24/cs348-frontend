@@ -3,7 +3,11 @@ import { AppBar, Toolbar, InputBase } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import './Searchbar.scss';
 import { connect } from 'react-redux';
-import { setSearchText } from '../store/actions';
+import {
+  setCurrentTab,
+  setPlayingPlaylist,
+  setSearchText,
+} from '../store/actions';
 import {
   fetchSongSearch,
   fetchArtistSearch,
@@ -11,7 +15,6 @@ import {
   fetchPlaylistSearch,
 } from '../store/fetchCalls';
 import { TabNames } from '../utils/Constants';
-import { setCurrentTab } from '../store/actions';
 
 class Searchbar extends React.Component {
   componentDidUpdate = prevProps => {
@@ -23,6 +26,7 @@ class Searchbar extends React.Component {
   handleChange = e => {
     this.props.setSearchText(e.target.value);
     if (e.target.value !== '') {
+      this.props.setPlayingPlaylist();
       this.props.fetchSongSearch(this.props.userId, e.target.value, 4);
       this.props.fetchArtistSearch(e.target.value, 4);
       this.props.fetchAlbumSearch(e.target.value, 4);
@@ -97,6 +101,7 @@ export default connect(
   }),
   {
     setCurrentTab,
+    setPlayingPlaylist,
     setSearchText,
     fetchSongSearch,
     fetchArtistSearch,

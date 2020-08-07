@@ -146,13 +146,13 @@ class GeneralSearch extends React.Component {
     const { searchText, userId } = this.props;
     if (this.props[header]['count']) {
       if (header === ARTISTS) {
-        this.props.fetchArtistSearch(searchText);
+        this.props.fetchArtistSearch(searchText, 75);
       } else if (header === ALBUMS) {
-        this.props.fetchAlbumSearch(searchText);
+        this.props.fetchAlbumSearch(searchText, 75);
       } else if (header === PLAYLISTS) {
-        this.props.fetchPlaylistSearch(searchText);
+        this.props.fetchPlaylistSearch(searchText, 75);
       } else if (header === SONGS) {
-        this.props.fetchSongSearch(userId, searchText);
+        this.props.fetchSongSearch(userId, searchText, 75);
       }
     }
   };
